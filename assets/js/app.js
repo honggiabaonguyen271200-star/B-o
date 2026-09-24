@@ -1295,15 +1295,26 @@
       dirBtn.hidden = true;
       dirNote.innerHTML = "Trình duyệt này không lưu thẳng vào thư mục được: ảnh sẽ được <b>tải về (Downloads) với đúng tên</b>, bạn chép chúng vào <b>images/products</b>. Dùng Chrome hoặc Edge và mở web bằng <b>xem-web.bat</b> để lưu thẳng.";
     }
+    // Chọn nơi LƯU ảnh: thư mục B-o, B-o\images hay B-o\images\products đều được — tự tìm vào images\products
+    function findProductsDir(h) {
+      function sub(d, name) { return d.getDirectoryHandle(name).catch(function () { return null; }); }
+      var p = h.name === "products" ? Promise.resolve(h)
+        : h.name === "images" ? sub(h, "products")
+        : sub(h, "images").then(function (i) { return i ? sub(i, "products") : null; });
+      // Thư mục ảnh của website có sẵn file README.md — dùng để chắc chắn chọn đúng
+      return p.then(function (d) {
+        return d ? d.getFileHandle("README.md").then(function () { return d; }, function () { return null; }) : null;
+      });
+    }
     dirBtn.addEventListener("click", function () {
       window.showDirectoryPicker({ id: "slife-products", mode: "readwrite" }).then(function (h) {
-        dir = h;
-        var okName = h.name === "products";
-        dirNote.innerHTML = okName
-          ? "✓ Đang lưu vào thư mục <b>images/products</b>. Kéo ảnh vào từng dòng bên dưới."
-          : "⚠ Bạn vừa chọn thư mục <b>" + esc(h.name) + "</b>, không phải <b>images/products</b>. Bấm chọn lại cho đúng.";
-        dirNote.className = okName ? "status-ok" : "status-miss";
-        if (!okName) dir = null;
+        return findProductsDir(h).then(function (d) {
+          dir = d;
+          dirNote.innerHTML = d
+            ? "✓ Ảnh sẽ được lưu vào <b>B-o\\images\\products</b>. Giờ kéo ảnh / file zip (để ở ổ nào cũng được) thả vào đúng dòng bên dưới."
+            : "⚠ Thư mục <b>" + esc(h.name) + "</b> không phải thư mục website. Bấm lại và chọn thư mục <b>B-o</b> (nơi bạn tải website về, VD Documents\\B-o).";
+          dirNote.className = d ? "status-ok" : "status-miss";
+        });
       }).catch(function () { /* người dùng huỷ */ });
     });
 
@@ -1344,7 +1355,7 @@
       return Promise.resolve();
     }
     function handle(p, dropped) {
-      if (canWrite && !dir) { toast("Bấm “Chọn thư mục images/products” trước nhé"); return; }
+      if (canWrite && !dir) { toast("Bấm “Chọn nơi lưu: thư mục website B-o” trước nhé"); return; }
       // File .zip (Canva tải nhiều trang) được giải nén thành ảnh
       Promise.all(Array.prototype.map.call(dropped, function (f) {
         return /\.zip$/i.test(f.name) || f.type === "application/zip" || f.type === "application/x-zip-compressed" ? unzipImages(f) : [f];

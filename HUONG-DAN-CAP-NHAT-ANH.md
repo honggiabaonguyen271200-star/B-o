@@ -27,7 +27,8 @@ Bảng hàng đã có cột **Hình ảnh**. Ảnh chèn trong bảng được l
 Không cần đổi tên file bằng tay.
 
 1. Chạy web bằng `xem-web.bat`, mở **http://localhost:8080/anh.html** bằng **Chrome hoặc Edge**.
-2. Bấm **Chọn thư mục images/products** → chọn `Documents\B-o\images\products` → cho phép **Chỉnh sửa / Lưu thay đổi**.
+2. Bấm **Chọn nơi lưu: thư mục website B-o** → chọn thư mục **B-o** (nơi website nằm trên máy) → cho phép **Chỉnh sửa / Lưu thay đổi**.
+   Đây là **nơi lưu** ảnh. Ảnh / file zip của bạn để ở đâu cũng được (ổ D, Downloads…): chỉ cần kéo từ đó thả vào dòng giày.
 3. Ô lọc chọn **Chưa có ảnh**, gõ mã vào ô tìm nếu cần.
 4. **Kéo ảnh từ máy thả vào dòng của đôi giày** (hoặc bấm "Kéo ảnh vào đây" để chọn file).
    **Kéo cả 10 ảnh một lần**: ảnh được xếp theo tên file — ảnh điện thoại đặt tên theo thứ tự chụp (`IMG_0101`, `IMG_0102`…), nên **ảnh chụp đầu tiên thành ảnh chính**, các ảnh sau thành `-2` … `-10`.
