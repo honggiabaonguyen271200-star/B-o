@@ -1208,6 +1208,35 @@
       im.src = url;
     });
   }
+  // Giải nén file .zip (VD Canva tải nhiều trang) thành danh sách ảnh, không cần thư viện
+  function unzipImages(file) {
+    return file.arrayBuffer().then(function (ab) {
+      var buf = new Uint8Array(ab), dv = new DataView(ab), eocd = -1;
+      for (var i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) {
+        if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+      }
+      if (eocd < 0) throw new Error("zip");
+      var count = dv.getUint16(eocd + 10, true), pos = dv.getUint32(eocd + 16, true), jobs = [];
+      for (var n = 0; n < count && dv.getUint32(pos, true) === 0x02014b50; n++) {
+        var method = dv.getUint16(pos + 10, true), size = dv.getUint32(pos + 20, true);
+        var nameLen = dv.getUint16(pos + 28, true), extraLen = dv.getUint16(pos + 30, true), commentLen = dv.getUint16(pos + 32, true);
+        var local = dv.getUint32(pos + 42, true);
+        var name = new TextDecoder().decode(buf.subarray(pos + 46, pos + 46 + nameLen));
+        pos += 46 + nameLen + extraLen + commentLen;
+        var ext = (name.match(/\.(jpe?g|png|webp)$/i) || [])[1];
+        if (!ext || /(^|\/)(__MACOSX|\.)/.test(name)) continue;
+        var start = local + 30 + dv.getUint16(local + 26, true) + dv.getUint16(local + 28, true);
+        var raw = new Blob([buf.subarray(start, start + size)]);
+        var type = "image/" + (/jpe?g/i.test(ext) ? "jpeg" : ext.toLowerCase());
+        jobs.push((method === 0 ? Promise.resolve(raw)
+          : method === 8 && window.DecompressionStream ? new Response(raw.stream().pipeThrough(new DecompressionStream("deflate-raw"))).blob()
+          : Promise.reject(new Error("zip"))).then((function (nm, tp) {
+            return function (b) { return new File([b], nm.split("/").pop(), { type: tp }); };
+          })(name, type)));
+      }
+      return Promise.all(jobs);
+    });
+  }
   function initImages() {
     var body = $("[data-img-rows]"), stat = $("[data-img-stat]"), filter = "all", q = "";
     var list = PRODUCTS.slice().sort(function (a, b) { return (b.inStock - a.inStock) || a.order - b.order; });
@@ -1219,7 +1248,7 @@
         '<td><div class="thumb">' + media(p) + "</div></td>" +
         '<td><a href="' + productUrl(p) + '" target="_blank" rel="noopener">' + esc(fullName(p)) + "</a><br><small class=\"muted\">" + esc(p.brand) + (p.inStock ? "" : " · hết size") + "</small></td>" +
         '<td><code>' + esc(file) + '</code> <button class="btn btn--ghost btn--sm" data-copy="' + esc(p.code || p.id) + '">Chép tên</button></td>' +
-        '<td><label class="drop" data-drop="' + esc(p.id) + '"><input type="file" accept="image/*" multiple hidden>Kéo ảnh vào đây<br><small>hoặc bấm để chọn</small></label></td>' +
+        '<td><label class="drop" data-drop="' + esc(p.id) + '"><input type="file" accept="image/*,.zip" multiple hidden>Kéo ảnh / file zip vào đây<br><small>hoặc bấm để chọn</small></label></td>' +
         '<td data-status class="muted">Đang kiểm tra…</td></tr>';
     }).join("");
 
@@ -1314,12 +1343,20 @@
       setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
       return Promise.resolve();
     }
-    function handle(p, files) {
-      // Sắp theo tên file (ảnh điện thoại đặt tên theo thứ tự chụp): ảnh chụp đầu tiên = ảnh chính
-      files = Array.prototype.filter.call(files, function (f) { return /^image\//.test(f.type) || /\.(jpe?g|png|webp|heic)$/i.test(f.name); })
+    function handle(p, dropped) {
+      if (canWrite && !dir) { toast("Bấm “Chọn thư mục images/products” trước nhé"); return; }
+      // File .zip (Canva tải nhiều trang) được giải nén thành ảnh
+      Promise.all(Array.prototype.map.call(dropped, function (f) {
+        return /\.zip$/i.test(f.name) || f.type === "application/zip" || f.type === "application/x-zip-compressed" ? unzipImages(f) : [f];
+      })).then(function (groups) {
+        saveAll(p, [].concat.apply([], groups));
+      }, function () { toast("Không mở được file zip này — giải nén rồi kéo ảnh vào"); });
+    }
+    function saveAll(p, files) {
+      // Sắp theo tên file (ảnh điện thoại đặt theo thứ tự chụp, Canva đặt theo số trang): ảnh đầu tiên = ảnh chính
+      files = files.filter(function (f) { return /^image\//.test(f.type) || /\.(jpe?g|png|webp|heic)$/i.test(f.name); })
         .sort(function (a, b) { return a.name.localeCompare(b.name, undefined, { numeric: true }); });
       if (!files.length) return;
-      if (canWrite && !dir) { toast("Bấm “Chọn thư mục images/products” trước nhé"); return; }
       var chain = Promise.resolve(), savedNames = [];
       files.forEach(function (f) {
         chain = chain.then(function () {

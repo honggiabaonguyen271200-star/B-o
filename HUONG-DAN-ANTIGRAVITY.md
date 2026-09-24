@@ -66,7 +66,7 @@ Chưa có thông tin nào thì để trống. Chạy thử web, kiểm tra chân
 
 ### D3. Ảnh sản phẩm (quan trọng nhất) — xem chi tiết `HUONG-DAN-CAP-NHAT-ANH.md`
 1. **Tự động từ Google Sheet:** tải bảng về dạng .xlsx → kéo thả vào `cap-nhat-hang.bat`. Ảnh chèn trong bảng được lấy ra, đặt đúng tên mã, thu nhỏ.
-2. **Mẫu còn thiếu ảnh:** mở `http://localhost:8080/anh.html` (Chrome/Edge) → **Chọn thư mục images/products** → lọc **Chưa có ảnh** → **kéo cả 10 ảnh của đôi đó thả vào đúng dòng** (ảnh chụp đầu tiên thành ảnh chính). Không cần đổi tên file. Tối đa 12 ảnh/mẫu.
+2. **Mẫu còn thiếu ảnh:** mở `http://localhost:8080/anh.html` (Chrome/Edge) → **Chọn thư mục images/products** → lọc **Chưa có ảnh** → **kéo cả 10 ảnh (hoặc nguyên file .zip tải từ Canva) của đôi đó thả vào đúng dòng** (ảnh đầu tiên / trang 1 thành ảnh chính). Không cần đổi tên file. Tối đa 12 ảnh/mẫu.
 3. Commit + Sync (mục C).
 
 ### D4. Banner và ảnh khách hàng
