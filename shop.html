@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hàng sẵn — S&amp;LIFE Sneakers</title>
+<title>Giày chính hãng — S&amp;LIFE Sneakers</title>
 <meta name="description" content="S&amp;LIFE Sneakers — giày chính hãng New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma. Hàng sẵn, đồng kiểm khi nhận, đổi size 3 ngày.">
-<meta property="og:title" content="Hàng sẵn — S&amp;LIFE Sneakers">
+<meta property="og:title" content="Giày chính hãng — S&amp;LIFE Sneakers">
 <meta property="og:description" content="S&amp;LIFE Sneakers — giày chính hãng New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma. Hàng sẵn, đồng kiểm khi nhận, đổi size 3 ngày.">
-<meta name="theme-color" content="#141414">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23141414'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Arial' font-weight='700' font-size='26' fill='%23fff'%3ES%26L%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#111111">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23111'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Arial' font-weight='700' font-size='26' fill='%23fff'%3ES%26L%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -17,32 +17,39 @@
 <body data-page="shop">
 <div id="site-header"></div>
 <main class="container">
-  <div class="page-head">
-    <div class="breadcrumb"><a href="index.html">Trang chủ</a> / <span data-crumb>Hàng sẵn</span></div>
-    <h1 data-title>Tất cả hàng sẵn</h1>
-    <p class="muted" style="margin:0">Tồn kho thay đổi trong ngày — nhắn shop xác nhận size trước khi chuyển khoản.</p>
+  <div class="page-head"><h1 data-title>Giày chính hãng</h1></div>
+  <div class="bar">
+    <div data-crumbs></div>
+    <div class="bar__tools">
+      <button class="tool-btn" data-filters-open><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>Bộ lọc <span data-filter-count></span></button>
+      <label class="sr-only" for="sort">Sắp xếp</label>
+      <select class="select" id="sort" data-sort>
+        <option value="default">Mặc định</option>
+        <option value="price-asc">Giá thấp → cao</option>
+        <option value="price-desc">Giá cao → thấp</option>
+        <option value="sizes">Còn nhiều size</option>
+      </select>
+    </div>
   </div>
-  <div class="shop">
-    <aside class="filters" data-filters aria-label="Bộ lọc"></aside>
-    <section>
-      <div class="toolbar">
-        <span class="toolbar__count" data-count></span>
-        <button class="btn btn--ghost btn--sm filter-open" data-filters-open><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Bộ lọc <span data-filter-count></span></button>
-        <label class="sr-only" for="sort">Sắp xếp</label>
-        <select class="select" id="sort" data-sort>
-          <option value="default">Mặc định</option>
-          <option value="price-asc">Giá thấp → cao</option>
-          <option value="price-desc">Giá cao → thấp</option>
-          <option value="sizes">Còn nhiều size</option>
-          <option value="name">Tên A → Z</option>
-        </select>
-      </div>
-      <div class="active-filters" data-active hidden></div>
-      <div class="grid" data-grid></div>
-      <div class="load-more" data-more hidden><button class="btn btn--ghost">Xem thêm</button></div>
-    </section>
-  </div>
+  <div class="tiles" data-tiles></div>
+  <div class="chips" data-chips hidden></div>
+  <p class="count-line" data-count></p>
+  <div class="grid" data-grid></div>
+  <div class="pager" data-pager></div>
+  <section class="about" data-about hidden>
+    <h2></h2>
+    <div class="about__body"></div>
+    <button type="button">Đọc thêm</button>
+  </section>
 </main>
+<div class="filters" data-filters>
+  <div class="filters__backdrop" data-filters-close></div>
+  <div class="filters__panel" role="dialog" aria-label="Bộ lọc">
+    <div class="drawer__head"><b>BỘ LỌC</b><button class="menu-btn" data-filters-close aria-label="Đóng bộ lọc"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="filters__body"></div>
+    <div class="filters__foot"><button class="btn btn--ghost" data-clear>Xoá lọc</button><button class="btn" data-filters-close data-apply>Xem kết quả</button></div>
+  </div>
+</div>
 <div id="site-footer"></div>
 <script src="data/shop.js"></script>
 <script src="data/products.js"></script>

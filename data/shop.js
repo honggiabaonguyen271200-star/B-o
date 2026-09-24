@@ -33,3 +33,57 @@ window.FIT_NOTES = [
   { match: /dedicate|vapor|court ff|resolution|challenger|solution speed|game ff|all court/i, line: "Giày tennis (Asics Gel-Dedicate, Nike Zoom Vapor…)", advice: "Nên lên 0,5cm (nếu chân thon có thể giữ nguyên)." },
   { match: /kayano|cumulus|nimbus|gt-2160|gt-1000|kahana/i, line: "Asics Gel-Kayano và các mẫu chạy", advice: "Bắt buộc phải lên 0,5cm." },
 ];
+
+// Các dòng giày của từng hãng, hiện ở trang hãng và trong Menu.
+// Mỗi dòng: tên hiển thị + biểu thức nhận diện theo tên sản phẩm (dòng đứng trước được ưu tiên).
+// Mẫu không khớp dòng nào sẽ vào "Các dòng khác".
+window.LINES = {
+  "New Balance": [
+    ["204L", /204l/i],
+    ["1906", /1906/i],
+    ["740", /\b740/i],
+    ["2002R", /2002r/i],
+    ["860v2", /\b860/i],
+    ["725", /\b725/i],
+    ["574", /\b574/i],
+  ],
+  "Asics": [
+    ["Gel-NYC", /gel[- ]?nyc/i],
+    ["Gel-Kayano", /kayano/i],
+    ["Giày tennis", /resolution|resution|court ff|solution speed|challenger|dedicate|game ff|gel-game|court slide/i],
+    ["Giày bóng chuyền", /upcourt|bóng chuyền/i],
+  ],
+  "Onitsuka Tiger": [
+    ["Mexico 66 SD", /mexico 66 sd/i],
+    ["Mexico 66 TGRS", /tgrs/i],
+    ["Mexico 66 Slip-on & Paraty", /slip[- ]?on|paraty/i],
+    ["Mexico 66", /mexico 66/i],
+  ],
+  "Jordan": [
+    ["Jordan 1 Low", /\b1\b.*\blow\b/i],
+    ["Jordan 1 Mid", /\b1\b.*\bmid\b/i],
+    ["Jordan 1 High", /\b1\b.*\bhigh\b/i],
+    ["Jordan 4", /jordan 4/i],
+  ],
+  "Nike": [
+    ["Air Force 1", /force 1/i],
+    ["Air Max", /air max|max (1|90|97)/i],
+    ["Giày tennis", /vapor|court lite|gp challenge|zoom lite/i],
+  ],
+  "Adidas": [
+    ["Samba", /samba/i],
+    ["Gazelle", /gazelle/i],
+    ["Handball Spezial", /spezial/i],
+    ["Taekwondo", /taekwondo/i],
+    ["Campus", /campus/i],
+    ["Stan Smith", /stan smith/i],
+    ["Adizero", /adizero/i],
+  ],
+  "Puma": [
+    ["Speedcat Ballet", /speedcat ballet/i],
+    ["Speedcat OG", /speedcat/i],
+    ["Palermo", /palermo/i],
+  ],
+  "Salomon": [["XT-6", /xt-6/i]],
+  "On": [["The Roger", /roger/i]],
+};

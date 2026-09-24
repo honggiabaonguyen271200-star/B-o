@@ -1,14 +1,15 @@
 # Ảnh sản phẩm
 
-Đặt ảnh vào thư mục này, **đặt tên file đúng theo mã sản phẩm** (viết hoa như trong bảng hàng):
+Tải ảnh giày vào thư mục này. **Tên file = mã sản phẩm**, website tự nhận ảnh, không cần chạy lệnh gì.
 
-```
-U204LMMC.jpg
-1183C102-001.jpg
-FV5029-141.webp
-```
+| Ảnh | Tên file | Ví dụ |
+| --- | --- | --- |
+| Ảnh chính | `MÃ.jpg` | `U204LMMC.jpg` |
+| Ảnh phụ (góc khác) | `MÃ-2.jpg`, `MÃ-3.jpg`… (tối đa `-8`) | `U204LMMC-2.jpg` |
 
-Hỗ trợ `.jpg`, `.jpeg`, `.png`, `.webp`. Nên dùng ảnh vuông, khoảng 1000×1000px, dưới 300KB.
+- Nhận `.jpg`, `.png`, `.webp`.
+- Viết đúng chữ hoa / chữ thường như mã trên website (`U204LMMC.jpg`, không phải `u204lmmc.jpg`).
+- Nên dùng ảnh vuông, nền trắng, dưới 500KB.
+- Mẫu không có mã: xem tên file cần đặt ở trang `anh.html` của website.
 
-Sau khi thêm ảnh, chạy lại `python3 scripts/build_products.py <file-bảng-hàng>` để website nhận ảnh.
-Mẫu nào chưa có ảnh sẽ hiện hình minh hoạ tự vẽ theo màu trong tên giày.
+Hướng dẫn chi tiết từng bước: xem file `HUONG-DAN-CAP-NHAT-ANH.md` ở thư mục gốc.

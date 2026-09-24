@@ -3,25 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sản phẩm — S&amp;LIFE Sneakers</title>
+<title>Kiểm tra ảnh sản phẩm — S&amp;LIFE Sneakers</title>
 <meta name="description" content="S&amp;LIFE Sneakers — giày chính hãng New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma. Hàng sẵn, đồng kiểm khi nhận, đổi size 3 ngày.">
-<meta property="og:title" content="Sản phẩm — S&amp;LIFE Sneakers">
+<meta property="og:title" content="Kiểm tra ảnh sản phẩm — S&amp;LIFE Sneakers">
 <meta property="og:description" content="S&amp;LIFE Sneakers — giày chính hãng New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma. Hàng sẵn, đồng kiểm khi nhận, đổi size 3 ngày.">
 <meta name="theme-color" content="#111111">
+<meta name="robots" content="noindex">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23111'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Arial' font-weight='700' font-size='26' fill='%23fff'%3ES%26L%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body data-page="product">
+<body data-page="images">
 <div id="site-header"></div>
 <main class="container">
-  <div style="padding-top:16px" data-product></div>
-  <section class="sec" data-related-wrap>
-    <h2 class="sec__title">Sản phẩm tương tự</h2>
-    <div class="grid" data-related></div>
-  </section>
+  <div class="page-head"><h1>Kiểm tra ảnh sản phẩm</h1><p class="muted" style="margin:0">Trang dành cho chủ shop (không có trên menu). Cột “Tên file ảnh” là tên cần đặt cho ảnh khi tải lên thư mục <b>images/products</b>.</p></div>
+  <div class="callout">Ảnh phụ (xem nhiều góc): thêm số phía sau, ví dụ <b>U204LMMC-2.jpg</b>, <b>U204LMMC-3.jpg</b>. Nhận file .jpg, .png, .webp.</div>
+  <div class="bar">
+    <p class="count-line" style="margin:0" data-img-stat>Đang kiểm tra…</p>
+    <div class="bar__tools">
+      <input class="select" style="border:1px solid var(--line);padding:0 10px;background:#fff" type="search" placeholder="Tìm tên hoặc mã" data-img-search aria-label="Tìm">
+      <select class="select" data-img-filter aria-label="Lọc"><option value="all">Tất cả</option><option value="missing">Chưa có ảnh</option><option value="has">Đã có ảnh</option></select>
+    </div>
+  </div>
+  <div class="table-wrap"><table class="img-table">
+    <thead><tr><th>Ảnh</th><th>Sản phẩm</th><th>Tên file ảnh</th><th>Trạng thái</th></tr></thead>
+    <tbody data-img-rows></tbody>
+  </table></div>
 </main>
 <div id="site-footer"></div>
 <script src="data/shop.js"></script>

@@ -1,7 +1,7 @@
 # S&LIFE Sneakers — Website bán giày
 
 Website cho shop giày chính hãng S&LIFE Sneakers, dựng từ bảng hàng sẵn trên Google Sheet.
-Bố cục lấy cảm hứng từ các shop sneaker Việt Nam (trang chủ có danh mục thương hiệu, trang danh mục có bộ lọc, trang sản phẩm chọn size, đặt hàng qua Zalo).
+Giao diện theo mẫu Sneaker Daily: logo giữa, nút **MENU** mở danh sách hãng giày → trang hãng hiện các dòng giày và mẫu giày → trang sản phẩm chọn size, **Mua ngay** / **Thêm vào giỏ**, đặt hàng qua Zalo.
 
 Website là HTML/CSS/JS thuần: không cần server, không cần build, đưa lên GitHub Pages là chạy (miễn phí).
 
@@ -9,12 +9,13 @@ Website là HTML/CSS/JS thuần: không cần server, không cần build, đưa 
 
 | Trang | Nội dung |
 | --- | --- |
-| `index.html` — Trang chủ | Banner, cam kết (chính hãng, đồng kiểm, đổi size 3 ngày, ship toàn quốc), thương hiệu, hàng sẵn theo hãng, mẫu dưới 2 triệu, 4 bước đặt hàng |
-| `shop.html` — Danh mục | Lọc theo thương hiệu, size EU, khoảng giá, code nam/nữ/GS/kid, giày/quần áo; tìm theo tên hoặc mã; sắp xếp theo giá / số size |
-| `product.html` — Sản phẩm | Mã sản phẩm (bấm sao chép), size còn hàng, giá riêng từng size, lưu ý form theo dòng giày, nút **Đặt nhanh qua Zalo** |
-| `cart.html` — Giỏ hàng | Gom nhiều đôi, điền tên / SĐT / địa chỉ / số cm chân, chọn COD cọc 30% hoặc chuyển khoản → tạo sẵn tin nhắn đặt hàng gửi Zalo |
-| `size-guide.html` | Cách đo chân, lưu ý form từng dòng, giải thích code nữ / GS / 40Y |
-| `policy.html` | Cách đặt hàng, cam kết chính hãng, đổi trả, ship và thanh toán, liên hệ |
+| `index.html` — Trang chủ | Banner, thương hiệu, mỗi hãng một khối sản phẩm, 4 bước đặt hàng |
+| MENU (mọi trang) | Danh sách hãng giày; bấm mũi tên cạnh hãng để xem các dòng (VD New Balance → 204L, 1906, 740…) |
+| `shop.html` | Tất cả giày (ô các hãng) · `?brand=new-balance` trang hãng (ô các dòng + mẫu của hãng) · `&line=204l` trang một dòng. Có Bộ lọc (size, giá, code nam/nữ/GS), sắp xếp, phân trang, tìm kiếm |
+| `product.html` — Sản phẩm | Ảnh + ảnh phụ, size còn hàng, giá riêng từng size, lưu ý form, **Mua ngay** (gửi Zalo), **Thêm vào giỏ**, tab Mô tả / Thông tin sản phẩm / Ship & đổi trả, sản phẩm tương tự |
+| `cart.html` — Giỏ hàng | Gom nhiều đôi, điền tên / SĐT / địa chỉ / số cm chân → tạo sẵn tin nhắn gửi Zalo |
+| `size-guide.html`, `policy.html` | Hướng dẫn chọn size; đổi trả, ship, thanh toán |
+| `anh.html` — Kiểm tra ảnh | Trang cho chủ shop: tên file ảnh cần đặt cho từng mẫu, mẫu nào đã có / chưa có ảnh |
 
 Khách đặt hàng bằng cách: chọn size → website sao chép tin nhắn dạng
 `Mã: U204LMMC / Size: 40 / Chân dài: 25 cm` → mở Zalo của shop → khách dán và gửi.
@@ -25,7 +26,7 @@ Khách đặt hàng bằng cách: chọn size → website sao chép tin nhắn d
 index.html, shop.html, product.html, cart.html, size-guide.html, policy.html
 assets/css/style.css      Giao diện
 assets/js/app.js          Toàn bộ chức năng (lọc, giỏ hàng, tạo tin nhắn Zalo…)
-data/shop.js              Thông tin shop: SĐT, Zalo, Facebook, ngân hàng, lưu ý form
+data/shop.js              Thông tin shop, lưu ý form, danh sách dòng giày của từng hãng (LINES)
 data/products.js          Danh sách sản phẩm (tự sinh từ bảng hàng, không sửa tay)
 images/products/          Ảnh sản phẩm, đặt tên theo mã (VD: U204LMMC.jpg)
 scripts/build_products.py Chuyển bảng hàng Google Sheet → data/products.js
@@ -48,12 +49,14 @@ Script đọc bảng theo đúng quy ước đang dùng cho khách:
 - Ô size ghi thêm giá, ví dụ `1 2000`, là **giá riêng của size đó**; ghi `1 ib` / `1 hcm` thành ghi chú size.
 - Tên có `(code nữ)`, `(W)`, `(GS)`, `(code kid)`, `(code nam)` được gắn nhãn tương ứng; `XẢ KHO`, `HÀNG TRUNG`, ghi chú trong ngoặc (lỗi ngoại quan…) hiển thị thành ghi chú của shop.
 
-Hiện chưa đưa lên web: bảng Vans dạng "Tên / Size / Số lượng" và bảng phụ kiện – quần áo có cột **Giá CTV**, vì hai bảng này khác định dạng và có giá cộng tác viên.
+Website chỉ bán giày: các dòng quần áo, phụ kiện trong bảng được bỏ qua.
+
+**Thêm / sửa dòng giày**: mở `data/shop.js`, mục `window.LINES`. Ví dụ thêm dòng 9060 cho New Balance: `["9060", /9060/i],`.
 
 ## Ảnh sản phẩm
 
-Cột "Hình ảnh" trong Google Sheet là ảnh nhúng nên không xuất ra được. Mẫu chưa có ảnh sẽ hiện hình minh hoạ tự vẽ theo màu trong tên giày.
-Để dùng ảnh thật: chép ảnh vào `images/products/`, đặt tên đúng mã sản phẩm (`U204LMMC.jpg`), rồi chạy lại script ở trên.
+Tải ảnh vào thư mục `images/products/`, **tên file = mã sản phẩm** (`U204LMMC.jpg`; ảnh phụ `U204LMMC-2.jpg`…). Website tự nhận ảnh, không cần chạy lệnh.
+Hướng dẫn từng bước (tải ảnh bằng trình duyệt trên GitHub): **[HUONG-DAN-CAP-NHAT-ANH.md](HUONG-DAN-CAP-NHAT-ANH.md)**.
 
 ## Sửa thông tin shop
 

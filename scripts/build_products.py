@@ -256,9 +256,19 @@ def parse_table(table, index):
                         del s["n"]
 
         raw = clean(first)
+        raw = re.sub(r"\b([A-Z0-9]{5,8}) -(\d{2,3})\b", r"\1-\2", raw)  # "CW2288 -111"
+        raw = re.sub(r"(?<![A-Za-z])didas\b", "adidas", raw)
+        if APPAREL.search(raw):
+            continue  # Shop chỉ bán giày trên website
         code = find_code(raw)
         name = display_name(raw, code)
+        name = re.sub(r"^[A-Z0-9-]{5,}\s*/\s*", "", name)  # "GR740WN / New Balance 740"
+        name = re.sub(r"^(wmns|men|women)\s+", "", name, flags=re.I)
         notes = []
+        m = re.search(r"\s+-\s+([^-]*[à-ỹ][^-]*)$", name)  # "... - phom bé, nên lên 1 size"
+        if m and m.group(1)[:1].islower():
+            notes.append(m.group(1)[0].upper() + m.group(1)[1:])
+            name = name[:m.start()]
         clearance = bool(re.search(r"xả kho", name, re.I))
         if clearance:
             notes.append("Xả kho, không hoàn huỷ")
@@ -273,6 +283,7 @@ def parse_table(table, index):
         name = re.sub(r"\s+", " ", name)
 
         name = re.sub(r"\s+-\s+\d{2}(,5)?$", "", name)
+        name = re.sub(r"\s+-\s+", " ", name)
         brand = detect(BRAND_RULES, raw, default_brand)
         gender = detect(GENDER_RULES, raw, "unisex")
         pid = slugify(code or name)
@@ -282,7 +293,6 @@ def parse_table(table, index):
             "name": name,
             "brand": brand,
             "gender": gender,
-            "cat": "apparel" if APPAREL.search(raw) else "shoes",
             "price": price,
             "sizes": sizes,
             "note": "; ".join(n for n in notes if n) or None,
@@ -297,6 +307,12 @@ def parse_table(table, index):
     majority = max(counts, key=counts.get) if counts else None
     for p in products:
         p["brand"] = p["brand"] or majority or "Khác"
+        # Tên luôn có tên hãng: "Samba OG ..." -> "Adidas Samba OG ..."
+        first_word = p["brand"].split()[0]
+        if not re.search(r"\b" + re.escape(first_word) + r"\b", p["name"], re.I):
+            p["name"] = p["brand"] + " " + p["name"]
+        p["name"] = re.sub(r"^(adidas|nike|puma|asics|jordan)\b", lambda m: m.group(1).capitalize(), p["name"], flags=re.I)
+        p["name"] = re.sub(r"^ASICS\b", "Asics", p["name"])
     return products
 
 
