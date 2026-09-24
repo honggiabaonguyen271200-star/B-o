@@ -9,7 +9,8 @@
   var PAGE_SIZE = 24;
   var OTHER_LINE = "Các dòng khác";
   var IMG_DIR = "images/products/";
-  var IMG_EXT = ["jpg", "png", "webp", "jpeg", "JPG"];
+  var IMG_EXT = ["webp", "jpg", "png", "jpeg", "JPG"]; // công cụ của shop lưu WebP (nhẹ), vẫn nhận JPG/PNG
+  var MAX_SHOTS = 12; // tối đa ảnh mỗi mẫu: MÃ, MÃ-2 … MÃ-12
 
   var GENDER_LABEL = { nam: "Nam", nu: "Nữ", gs: "GS", kid: "Kid", unisex: "Unisex" };
   var BRAND_ORDER = ["New Balance", "Asics", "Onitsuka Tiger", "Jordan", "Nike", "Adidas", "Puma", "Salomon", "On", "Vans", "Converse"];
@@ -914,24 +915,59 @@
       '</ul><p><a href="policy.html" style="text-decoration:underline">Xem đầy đủ chính sách</a></p></div>' +
       "</div>";
 
-    // Ảnh phụ: CODE-2.jpg, CODE-3.jpg…
-    var base = imgBase(p);
-    findImage(base).then(function (main) {
-      if (!main) return;
-      findSeries(base + "-", 2, 8).then(function (extra) {
-        var shots = [main].concat(extra);
-        if (shots.length < 2) return;
-        var thumbs = $("[data-thumbs]", root), mainEl = $("[data-main] img", root);
-        thumbs.innerHTML = shots.map(function (u, i) {
-          return '<button type="button" data-shot="' + i + '"' + (i ? "" : ' class="is-active"') + '><img src="' + esc(u) + '" alt=""></button>';
-        }).join("");
-        thumbs.addEventListener("click", function (e) {
-          var b = e.target.closest("[data-shot]");
-          if (!b || !mainEl) return;
-          mainEl.src = shots[+b.dataset.shot];
-          $all("button", thumbs).forEach(function (x) { x.classList.toggle("is-active", x === b); });
-        });
-      });
+    // Bộ ảnh: MÃ, MÃ-2 … MÃ-12. Hiện dần từng ảnh khi tìm thấy; nút ‹ › và vuốt để xem
+    var base = imgBase(p), shots = [], cur = 0;
+    var thumbs = $("[data-thumbs]", root), mainBox = $("[data-main]", root);
+    function mainImg() { return $("img", mainBox); }
+    function show(i) {
+      if (!shots.length) return;
+      cur = (i + shots.length) % shots.length;
+      var img = mainImg();
+      if (img) { img.src = shots[cur]; img.classList.add("ok"); }
+      $all("button", thumbs).forEach(function (x, j) { x.classList.toggle("is-active", j === cur); });
+      var active = thumbs.children[cur];
+      if (active && active.scrollIntoView) active.scrollIntoView({ block: "nearest", inline: "nearest" });
+      var counter = $("[data-counter]", mainBox);
+      if (counter) counter.textContent = (cur + 1) + " / " + shots.length;
+    }
+    function addShot(u) {
+      shots.push(u);
+      if (shots.length < 2) return;
+      if (shots.length === 2) {
+        thumbs.innerHTML = '<button type="button" data-shot="0" class="is-active"><img src="' + esc(shots[0]) + '" alt=""></button>';
+        mainBox.insertAdjacentHTML("beforeend",
+          '<button type="button" class="gallery__nav gallery__nav--prev" data-nav="-1" aria-label="Ảnh trước">' + I.left + "</button>" +
+          '<button type="button" class="gallery__nav gallery__nav--next" data-nav="1" aria-label="Ảnh sau">' + I.left + "</button>" +
+          '<span class="gallery__count" data-counter></span>');
+      }
+      thumbs.insertAdjacentHTML("beforeend", '<button type="button" data-shot="' + (shots.length - 1) + '"><img src="' + esc(u) + '" alt="" loading="lazy"></button>');
+      var counter = $("[data-counter]", mainBox);
+      if (counter) counter.textContent = (cur + 1) + " / " + shots.length;
+    }
+    findImage(base).then(function (first) {
+      if (!first) return;
+      addShot(first);
+      var n = 2;
+      (function next() {
+        if (n > MAX_SHOTS) return;
+        findImage(base + "-" + n++).then(function (u) { if (u) { addShot(u); next(); } });
+      })();
+    });
+    thumbs.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-shot]");
+      if (b) show(+b.dataset.shot);
+    });
+    mainBox.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-nav]");
+      if (b) show(cur + (+b.dataset.nav));
+    });
+    var x0 = null;
+    mainBox.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    mainBox.addEventListener("touchend", function (e) {
+      if (x0 === null || shots.length < 2) return;
+      var dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 40) show(cur + (dx < 0 ? 1 : -1));
+      x0 = null;
     });
 
     var priceEl = $("[data-price]", root);
@@ -1162,7 +1198,11 @@
         g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
         g.drawImage(im, 0, 0, c.width, c.height);
         URL.revokeObjectURL(url);
-        c.toBlob(function (b) { b ? resolve(b) : reject(new Error("toBlob")); }, "image/jpeg", 0.82);
+        // WebP nhẹ hơn JPG ~40%; trình duyệt không xuất được WebP thì dùng JPG
+        c.toBlob(function (b) {
+          if (b && b.type === "image/webp") return resolve(b);
+          c.toBlob(function (j) { j ? resolve(j) : reject(new Error("toBlob")); }, "image/jpeg", 0.82);
+        }, "image/webp", 0.8);
       };
       im.onerror = function () { URL.revokeObjectURL(url); reject(new Error("unreadable")); };
       im.src = url;
@@ -1244,13 +1284,13 @@
         return dir.getFileHandle(name + "." + ext).then(function () { return true; }, function () { return false; });
       })).then(function (r) { return r.some(Boolean); });
     }
-    // Tên còn trống: MÃ (nếu chưa có ảnh chính) rồi MÃ-2, MÃ-3… (tối đa 8)
+    // Tên còn trống: MÃ (nếu chưa có ảnh chính) rồi MÃ-2, MÃ-3… (tối đa MAX_SHOTS)
     var used = {};
     function nextName(p) {
       var stem = p.code || p.id, n = 1;
       used[p.id] = used[p.id] || {};
       function tryN() {
-        if (n > 8) return Promise.resolve(null);
+        if (n > MAX_SHOTS) return Promise.resolve(null);
         var name = n === 1 ? stem : stem + "-" + n;
         var known = used[p.id][name] || (n === 1 && status[p.id] === true);
         return (known ? Promise.resolve(true) : exists(name)).then(function (has) {
@@ -1262,19 +1302,22 @@
       return tryN();
     }
     function save(name, blob) {
+      var ext = blob.type === "image/webp" ? ".webp" : ".jpg";
       if (dir) {
-        return dir.getFileHandle(name + ".jpg", { create: true }).then(function (fh) {
+        return dir.getFileHandle(name + ext, { create: true }).then(function (fh) {
           return fh.createWritable().then(function (w) { return w.write(blob).then(function () { return w.close(); }); });
         });
       }
       var a = document.createElement("a");
-      a.href = URL.createObjectURL(blob); a.download = name + ".jpg";
+      a.href = URL.createObjectURL(blob); a.download = name + ext;
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
       return Promise.resolve();
     }
     function handle(p, files) {
-      files = Array.prototype.filter.call(files, function (f) { return /^image\//.test(f.type) || /\.(jpe?g|png|webp|heic)$/i.test(f.name); });
+      // Sắp theo tên file (ảnh điện thoại đặt tên theo thứ tự chụp): ảnh chụp đầu tiên = ảnh chính
+      files = Array.prototype.filter.call(files, function (f) { return /^image\//.test(f.type) || /\.(jpe?g|png|webp|heic)$/i.test(f.name); })
+        .sort(function (a, b) { return a.name.localeCompare(b.name, undefined, { numeric: true }); });
       if (!files.length) return;
       if (canWrite && !dir) { toast("Bấm “Chọn thư mục images/products” trước nhé"); return; }
       var chain = Promise.resolve(), savedNames = [];
@@ -1285,7 +1328,7 @@
         }).then(function (r) {
           if (!r[1]) throw new Error("full");
           return save(r[1], r[0]).then(function () {
-            savedNames.push(r[1] + ".jpg");
+            savedNames.push(r[1] + (r[0].type === "image/webp" ? ".webp" : ".jpg"));
             if (!status[p.id]) { status[p.id] = true; found++; showStat(); }
             if (savedNames.length === 1 && r[1] === (p.code || p.id)) {
               var img = $('[data-row="' + p.id + '"] .thumb img', body);
@@ -1299,7 +1342,7 @@
         toast((dir ? "Đã lưu " : "Đã tải về ") + savedNames.length + " ảnh cho " + (p.code || p.name));
       }).catch(function (err) {
         var msg = err.message === "heic" ? "Ảnh HEIC (iPhone) chưa đọc được — gửi qua Zalo/Messenger rồi tải về dạng JPG"
-          : err.message === "full" ? "Mẫu này đã đủ 8 ảnh"
+          : err.message === "full" ? "Mẫu này đã đủ " + MAX_SHOTS + " ảnh"
           : err.message === "unreadable" ? "File này không phải ảnh đọc được" : "Không lưu được ảnh: " + err.message;
         toast(msg);
         if (savedNames.length) setStatus(p, (dir ? "Đã lưu " : "Đã tải về ") + savedNames.join(", "), true);

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lấy ảnh sản phẩm có sẵn trong bảng hàng Google Sheet (.xlsx) -> images/products/<MÃ>.jpg
+"""Lấy ảnh sản phẩm có sẵn trong bảng hàng Google Sheet (.xlsx) -> images/products/<MÃ>.webp
 
 Cách dùng:
     python3 scripts/extract_images.py bang-hang.xlsx            # chỉ thêm ảnh cho mẫu chưa có ảnh
@@ -9,8 +9,8 @@ Cách dùng:
   - Ảnh đặt trên ô (Chèn > Hình ảnh > Hình ảnh trên các ô)
   - Ảnh nằm trong ô (Chèn > Hình ảnh > Hình ảnh trong ô)
   - Công thức =IMAGE("https://...")
-Ảnh được gán cho sản phẩm cùng dòng; dòng có nhiều ảnh -> MÃ.jpg, MÃ-2.jpg, MÃ-3.jpg…
-Ảnh được thu nhỏ (cạnh dài tối đa 1200px) và lưu JPG để web tải nhanh.
+Ảnh được gán cho sản phẩm cùng dòng; dòng có nhiều ảnh -> MÃ.webp, MÃ-2.webp … MÃ-12.webp
+Ảnh được thu nhỏ (cạnh dài tối đa 1200px) và lưu WebP (nhẹ hơn JPG ~40%) để web tải nhanh.
 """
 import io
 import posixpath
@@ -25,7 +25,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_products as bp  # noqa: E402
 
 MAX_SIDE = 1200
-QUALITY = 82
+QUALITY = 80
+MAX_SHOTS = 12  # tối đa ảnh mỗi mẫu: MÃ, MÃ-2 … MÃ-12 (khớp với assets/js/app.js)
 
 
 def local(tag):
@@ -192,7 +193,7 @@ def load_bytes(z, src):
     return z.read(src)
 
 
-def to_jpeg(data):
+def to_webp(data):
     from PIL import Image
     im = Image.open(io.BytesIO(data))
     im.load()
@@ -205,7 +206,7 @@ def to_jpeg(data):
         im = im.convert("RGB")
     im.thumbnail((MAX_SIDE, MAX_SIDE))
     out = io.BytesIO()
-    im.save(out, "JPEG", quality=QUALITY, optimize=True, progressive=True)
+    im.save(out, "WEBP", quality=QUALITY, method=6)
     return out.getvalue()
 
 
@@ -252,13 +253,13 @@ def main():
     for key, medias in found.items():
         p = by_row[key]
         stem = p["code"] or p["id"]
-        for i, media in enumerate(medias):
+        for i, media in enumerate(medias[:MAX_SHOTS]):
             name = stem if i == 0 else "%s-%d" % (stem, i + 1)
             if existing(name) and not overwrite:
                 skipped += 1
                 continue
             try:
-                (bp.IMG_DIR / (name + ".jpg")).write_bytes(to_jpeg(load_bytes(z, media)))
+                (bp.IMG_DIR / (name + ".webp")).write_bytes(to_webp(load_bytes(z, media)))
                 saved += 1
             except Exception as err:  # ảnh hỏng / link chết: bỏ qua, báo lại
                 failed += 1

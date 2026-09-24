@@ -22,7 +22,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "products.js"
 IMG_DIR = ROOT / "images" / "products"
-IMG_EXT = (".jpg", ".jpeg", ".png", ".webp")
+IMG_EXT = (".webp", ".jpg", ".jpeg", ".png")
 
 # Thứ tự quan trọng: Jordan trước Nike, Onitsuka trước Asics.
 BRAND_RULES = [

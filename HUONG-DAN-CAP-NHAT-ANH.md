@@ -1,6 +1,8 @@
 # Cập nhật ảnh sản phẩm — cách nhanh nhất cho hàng trăm mẫu
 
-Website tự tìm ảnh theo tên file trong `images/products/`: **tên file = mã sản phẩm** (`U204LMMC.jpg`, ảnh phụ `U204LMMC-2.jpg`, `-3`… tối đa `-8`).
+Website tự tìm ảnh theo tên file trong `images/products/`: **tên file = mã sản phẩm**.
+Mỗi mẫu **tối đa 12 ảnh**: `U204LMMC.webp` (ảnh chính) rồi `U204LMMC-2.webp` … `U204LMMC-12.webp`. Trang sản phẩm hiện ảnh lớn, nút ‹ › , vuốt trên điện thoại và dãy ảnh nhỏ.
+Các công cụ bên dưới tự lưu ảnh dạng **WebP** (nhẹ hơn JPG khoảng một nửa); file .jpg / .png đặt tay vẫn dùng được.
 Có 3 cách, làm theo thứ tự — cách 1 làm trước vì hoàn toàn tự động.
 
 ---
@@ -28,13 +30,17 @@ Không cần đổi tên file bằng tay.
 2. Bấm **Chọn thư mục images/products** → chọn `Documents\B-o\images\products` → cho phép **Chỉnh sửa / Lưu thay đổi**.
 3. Ô lọc chọn **Chưa có ảnh**, gõ mã vào ô tìm nếu cần.
 4. **Kéo ảnh từ máy thả vào dòng của đôi giày** (hoặc bấm "Kéo ảnh vào đây" để chọn file).
-   Kéo nhiều ảnh cùng lúc: ảnh đầu là ảnh chính, các ảnh sau thành `-2`, `-3`…
+   **Kéo cả 10 ảnh một lần**: ảnh được xếp theo tên file — ảnh điện thoại đặt tên theo thứ tự chụp (`IMG_0101`, `IMG_0102`…), nên **ảnh chụp đầu tiên thành ảnh chính**, các ảnh sau thành `-2` … `-10`.
+   Mẫu đã có ảnh thì ảnh mới được thêm tiếp vào số còn trống.
 5. Xong một đợt → Commit + Sync trong Antigravity.
 
 Ảnh được tự thu nhỏ (cạnh dài 1200px) và đổi sang JPG. Ảnh iPhone dạng HEIC: gửi qua Zalo/Messenger cho chính mình rồi tải về (thành JPG), hoặc cài iPhone: **Cài đặt → Camera → Định dạng → Tương thích nhất**.
 
-### Mẹo chụp nhanh một lô 50–100 đôi
-- Xếp giày theo thứ tự trong bảng, chụp liền một mạch 1–3 ảnh/đôi (ngang thân, mũi giày quay trái, cùng một góc để trang web đồng bộ).
+### Quy trình 10 ảnh / đôi cho một lô 50–100 đôi
+- Dùng **một thứ tự góc chụp cố định** cho mọi đôi, VD: 1 ngang thân phải (ảnh chính) → 2 ngang thân trái → 3 mũi → 4 gót → 5 trên xuống → 6 đế → 7 cận chất liệu → 8 cận logo → 9 tem size/mã trong lưỡi gà → 10 cả đôi kèm hộp.
+  Khách xem đôi nào cũng thấy cùng thứ tự; ảnh 9 (tem mã) giúp khách tin hàng chính hãng.
+- Xếp giày theo thứ tự trong bảng, chụp hết 10 ảnh đôi này rồi mới sang đôi khác (không xen kẽ).
+- Trên máy tính, tạo **mỗi đôi một thư mục** (hoặc chọn 10 ảnh liền nhau trong thư mục ảnh) → kéo cả nhóm vào đúng dòng ở `anh.html`.
 - Nền trắng hoặc tờ giấy A2/A3, ánh sáng cửa sổ ban ngày; hộp chụp (lightbox) mini giúp ảnh đều màu hơn.
 - Chuyển ảnh sang máy tính một lần (Zalo "Cloud của tôi", Google Photos, hoặc cáp), rồi kéo thả theo cách 2.
 
@@ -47,6 +53,13 @@ Không cần đổi tên file bằng tay.
 | **remove.bg** | Xoá nền hàng loạt trên máy tính | Trả phí theo số ảnh. |
 
 **Không nên** tải ảnh từ website/fanpage shop khác (ảnh có bản quyền, nhiều ảnh có logo shop khác). Ảnh chính thức của hãng chỉ dùng khi được phép.
+
+## Dung lượng — lưu ý khi có hàng nghìn ảnh
+
+GitHub Pages cho website tối đa khoảng **1 GB**. Ảnh WebP 1200px thường ~80–150 KB → 400 mẫu × 10 ảnh ≈ **0,3–0,6 GB**: vẫn vừa.
+- Luôn dùng công cụ ở trên (tự thu nhỏ + WebP); **không chép thẳng ảnh gốc điện thoại** (3–8 MB/ảnh) vào `images/products`.
+- Mẫu đã bán hết lâu ngày: có thể xoá bớt ảnh phụ, giữ ảnh chính.
+- Khi vượt ~800 MB, nhờ người làm web chuyển ảnh sang dịch vụ lưu ảnh riêng (Cloudflare R2, Cloudinary…) — website chỉ cần đổi đường dẫn thư mục ảnh.
 
 ---
 
