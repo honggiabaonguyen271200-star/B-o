@@ -1148,32 +1148,58 @@
     step(1);
   }
 
-  /* ---------- Trang kiểm tra ảnh (anh.html) ---------- */
+  /* ---------- Trang kiểm tra & thêm ảnh (anh.html) ----------
+     Kéo ảnh vào dòng sản phẩm: ảnh được thu nhỏ, đặt đúng tên mã và lưu thẳng vào images/products
+     (Chrome / Edge, khi mở web bằng xem-web.bat). Trình duyệt khác: ảnh được tải về với đúng tên. */
+  function shrinkImage(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file), im = new Image();
+      im.onload = function () {
+        var k = Math.min(1, 1200 / Math.max(im.naturalWidth, im.naturalHeight));
+        var c = document.createElement("canvas");
+        c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k);
+        var g = c.getContext("2d");
+        g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
+        g.drawImage(im, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        c.toBlob(function (b) { b ? resolve(b) : reject(new Error("toBlob")); }, "image/jpeg", 0.82);
+      };
+      im.onerror = function () { URL.revokeObjectURL(url); reject(new Error("unreadable")); };
+      im.src = url;
+    });
+  }
   function initImages() {
     var body = $("[data-img-rows]"), stat = $("[data-img-stat]"), filter = "all", q = "";
     var list = PRODUCTS.slice().sort(function (a, b) { return (b.inStock - a.inStock) || a.order - b.order; });
-    var status = {};
+    var status = {}, dir = null, done = 0, found = 0;
+    var canWrite = typeof window.showDirectoryPicker === "function";
     body.innerHTML = list.map(function (p) {
       var file = (p.code || p.id) + ".jpg";
       return '<tr data-row="' + esc(p.id) + '" data-q="' + esc(p.search + " " + norm(p.id)) + '">' +
         '<td><div class="thumb">' + media(p) + "</div></td>" +
         '<td><a href="' + productUrl(p) + '" target="_blank" rel="noopener">' + esc(fullName(p)) + "</a><br><small class=\"muted\">" + esc(p.brand) + (p.inStock ? "" : " · hết size") + "</small></td>" +
         '<td><code>' + esc(file) + '</code> <button class="btn btn--ghost btn--sm" data-copy="' + esc(p.code || p.id) + '">Chép tên</button></td>' +
+        '<td><label class="drop" data-drop="' + esc(p.id) + '"><input type="file" accept="image/*" multiple hidden>Kéo ảnh vào đây<br><small>hoặc bấm để chọn</small></label></td>' +
         '<td data-status class="muted">Đang kiểm tra…</td></tr>';
     }).join("");
 
-    var queue = list.slice(), done = 0, found = 0;
+    function setStatus(p, text, ok) {
+      var cell = $('[data-row="' + p.id + '"] [data-status]', body);
+      cell.className = ok ? "status-ok" : "status-miss";
+      cell.textContent = text;
+    }
+    function showStat() { stat.textContent = "Đã kiểm tra " + done + "/" + list.length + " mẫu · " + found + " mẫu có ảnh"; }
+
+    var queue = list.slice();
     function worker() {
       var p = queue.shift();
       if (!p) return;
       findImage(imgBase(p)).then(function (u) {
-        status[p.id] = !!u; done++; if (u) found++;
-        var cell = $('[data-row="' + p.id + '"] [data-status]', body);
-        cell.className = u ? "status-ok" : "status-miss";
-        cell.textContent = u ? "Đã có ảnh (" + u.split("/").pop() + ")" : "Chưa có ảnh";
-        stat.textContent = "Đã kiểm tra " + done + "/" + list.length + " mẫu · " + found + " mẫu có ảnh";
-        apply();
-        worker();
+        if (status[p.id] === undefined) {
+          status[p.id] = !!u; if (u) found++;
+          setStatus(p, u ? "Đã có ảnh (" + u.split("/").pop() + ")" : "Chưa có ảnh", !!u);
+        }
+        done++; showStat(); apply(); worker();
       });
     }
     for (var i = 0; i < 6; i++) worker();
@@ -1192,6 +1218,107 @@
     body.addEventListener("click", function (e) {
       var b = e.target.closest("[data-copy]");
       if (b) copyText(b.dataset.copy).then(function () { toast("Đã chép tên file: " + b.dataset.copy); });
+    });
+
+    // Chọn thư mục images/products một lần để lưu thẳng ảnh vào đó
+    var dirBtn = $("[data-pick-dir]"), dirNote = $("[data-dir-note]");
+    if (!canWrite) {
+      dirBtn.hidden = true;
+      dirNote.innerHTML = "Trình duyệt này không lưu thẳng vào thư mục được: ảnh sẽ được <b>tải về (Downloads) với đúng tên</b>, bạn chép chúng vào <b>images/products</b>. Dùng Chrome hoặc Edge và mở web bằng <b>xem-web.bat</b> để lưu thẳng.";
+    }
+    dirBtn.addEventListener("click", function () {
+      window.showDirectoryPicker({ id: "slife-products", mode: "readwrite" }).then(function (h) {
+        dir = h;
+        var okName = h.name === "products";
+        dirNote.innerHTML = okName
+          ? "✓ Đang lưu vào thư mục <b>images/products</b>. Kéo ảnh vào từng dòng bên dưới."
+          : "⚠ Bạn vừa chọn thư mục <b>" + esc(h.name) + "</b>, không phải <b>images/products</b>. Bấm chọn lại cho đúng.";
+        dirNote.className = okName ? "status-ok" : "status-miss";
+        if (!okName) dir = null;
+      }).catch(function () { /* người dùng huỷ */ });
+    });
+
+    function exists(name) {
+      if (!dir) return Promise.resolve(false);
+      return Promise.all(IMG_EXT.map(function (ext) {
+        return dir.getFileHandle(name + "." + ext).then(function () { return true; }, function () { return false; });
+      })).then(function (r) { return r.some(Boolean); });
+    }
+    // Tên còn trống: MÃ (nếu chưa có ảnh chính) rồi MÃ-2, MÃ-3… (tối đa 8)
+    var used = {};
+    function nextName(p) {
+      var stem = p.code || p.id, n = 1;
+      used[p.id] = used[p.id] || {};
+      function tryN() {
+        if (n > 8) return Promise.resolve(null);
+        var name = n === 1 ? stem : stem + "-" + n;
+        var known = used[p.id][name] || (n === 1 && status[p.id] === true);
+        return (known ? Promise.resolve(true) : exists(name)).then(function (has) {
+          if (has) { n++; return tryN(); }
+          used[p.id][name] = true;
+          return name;
+        });
+      }
+      return tryN();
+    }
+    function save(name, blob) {
+      if (dir) {
+        return dir.getFileHandle(name + ".jpg", { create: true }).then(function (fh) {
+          return fh.createWritable().then(function (w) { return w.write(blob).then(function () { return w.close(); }); });
+        });
+      }
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = name + ".jpg";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+      return Promise.resolve();
+    }
+    function handle(p, files) {
+      files = Array.prototype.filter.call(files, function (f) { return /^image\//.test(f.type) || /\.(jpe?g|png|webp|heic)$/i.test(f.name); });
+      if (!files.length) return;
+      if (canWrite && !dir) { toast("Bấm “Chọn thư mục images/products” trước nhé"); return; }
+      var chain = Promise.resolve(), savedNames = [];
+      files.forEach(function (f) {
+        chain = chain.then(function () {
+          if (/heic$/i.test(f.name)) throw new Error("heic");
+          return Promise.all([shrinkImage(f), nextName(p)]);
+        }).then(function (r) {
+          if (!r[1]) throw new Error("full");
+          return save(r[1], r[0]).then(function () {
+            savedNames.push(r[1] + ".jpg");
+            if (!status[p.id]) { status[p.id] = true; found++; showStat(); }
+            if (savedNames.length === 1 && r[1] === (p.code || p.id)) {
+              var img = $('[data-row="' + p.id + '"] .thumb img', body);
+              if (img) { img.src = URL.createObjectURL(r[0]); img.classList.add("ok"); }
+            }
+          });
+        });
+      });
+      chain.then(function () {
+        setStatus(p, (dir ? "Đã lưu " : "Đã tải về ") + savedNames.join(", "), true);
+        toast((dir ? "Đã lưu " : "Đã tải về ") + savedNames.length + " ảnh cho " + (p.code || p.name));
+      }).catch(function (err) {
+        var msg = err.message === "heic" ? "Ảnh HEIC (iPhone) chưa đọc được — gửi qua Zalo/Messenger rồi tải về dạng JPG"
+          : err.message === "full" ? "Mẫu này đã đủ 8 ảnh"
+          : err.message === "unreadable" ? "File này không phải ảnh đọc được" : "Không lưu được ảnh: " + err.message;
+        toast(msg);
+        if (savedNames.length) setStatus(p, (dir ? "Đã lưu " : "Đã tải về ") + savedNames.join(", "), true);
+      });
+    }
+    body.addEventListener("change", function (e) {
+      var zone = e.target.closest("[data-drop]");
+      if (zone && e.target.files) { handle(BY_ID[zone.dataset.drop], e.target.files); e.target.value = ""; }
+    });
+    ["dragover", "drop"].forEach(function (t) { window.addEventListener(t, function (e) { e.preventDefault(); }); });
+    body.addEventListener("dragover", function (e) {
+      var tr = e.target.closest("[data-row]");
+      $all(".drop.is-over", body).forEach(function (z) { z.classList.remove("is-over"); });
+      if (tr) $(".drop", tr).classList.add("is-over");
+    });
+    body.addEventListener("drop", function (e) {
+      var tr = e.target.closest("[data-row]");
+      $all(".drop.is-over", body).forEach(function (z) { z.classList.remove("is-over"); });
+      if (tr && e.dataTransfer && e.dataTransfer.files.length) handle(BY_ID[tr.dataset.row], e.dataTransfer.files);
     });
   }
 

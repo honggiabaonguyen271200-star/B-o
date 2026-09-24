@@ -202,7 +202,7 @@ def rows_from_xlsx(path):
         for row in ws.iter_rows():
             cells = [clean(c.value) for c in row]
             green = {i for i, c in enumerate(row) if is_green(c)}
-            table.append({"cells": cells, "green": green, "sheet": ws.title})
+            table.append({"cells": cells, "green": green, "sheet": ws.title, "row": row[0].row if row else None})
         yield table
 
 
@@ -298,6 +298,8 @@ def parse_table(table, index):
             "note": "; ".join(n for n in notes if n) or None,
             "sale": clearance or None,
             "raw": raw,
+            "_sheet": row.get("sheet"),
+            "_row": row.get("row"),
         })
     # Dòng không ghi tên hãng (ví dụ "Samba OG ...") lấy theo hãng chiếm đa số trong bảng
     counts = {}
@@ -376,7 +378,8 @@ def main():
         img = find_image(p["code"])
         if img:
             p["image"] = img
-        p.pop("raw")
+        for k in ("raw", "_sheet", "_row"):
+            p.pop(k, None)
         for k in [k for k, v in p.items() if v is None]:
             del p[k]
 

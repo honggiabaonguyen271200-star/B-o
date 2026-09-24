@@ -14,12 +14,13 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 | --- | --- |
 | `index.html`, `shop.html`, `product.html`, `cart.html`, `dat-hang.html` | Trang chủ, danh mục (hãng `?brand=` / dòng `&line=`), sản phẩm (`?id=`), giỏ hàng, đặt hàng |
 | `gioi-thieu.html`, `lien-he.html`, `policy.html`, `chinh-sach-bao-mat.html`, `size-guide.html` | Trang thông tin, chính sách |
-| `anh.html` | Trang nội bộ: kiểm tra mẫu nào đã có ảnh |
+| `anh.html` | Trang nội bộ: kiểm tra mẫu nào đã có ảnh; kéo thả ảnh để lưu đúng tên vào `images/products` (Chrome/Edge) |
 | `assets/js/app.js` | Toàn bộ chức năng (header, menu, lọc, giỏ hàng, đặt hàng, ảnh). Mỗi trang chạy hàm `init…` theo `<body data-page>` |
 | `assets/css/style.css` | Giao diện |
 | `data/shop.js` | **Thông tin shop** (SĐT, Zalo, ngân hàng, pháp lý, siteUrl), lưu ý form (`FIT_NOTES`), dòng giày từng hãng (`LINES`) |
 | `data/products.js` | **Tự sinh — không sửa tay.** Tạo bằng `scripts/build_products.py` |
 | `scripts/build_products.py` | Đọc bảng hàng Google Sheet (.xlsx) → `data/products.js`, `sitemap.xml`, `robots.txt` |
+| `scripts/extract_images.py` | Lấy ảnh chèn trong bảng .xlsx (cùng dòng với sản phẩm) → `images/products/<MÃ>.jpg`; `--ghi-de` để thay ảnh đã có |
 | `images/products/` | Ảnh sản phẩm, tên file = mã sản phẩm (`U204LMMC.jpg`, ảnh phụ `U204LMMC-2.jpg`) |
 | `xem-web.bat`, `cap-nhat-hang.bat` | Windows: bấm đúp để xem web trên máy; kéo thả file .xlsx vào để cập nhật hàng |
 | `images/banners/`, `images/khach-hang/` | Banner (`banner-1.jpg`…, `new-balance.jpg`…), ảnh khách (`1.jpg`…) |

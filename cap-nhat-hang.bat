@@ -10,9 +10,12 @@ if "%~1"=="" (
   exit /b
 )
 echo  Đang cài thư viện đọc Excel (chỉ lần đầu)...
-%PY% -m pip install -q openpyxl
+%PY% -m pip install -q openpyxl pillow
 echo  Đang cập nhật hàng từ file bạn vừa kéo thả...
 %PY% scripts\build_products.py "%~1"
+echo.
+echo  Đang lấy ảnh sản phẩm có sẵn trong bảng (mẫu nào đã có ảnh thì giữ nguyên)...
+%PY% scripts\extract_images.py "%~1"
 echo.
 echo  Xong. Bước tiếp theo: trong Antigravity mở Source Control, Commit rồi Sync để đưa lên web.
 pause

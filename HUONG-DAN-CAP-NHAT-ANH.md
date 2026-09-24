@@ -1,48 +1,61 @@
-# Hướng dẫn cập nhật ảnh giày lên website
+# Cập nhật ảnh sản phẩm — cách nhanh nhất cho hàng trăm mẫu
 
-Làm trên **máy tính** (trình duyệt Chrome) là dễ nhất. Không cần cài phần mềm, không cần chạy lệnh.
+Website tự tìm ảnh theo tên file trong `images/products/`: **tên file = mã sản phẩm** (`U204LMMC.jpg`, ảnh phụ `U204LMMC-2.jpg`, `-3`… tối đa `-8`).
+Có 3 cách, làm theo thứ tự — cách 1 làm trước vì hoàn toàn tự động.
 
-## Bước 1 — Chuẩn bị ảnh
+---
 
-1. Chụp hoặc lấy ảnh đôi giày. Ảnh đẹp nhất là **ảnh vuông, nền trắng**, chụp ngang thân giày.
-2. **Đổi tên file ảnh thành mã sản phẩm**, ví dụ đôi *New Balance 204L Timberwolf* mã `U204LMMC` → đặt tên `U204LMMC.jpg`.
-   - Mã có dấu gạch ngang thì giữ nguyên: `1183C102-001.jpg`, `FV5029-141.jpg`.
-   - Viết **chữ hoa** giống hệt mã trên website.
-3. Muốn có nhiều ảnh (nhiều góc) cho một đôi: thêm `-2`, `-3`… vào sau mã:
-   `U204LMMC.jpg` (ảnh chính), `U204LMMC-2.jpg`, `U204LMMC-3.jpg`, … tối đa `-8`.
-4. Ảnh nặng quá 1MB thì nên nén trước ở https://squoosh.app hoặc https://tinypng.com cho web tải nhanh.
+## Cách 1 — Lấy ảnh có sẵn trong Google Sheet (tự động, vài phút)
 
-> Không chắc tên file? Mở trang **Kiểm tra ảnh** của website: `…/anh.html`.
-> Trang này liệt kê tất cả mẫu giày, tên file cần đặt (có nút **Chép tên**) và mẫu nào **đã có / chưa có ảnh**.
+Bảng hàng đã có cột **Hình ảnh**. Ảnh chèn trong bảng được lấy ra tự động, đặt đúng tên mã, thu nhỏ cho web.
 
-## Bước 2 — Tải ảnh lên GitHub
+1. Mở Google Sheet → **Tệp → Tải xuống → Microsoft Excel (.xlsx)**.
+2. Mở thư mục `Documents\B-o` bằng File Explorer → **kéo file .xlsx thả vào `cap-nhat-hang.bat`**.
+   Cửa sổ đen sẽ: cập nhật hàng → lấy ảnh → báo "Đã lưu … ảnh".
+3. Trong Antigravity: **Source Control → Commit → Sync** để đưa ảnh lên web.
 
-1. Mở thư mục ảnh của website:
-   https://github.com/honggiabaonguyen271200-star/B-o/tree/claude/shoe-shop-website-3dln52/images/products
-2. Bấm nút **Add file** (góc phải) → **Upload files**.
-3. **Kéo thả** các file ảnh vào khung (được chọn nhiều ảnh một lúc).
-4. Kéo xuống dưới, bấm nút xanh **Commit changes**.
+- Ảnh phải nằm **cùng dòng** với tên giày trong bảng. Một dòng nhiều ảnh → ảnh chính + ảnh phụ.
+- Nhận cả 3 kiểu chèn ảnh của Google Sheet: ảnh trên ô, ảnh trong ô, công thức `=IMAGE("link")`.
+- Mẫu **đã có ảnh thì giữ nguyên** (để không mất ảnh đẹp bạn tự thêm). Muốn lấy lại toàn bộ từ bảng: nhờ Agent chạy
+  `python scripts/extract_images.py <file.xlsx> --ghi-de`.
+- Mỗi lần cập nhật hàng, mẫu mới có ảnh trong bảng cũng tự có ảnh trên web.
 
-## Bước 3 — Kiểm tra
+## Cách 2 — Kéo thả ảnh vào trang `anh.html` (cho mẫu còn thiếu)
 
-Đợi khoảng **1–2 phút**, mở lại website (bấm tải lại trang). Ảnh thật sẽ thay cho hình minh hoạ.
-Nếu chưa thấy: kiểm tra lại tên file ở trang `anh.html`, rồi tải lại bằng Ctrl + F5.
+Không cần đổi tên file bằng tay.
 
-## Thay hoặc xoá ảnh
+1. Chạy web bằng `xem-web.bat`, mở **http://localhost:8080/anh.html** bằng **Chrome hoặc Edge**.
+2. Bấm **Chọn thư mục images/products** → chọn `Documents\B-o\images\products` → cho phép **Chỉnh sửa / Lưu thay đổi**.
+3. Ô lọc chọn **Chưa có ảnh**, gõ mã vào ô tìm nếu cần.
+4. **Kéo ảnh từ máy thả vào dòng của đôi giày** (hoặc bấm "Kéo ảnh vào đây" để chọn file).
+   Kéo nhiều ảnh cùng lúc: ảnh đầu là ảnh chính, các ảnh sau thành `-2`, `-3`…
+5. Xong một đợt → Commit + Sync trong Antigravity.
 
-- **Thay ảnh**: tải lên file mới **trùng tên** → GitHub tự thay file cũ.
-- **Xoá ảnh**: bấm vào file trong thư mục `images/products` → nút **…** (góc phải) → **Delete file** → **Commit changes**.
+Ảnh được tự thu nhỏ (cạnh dài 1200px) và đổi sang JPG. Ảnh iPhone dạng HEIC: gửi qua Zalo/Messenger cho chính mình rồi tải về (thành JPG), hoặc cài iPhone: **Cài đặt → Camera → Định dạng → Tương thích nhất**.
 
-## Câu hỏi thường gặp
+### Mẹo chụp nhanh một lô 50–100 đôi
+- Xếp giày theo thứ tự trong bảng, chụp liền một mạch 1–3 ảnh/đôi (ngang thân, mũi giày quay trái, cùng một góc để trang web đồng bộ).
+- Nền trắng hoặc tờ giấy A2/A3, ánh sáng cửa sổ ban ngày; hộp chụp (lightbox) mini giúp ảnh đều màu hơn.
+- Chuyển ảnh sang máy tính một lần (Zalo "Cloud của tôi", Google Photos, hoặc cáp), rồi kéo thả theo cách 2.
 
-- **Ảnh từ iPhone (.HEIC)?** Gửi ảnh qua Zalo/Messenger cho chính mình rồi tải về (sẽ thành .jpg), hoặc chụp ở chế độ “Tương thích nhất” trong Cài đặt → Camera → Định dạng.
-- **Làm trên điện thoại được không?** Được: mở link ở Bước 2 bằng Chrome, bật “Trang web cho máy tính” (Desktop site) để thấy nút **Add file**.
-- **Mẫu giày không có mã?** Tên file là mã đặc biệt hiển thị ở trang `anh.html` (ví dụ `samba-og-white-gum.jpg`).
+## Cách 3 — Công cụ bên thứ ba (khi cần ảnh đẹp, đồng bộ hơn)
+
+| Công cụ | Dùng cho | Ghi chú |
+| --- | --- | --- |
+| **Canva** | Banner trang chủ, banner hãng, ảnh khách hàng, ảnh đăng mạng xã hội | Có mẫu sẵn đúng kích thước. Xoá nền ảnh làm từng ảnh (gói Pro) — hợp với vài chục ảnh, không phải vài trăm. |
+| **Photoroom** (app điện thoại / web) | Xoá nền, đặt nền trắng đồng bộ **hàng loạt** | Có chế độ xử lý nhiều ảnh một lúc; bản miễn phí có giới hạn, gói trả phí bỏ giới hạn. Xuất ảnh xong kéo thả theo cách 2. |
+| **remove.bg** | Xoá nền hàng loạt trên máy tính | Trả phí theo số ảnh. |
+
+**Không nên** tải ảnh từ website/fanpage shop khác (ảnh có bản quyền, nhiều ảnh có logo shop khác). Ảnh chính thức của hãng chỉ dùng khi được phép.
+
+---
 
 ## Banner và ảnh khách hàng
 
-Tải lên giống hệt cách trên, chỉ khác thư mục:
+Chép vào thư mục tương ứng (chuột phải thư mục trong Antigravity → **Reveal in File Explorer**), rồi Commit + Sync:
 
-- **Banner trang chủ** → thư mục `images/banners`, tên `banner-1.jpg`, `banner-2.jpg`… (ảnh ngang, khoảng 1600 × 700 px). Có từ 2 ảnh trở lên sẽ tự chạy slider.
-- **Banner đầu trang hãng** → `images/banners/new-balance.jpg`, `onitsuka-tiger.jpg`, `jordan.jpg`…
-- **Ảnh khách hàng** → thư mục `images/khach-hang`, tên `1.jpg`, `2.jpg`, `3.jpg`… Trang chủ tự hiện mục "Khoảnh khắc cùng S&LIFE".
+- **Banner trang chủ** → `images/banners/banner-1.jpg`, `banner-2.jpg`… (ảnh ngang ~1600 × 700). Có từ 2 ảnh sẽ tự chạy slider.
+- **Banner đầu trang hãng** → `images/banners/new-balance.jpg`, `onitsuka-tiger.jpg`, `jordan.jpg`, `adidas.jpg`…
+- **Ảnh khách hàng** → `images/khach-hang/1.jpg`, `2.jpg`, `3.jpg`… (khách đã đồng ý).
+
+Làm banner trên Canva: tạo thiết kế cỡ **1600 × 700 px**, xuất **JPG**, đặt tên như trên.

@@ -64,20 +64,10 @@ Mở data/shop.js và điền:
 Chưa có thông tin nào thì để trống. Chạy thử web, kiểm tra chân trang và trang Liên hệ.
 ```
 
-### D3. Ảnh sản phẩm (quan trọng nhất)
-1. Chuẩn bị ảnh, **đặt tên = mã sản phẩm**: `U204LMMC.jpg`; ảnh phụ `U204LMMC-2.jpg`, `U204LMMC-3.jpg`.
-   Không biết tên nào: mở `http://localhost:8080/anh.html` (khi web đang chạy), bấm **Chép tên**.
-2. Trong Antigravity, chuột phải thư mục **images → products** → **Reveal in File Explorer**.
-   Kéo thả ảnh vào cửa sổ vừa mở.
-3. Nhờ Agent kiểm tra và nén ảnh cho web tải nhanh:
-
-```
-Kiểm tra ảnh trong images/products: tên file có khớp mã sản phẩm trong data/products.js không,
-báo tôi file nào sai tên. Sau đó nén ảnh (cạnh dài tối đa 1200px, JPG chất lượng 82, giữ nguyên tên)
-bằng Python Pillow. Không đụng vào data/products.js. Xong thì commit và push.
-```
-
-4. F5 trang `anh.html` → cột Trạng thái báo **Đã có ảnh**.
+### D3. Ảnh sản phẩm (quan trọng nhất) — xem chi tiết `HUONG-DAN-CAP-NHAT-ANH.md`
+1. **Tự động từ Google Sheet:** tải bảng về dạng .xlsx → kéo thả vào `cap-nhat-hang.bat`. Ảnh chèn trong bảng được lấy ra, đặt đúng tên mã, thu nhỏ.
+2. **Mẫu còn thiếu ảnh:** mở `http://localhost:8080/anh.html` (Chrome/Edge) → **Chọn thư mục images/products** → lọc **Chưa có ảnh** → **kéo ảnh thả vào đúng dòng**. Không cần đổi tên file.
+3. Commit + Sync (mục C).
 
 ### D4. Banner và ảnh khách hàng
 - Banner trang chủ: `images/banners/banner-1.jpg`, `banner-2.jpg`… (ảnh ngang ~1600×700).
