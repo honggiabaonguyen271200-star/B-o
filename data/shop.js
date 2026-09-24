@@ -12,11 +12,32 @@ window.SHOP = {
   tiktok: "https://www.tiktok.com/@slifesneaker",
   bank: {
     name: "Techcombank",
+    bin: "TCB",            // mã ngân hàng để tạo mã QR chuyển khoản (VietQR)
     number: "19035107259014",
     holder: "Nguyen Hong Gia Bao",
   },
   depositPercent: 30,
   returnDays: 3,
+  openHours: "9:00 – 21:00",
+
+  // --- Thông tin pháp lý: điền khi có, ô nào để trống sẽ tự ẩn trên website ---
+  legalName: "",           // Tên hộ kinh doanh / công ty, VD: "Hộ kinh doanh S&LIFE Sneakers"
+  address: "",             // Địa chỉ cửa hàng / nơi đăng ký kinh doanh
+  email: "",               // VD: "lienhe@slifesneakers.vn"
+  taxCode: "",             // Mã số thuế / số giấy phép kinh doanh
+  bctUrl: "",              // Link hồ sơ "Đã thông báo Bộ Công Thương" trên online.gov.vn
+
+  // --- Website ---
+  siteUrl: "https://honggiabaonguyen271200-star.github.io/B-o/", // đổi thành tên miền .vn khi có
+  orderEndpoint: "",       // Link Google Apps Script để lưu đơn vào Google Sheet (xem HUONG-DAN-DON-HANG.md)
+  announcement: "S&LIFE SNEAKERS — ONLY AUTHENTIC · GIÀY CHÍNH HÃNG, HÀNG SẴN",
+  // Ưu đãi hiện ở trang sản phẩm. Chỉ ghi những gì shop thực sự áp dụng.
+  perks: [
+    "Mã sản phẩm khớp tem hộp, tra trên trang chủ hãng ra đúng mẫu",
+    "Đồng kiểm: mở hộp kiểm tra trước khi trả tiền",
+    "Đổi size trong 3 ngày nếu còn nguyên hộp, tem, chưa đi ngoài trời",
+    "Shop gửi ảnh chụp thật đôi giày trước khi đóng gói",
+  ],
 };
 
 // Lưu ý form theo từng dòng giày (lấy từ mục "3. CHỌN SIZE" trong bảng hàng).

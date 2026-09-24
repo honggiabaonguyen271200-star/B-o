@@ -16,40 +16,49 @@
 </head>
 <body data-page="shop">
 <div id="site-header"></div>
+<main>
 <main class="container">
-  <div class="page-head"><h1 data-title>Giày chính hãng</h1></div>
-  <div class="bar">
-    <div data-crumbs></div>
-    <div class="bar__tools">
-      <button class="tool-btn" data-filters-open><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>Bộ lọc <span data-filter-count></span></button>
-      <label class="sr-only" for="sort">Sắp xếp</label>
-      <select class="select" id="sort" data-sort>
-        <option value="default">Mặc định</option>
-        <option value="price-asc">Giá thấp → cao</option>
-        <option value="price-desc">Giá cao → thấp</option>
-        <option value="sizes">Còn nhiều size</option>
-      </select>
-    </div>
-  </div>
+  <div class="bar" style="padding-top:14px"><div data-crumbs></div></div>
+  <div class="coll-banner" data-collection-banner hidden></div>
   <div class="tiles" data-tiles></div>
-  <div class="chips" data-chips hidden></div>
-  <p class="count-line" data-count></p>
-  <div class="grid" data-grid></div>
-  <div class="pager" data-pager></div>
+  <div class="shop">
+    <aside class="filters" data-filters aria-label="Bộ lọc">
+      <div class="filters__backdrop" data-filters-close></div>
+      <div class="filters__panel" role="dialog" aria-label="Bộ lọc">
+        <div class="drawer__head"><b>BỘ LỌC</b><button class="menu-btn" data-filters-close aria-label="Đóng bộ lọc"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+        <div class="filters__body"></div>
+        <div class="filters__foot"><button class="btn btn--ghost" data-clear>Xoá lọc</button><button class="btn" data-filters-close data-apply>Xem kết quả</button></div>
+      </div>
+    </aside>
+    <section>
+      <div class="bar">
+        <h1 data-title style="margin:0;font-size:clamp(22px,2.8vw,30px)">Giày chính hãng</h1>
+        <div class="bar__tools">
+          <button class="tool-btn" data-filters-open><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>Bộ lọc <span data-filter-count></span></button>
+          <label class="muted" for="sort" style="font-size:14px">Sắp xếp:</label>
+          <select class="select" id="sort" data-sort style="border:1px solid var(--line);padding-left:10px">
+            <option value="default">Mặc định</option>
+            <option value="name-asc">Tên A → Z</option>
+            <option value="name-desc">Tên Z → A</option>
+            <option value="price-asc">Giá tăng dần</option>
+            <option value="price-desc">Giá giảm dần</option>
+            <option value="sizes">Còn nhiều size</option>
+          </select>
+        </div>
+      </div>
+      <div class="chips" data-chips hidden></div>
+      <p class="count-line" data-count></p>
+      <div class="grid" data-grid></div>
+      <div class="pager" data-pager></div>
+    </section>
+  </div>
+  <div data-seen></div>
   <section class="about" data-about hidden>
     <h2></h2>
     <div class="about__body"></div>
     <button type="button">Đọc thêm</button>
   </section>
 </main>
-<div class="filters" data-filters>
-  <div class="filters__backdrop" data-filters-close></div>
-  <div class="filters__panel" role="dialog" aria-label="Bộ lọc">
-    <div class="drawer__head"><b>BỘ LỌC</b><button class="menu-btn" data-filters-close aria-label="Đóng bộ lọc"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-    <div class="filters__body"></div>
-    <div class="filters__foot"><button class="btn btn--ghost" data-clear>Xoá lọc</button><button class="btn" data-filters-close data-apply>Xem kết quả</button></div>
-  </div>
-</div>
 <div id="site-footer"></div>
 <script src="data/shop.js"></script>
 <script src="data/products.js"></script>

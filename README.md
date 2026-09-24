@@ -9,13 +9,18 @@ Website là HTML/CSS/JS thuần: không cần server, không cần build, đưa 
 
 | Trang | Nội dung |
 | --- | --- |
-| `index.html` — Trang chủ | Banner, thương hiệu, mỗi hãng một khối sản phẩm, 4 bước đặt hàng |
-| MENU (mọi trang) | Danh sách hãng giày; bấm mũi tên cạnh hãng để xem các dòng (VD New Balance → 204L, 1906, 740…) |
-| `shop.html` | Tất cả giày (ô các hãng) · `?brand=new-balance` trang hãng (ô các dòng + mẫu của hãng) · `&line=204l` trang một dòng. Có Bộ lọc (size, giá, code nam/nữ/GS), sắp xếp, phân trang, tìm kiếm |
-| `product.html` — Sản phẩm | Ảnh + ảnh phụ, size còn hàng, giá riêng từng size, lưu ý form, **Mua ngay** (gửi Zalo), **Thêm vào giỏ**, tab Mô tả / Thông tin sản phẩm / Ship & đổi trả, sản phẩm tương tự |
-| `cart.html` — Giỏ hàng | Gom nhiều đôi, điền tên / SĐT / địa chỉ / số cm chân → tạo sẵn tin nhắn gửi Zalo |
-| `size-guide.html`, `policy.html` | Hướng dẫn chọn size; đổi trả, ship, thanh toán |
+| `index.html` — Trang chủ | Thanh thông báo, slider banner (ảnh tự tải lên), cam kết, dòng giày nổi bật, thương hiệu, khối sản phẩm từng hãng, khoảnh khắc khách hàng, 4 bước đặt hàng |
+| Menu | Máy tính: menu ngang, rê chuột vào hãng xổ ra các dòng. Điện thoại: nút MENU mở danh sách hãng → dòng |
+| `shop.html` | Tất cả giày / trang hãng (`?brand=`) / trang dòng (`&line=`) / tìm kiếm. Banner hãng, ô các dòng, bộ lọc size · màu · giá · code nam/nữ (cột trái trên máy tính), sắp xếp, phân trang, sản phẩm đã xem |
+| `product.html` — Sản phẩm | Ảnh + ảnh phụ, chia sẻ, cam kết & ưu đãi, chọn size, Thêm vào giỏ (popup), Mua ngay (Zalo), tab mô tả / thông tin / đổi trả, cùng dòng, cùng tầm giá, đã xem |
+| `cart.html` → `dat-hang.html` | Giỏ hàng có ghi chú, gợi ý → đặt hàng 3 bước: thông tin giao hàng (tỉnh/thành) → COD cọc 30% hoặc chuyển khoản → mã đơn, mã QR chuyển khoản (VietQR), gửi đơn qua Zalo, tuỳ chọn lưu vào Google Sheet |
+| `gioi-thieu.html`, `lien-he.html`, `policy.html`, `chinh-sach-bao-mat.html`, `size-guide.html` | Giới thiệu, liên hệ, đổi trả · vận chuyển · thanh toán · khiếu nại, bảo mật thông tin, chọn size |
 | `anh.html` — Kiểm tra ảnh | Trang cho chủ shop: tên file ảnh cần đặt cho từng mẫu, mẫu nào đã có / chưa có ảnh |
+
+Hướng dẫn cho chủ shop:
+- `HUONG-DAN-CAP-NHAT-ANH.md` — tải ảnh sản phẩm, banner, ảnh khách hàng
+- `HUONG-DAN-DON-HANG.md` — lưu đơn tự động vào Google Sheet
+- `HUONG-DAN-TEN-MIEN.md` — việc cần làm trước và sau khi có tên miền .vn
 
 Khách đặt hàng bằng cách: chọn size → website sao chép tin nhắn dạng
 `Mã: U204LMMC / Size: 40 / Chân dài: 25 cm` → mở Zalo của shop → khách dán và gửi.
@@ -40,7 +45,7 @@ scripts/build_products.py Chuyển bảng hàng Google Sheet → data/products.j
    pip install openpyxl        # chỉ cần lần đầu
    python3 scripts/build_products.py ~/Downloads/bang-hang.xlsx
    ```
-3. Commit và push `data/products.js` lên GitHub, website tự cập nhật sau khoảng 1 phút.
+3. Commit và push `data/products.js`, `sitemap.xml`, `robots.txt` lên GitHub, website tự cập nhật sau khoảng 1 phút.
 
 Script đọc bảng theo đúng quy ước đang dùng cho khách:
 - Mỗi trang tính là một thương hiệu / dòng giày; dòng tiêu đề bắt đầu bằng ô **Tên**.

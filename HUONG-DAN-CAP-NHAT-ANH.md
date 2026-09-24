@@ -38,3 +38,11 @@ Nếu chưa thấy: kiểm tra lại tên file ở trang `anh.html`, rồi tải
 - **Ảnh từ iPhone (.HEIC)?** Gửi ảnh qua Zalo/Messenger cho chính mình rồi tải về (sẽ thành .jpg), hoặc chụp ở chế độ “Tương thích nhất” trong Cài đặt → Camera → Định dạng.
 - **Làm trên điện thoại được không?** Được: mở link ở Bước 2 bằng Chrome, bật “Trang web cho máy tính” (Desktop site) để thấy nút **Add file**.
 - **Mẫu giày không có mã?** Tên file là mã đặc biệt hiển thị ở trang `anh.html` (ví dụ `samba-og-white-gum.jpg`).
+
+## Banner và ảnh khách hàng
+
+Tải lên giống hệt cách trên, chỉ khác thư mục:
+
+- **Banner trang chủ** → thư mục `images/banners`, tên `banner-1.jpg`, `banner-2.jpg`… (ảnh ngang, khoảng 1600 × 700 px). Có từ 2 ảnh trở lên sẽ tự chạy slider.
+- **Banner đầu trang hãng** → `images/banners/new-balance.jpg`, `onitsuka-tiger.jpg`, `jordan.jpg`…
+- **Ảnh khách hàng** → thư mục `images/khach-hang`, tên `1.jpg`, `2.jpg`, `3.jpg`… Trang chủ tự hiện mục "Khoảnh khắc cùng S&LIFE".

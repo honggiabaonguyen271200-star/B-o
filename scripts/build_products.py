@@ -327,6 +327,31 @@ def find_image(code):
     return None
 
 
+def write_sitemap(products):
+    """Tạo sitemap.xml cho Google từ danh sách sản phẩm và địa chỉ website trong data/shop.js."""
+    import datetime
+    from urllib.parse import quote
+    shop_js = (ROOT / "data" / "shop.js").read_text(encoding="utf-8")
+    m = re.search(r'siteUrl:\s*"([^"]+)"', shop_js)
+    if not m:
+        return
+    base = m.group(1).rstrip("/") + "/"
+    today = datetime.date.today().isoformat()
+    urls = ["", "shop.html", "size-guide.html", "policy.html", "gioi-thieu.html", "lien-he.html", "chinh-sach-bao-mat.html"]
+    for brand in sorted({p["brand"] for p in products if p["sizes"]}):
+        urls.append("shop.html?brand=" + slugify(brand))
+    urls += ["product.html?id=" + quote(p["id"]) for p in products if p["sizes"]]
+    body = "\n".join(
+        "  <url><loc>%s</loc><lastmod>%s</lastmod></url>" % ((base + u).replace("&", "&amp;"), today) for u in urls
+    )
+    (ROOT / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + body + "\n</urlset>\n", encoding="utf-8")
+    (ROOT / "robots.txt").write_text(
+        "User-agent: *\nDisallow: /anh.html\nDisallow: /dat-hang.html\nDisallow: /cart.html\n\nSitemap: " + base + "sitemap.xml\n",
+        encoding="utf-8")
+
+
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
@@ -363,6 +388,7 @@ def main():
         "window.PRODUCTS = " + body + ";\n",
         encoding="utf-8",
     )
+    write_sitemap(products)
     in_stock = sum(1 for p in products if p["sizes"] and p.get("price"))
     brands = {}
     for p in products:

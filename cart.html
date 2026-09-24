@@ -16,31 +16,23 @@
 </head>
 <body data-page="cart">
 <div id="site-header"></div>
+<main>
 <main class="container">
-  <div class="page-head"><h1>Giỏ hàng</h1><p class="muted" style="margin:0">Điền thông tin rồi bấm gửi — website soạn sẵn tin nhắn đặt hàng để bạn gửi shop qua Zalo.</p></div>
+  <div class="bar" style="padding-top:14px"><nav class="breadcrumb"><a href="index.html">Trang chủ</a><span>/</span>Giỏ hàng</nav></div>
+  <h1 data-cart-heading style="font-size:clamp(24px,3vw,30px)">Giỏ hàng</h1>
   <div class="cart">
-    <div data-cart-list></div>
+    <div>
+      <div data-cart-list></div>
+      <div class="field" style="margin-top:18px"><label for="cart-note">Ghi chú đơn hàng</label><textarea id="cart-note" data-cart-note placeholder="VD: giao giờ hành chính, gói quà…"></textarea></div>
+    </div>
     <aside class="summary" data-cart-summary hidden>
-      <h2>Đơn hàng</h2>
-      <div class="summary__row"><span>Số lượng</span><span data-count></span></div>
-      <div class="summary__row"><span>Tạm tính</span><span data-subtotal></span></div>
-      <div class="summary__row"><span>Phí ship</span><span class="muted">Shop báo khi xác nhận</span></div>
-      <div class="summary__row summary__total"><span>Tổng</span><span data-total></span></div>
-      <form data-order-form novalidate>
-        <div class="field"><label for="name">Họ tên</label><input id="name" name="name" autocomplete="name" required></div>
-        <div class="field"><label for="phone">Số điện thoại</label><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required></div>
-        <div class="field"><label for="address">Địa chỉ nhận hàng</label><textarea id="address" name="address" autocomplete="street-address" required></textarea></div>
-        <div class="field"><label for="foot">Chiều dài bàn chân (cm)</label><input id="foot" name="foot" inputmode="decimal" placeholder="VD: 25"><span class="hint">Để shop kiểm tra lại size giúp cho chắc. <a href="size-guide.html" style="text-decoration:underline">Cách đo</a></span></div>
-        <div class="field"><label>Thanh toán</label>
-          <label class="radio"><input type="radio" name="payment" value="cod" checked><span><b>COD — cọc <span data-deposit-pct>30%</span></b><small>Cọc <span data-deposit></span>, phần còn lại trả khi nhận hàng (được đồng kiểm).</small></span></label>
-          <label class="radio"><input type="radio" name="payment" value="bank"><span><b>Chuyển khoản 100%</b><small data-bank></small></span></label>
-        </div>
-        <div class="field"><label for="note">Ghi chú</label><input id="note" name="note" placeholder="VD: giao giờ hành chính"></div>
-        <button class="btn btn--buy btn--block" type="submit">Gửi đơn qua Zalo</button>
-        <p class="muted" style="font-size:12.5px;margin:0">Shop xác nhận còn size, báo tổng tiền và phí ship trước khi bạn chuyển khoản.</p>
-      </form>
+      <div class="summary__row summary__total" style="border:0;margin:0;padding-top:0"><span>TỔNG CỘNG</span><span data-total></span></div>
+      <p class="muted" style="font-size:13px">Phí vận chuyển shop báo khi xác nhận đơn.</p>
+      <a class="btn btn--block" href="dat-hang.html">Đặt hàng</a>
+      <a class="btn btn--ghost btn--block" style="margin-top:8px" href="shop.html">Tiếp tục mua sắm</a>
     </aside>
   </div>
+  <div data-suggest></div>
 </main>
 <div id="site-footer"></div>
 <script src="data/shop.js"></script>
