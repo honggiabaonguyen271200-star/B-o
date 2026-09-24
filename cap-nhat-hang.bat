@@ -11,7 +11,7 @@ if "%~1"=="" (
 )
 echo  Đang cài thư viện đọc Excel (chỉ lần đầu)...
 %PY% -m pip install -q openpyxl
-echo  Đang cập nhật hàng từ: %~1
+echo  Đang cập nhật hàng từ file bạn vừa kéo thả...
 %PY% scripts\build_products.py "%~1"
 echo.
 echo  Xong. Bước tiếp theo: trong Antigravity mở Source Control, Commit rồi Sync để đưa lên web.

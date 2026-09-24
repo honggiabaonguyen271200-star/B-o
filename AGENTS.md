@@ -37,6 +37,7 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 
 ## Hướng dẫn cho chủ shop
 
+- `HUONG-DAN-ANTIGRAVITY.md` — quy trình làm việc hằng ngày trên Antigravity
 - `HUONG-DAN-CAP-NHAT-ANH.md` — tải ảnh
 - `HUONG-DAN-DON-HANG.md` — lưu đơn vào Google Sheet
 - `HUONG-DAN-TEN-MIEN.md` — tên miền .vn, pháp lý, SEO
