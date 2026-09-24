@@ -21,6 +21,7 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 | `data/products.js` | **Tự sinh — không sửa tay.** Tạo bằng `scripts/build_products.py` |
 | `scripts/build_products.py` | Đọc bảng hàng Google Sheet (.xlsx) → `data/products.js`, `sitemap.xml`, `robots.txt` |
 | `images/products/` | Ảnh sản phẩm, tên file = mã sản phẩm (`U204LMMC.jpg`, ảnh phụ `U204LMMC-2.jpg`) |
+| `xem-web.bat`, `cap-nhat-hang.bat` | Windows: bấm đúp để xem web trên máy; kéo thả file .xlsx vào để cập nhật hàng |
 | `images/banners/`, `images/khach-hang/` | Banner (`banner-1.jpg`…, `new-balance.jpg`…), ảnh khách (`1.jpg`…) |
 
 ## Quy tắc quan trọng
