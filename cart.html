@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Giỏ hàng — S&amp;LIFE Sneakers</title>
+<meta name="description" content="S&amp;LIFE Sneakers — giày chính hãng New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma. Hàng sẵn, đồng kiểm khi nhận, đổi size 3 ngày.">
+<meta property="og:title" content="Giỏ hàng — S&amp;LIFE Sneakers">
+<meta property="og:description" content="S&amp;LIFE Sneakers — giày chính hãng New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma. Hàng sẵn, đồng kiểm khi nhận, đổi size 3 ngày.">
+<meta name="theme-color" content="#141414">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23141414'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Arial' font-weight='700' font-size='26' fill='%23fff'%3ES%26L%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="cart">
+<div id="site-header"></div>
+<main class="container">
+  <div class="page-head">
+    <div class="breadcrumb"><a href="index.html">Trang chủ</a> / Giỏ hàng</div>
+    <h1>Giỏ hàng</h1>
+    <p class="muted" style="margin:0">Điền thông tin rồi bấm gửi — website tạo sẵn tin nhắn đặt hàng để bạn gửi shop qua Zalo.</p>
+  </div>
+  <div class="cart">
+    <div data-cart-list></div>
+    <aside class="summary" data-cart-summary hidden>
+      <h2>Đơn hàng</h2>
+      <div class="summary__row"><span>Số lượng</span><span data-count></span></div>
+      <div class="summary__row"><span>Tạm tính</span><span data-subtotal></span></div>
+      <div class="summary__row"><span>Phí ship</span><span class="muted">Shop báo khi xác nhận</span></div>
+      <div class="summary__row summary__total"><span>Tổng</span><span data-total></span></div>
+      <form data-order-form novalidate>
+        <div class="field"><label for="name">Họ tên</label><input id="name" name="name" autocomplete="name" required></div>
+        <div class="field"><label for="phone">Số điện thoại</label><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required></div>
+        <div class="field"><label for="address">Địa chỉ nhận hàng</label><textarea id="address" name="address" autocomplete="street-address" required></textarea></div>
+        <div class="field"><label for="foot">Chiều dài bàn chân (cm)</label><input id="foot" name="foot" inputmode="decimal" placeholder="VD: 25"><span class="hint">Để shop kiểm tra lại size giúp cho chắc. <a href="size-guide.html" style="text-decoration:underline">Cách đo</a></span></div>
+        <div class="field"><label>Thanh toán</label>
+          <div class="radio-group">
+            <label class="radio"><input type="radio" name="payment" value="cod" checked><span><b>COD — cọc <span data-deposit-pct>30%</span></b><small>Cọc <span data-deposit></span>, phần còn lại trả khi nhận hàng (được đồng kiểm).</small></span></label>
+            <label class="radio"><input type="radio" name="payment" value="bank"><span><b>Chuyển khoản 100%</b><small data-bank></small></span></label>
+          </div>
+        </div>
+        <div class="field"><label for="note">Ghi chú</label><input id="note" name="note" placeholder="VD: giao giờ hành chính"></div>
+        <button class="btn btn--zalo btn--block" type="submit">Gửi đơn qua Zalo</button>
+        <p class="muted" style="font-size:12.5px;margin:0">Shop xác nhận còn size, báo tổng tiền và phí ship trước khi bạn chuyển khoản.</p>
+      </form>
+    </aside>
+  </div>
+</main>
+<div id="site-footer"></div>
+<script src="data/shop.js"></script>
+<script src="data/products.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
