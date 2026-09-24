@@ -433,9 +433,12 @@
     var footerEl = $("#site-footer");
     if (footerEl) {
       var social = [
-        SHOP.facebook ? ["Facebook", SHOP.facebook, I.fb] : null,
+        SHOP.facebook ? ["Facebook S&LIFE Sneakers", SHOP.facebook, I.fb] : null,
+        SHOP.facebookGarment ? ["Facebook S&LIFE Garment", SHOP.facebookGarment, I.fb] : null,
+        SHOP.facebookOwner ? ["Facebook Mr. Bảo", SHOP.facebookOwner, I.fb] : null,
         ["Zalo", SHOP.zalo, "<b>Zalo</b>"],
-        ["Instagram", SHOP.instagram, I.ig],
+        ["Instagram S&LIFE Sneakers", SHOP.instagram, I.ig],
+        SHOP.instagramGarment ? ["Instagram S&LIFE Garment", SHOP.instagramGarment, I.ig] : null,
         ["TikTok", SHOP.tiktok, I.tt],
       ].filter(Boolean);
       footerEl.outerHTML =
@@ -449,7 +452,7 @@
         (SHOP.taxCode ? "<li>MST / GPKD: " + esc(SHOP.taxCode) + "</li>" : "") +
         "</ul>" +
         '<div class="ft__social">' + social.map(function (s) {
-          return '<a href="' + esc(s[1]) + '" target="_blank" rel="noopener" aria-label="' + s[0] + '">' + s[2] + "</a>";
+          return '<a href="' + esc(s[1]) + '" target="_blank" rel="noopener" aria-label="' + esc(s[0]) + '" title="' + esc(s[0]) + '">' + s[2] + "</a>";
         }).join("") + "</div></div>" +
         "<div><h4>Cửa hàng</h4><ul>" +
         '<li><a href="index.html">Trang chủ</a></li>' +
@@ -1200,6 +1203,12 @@
       if (!v) { if (row) row.hidden = true; return; }
       if (el.tagName === "A" && el.dataset.prefix) el.href = el.dataset.prefix + v;
       el.textContent = v;
+    });
+    $all("[data-shop-href]").forEach(function (el) {
+      var v = SHOP[el.dataset.shopHref];
+      var row = el.closest("[data-shop-row]");
+      if (!v) { if (row) row.hidden = true; return; }
+      el.href = v;
     });
   }
 

@@ -6,9 +6,14 @@ window.SHOP = {
   phone: "0941598395",
   phoneDisplay: "0941 598 395",
   zalo: "https://zalo.me/0941598395",
-  facebook: "", // Dán link Facebook cá nhân/Page vào đây để hiện nút Messenger
+  facebook: "https://www.facebook.com/profile.php?id=61594467666215", // Facebook shop Sneaker (Fanpage chính thức, nút Messenger)
+  facebookSneaker: "https://www.facebook.com/profile.php?id=61594467666215",
+  facebookOwner: "https://www.facebook.com/honggiabaoslife/", // Facebook cá nhân chủ shop
+  facebookGarment: "https://www.facebook.com/profile.php?id=61594441897601", // Facebook shop Garment
   facebookName: "Nguyễn Hồng Gia Bảo",
-  instagram: "https://www.instagram.com/s.life_sneakers/",
+  instagram: "https://www.instagram.com/s.life_sneakers/", // Instagram shop Sneaker
+  instagramSneaker: "https://www.instagram.com/s.life_sneakers/",
+  instagramGarment: "https://www.instagram.com/s.life_garment/", // Instagram shop Garment
   tiktok: "https://www.tiktok.com/@slifesneaker",
   bank: {
     name: "Techcombank",

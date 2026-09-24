@@ -404,7 +404,7 @@ tr:last-child td, tr:last-child th { border-bottom: 0; }
 .ft .logo { align-items: flex-start; text-align: left; }
 .ft .logo b { color: #fff; }
 .ft__info { margin-top: 16px !important; }
-.ft__social { display: flex; gap: 10px; margin-top: 16px; }
+.ft__social { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
 .ft__social a { width: 36px; height: 36px; border-radius: 999px; background: #fff; color: #2d2d2d; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; }
 .ft__social a:hover { text-decoration: none; opacity: .85; }
 .ft__social svg { width: 20px; height: 20px; }
