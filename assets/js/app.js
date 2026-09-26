@@ -1243,7 +1243,7 @@
     var status = {}, dir = null, done = 0, found = 0;
     var canWrite = typeof window.showDirectoryPicker === "function";
     body.innerHTML = list.map(function (p) {
-      var file = (p.code || p.id) + ".jpg";
+      var file = p.code || p.id;
       return '<tr data-row="' + esc(p.id) + '" data-q="' + esc(p.search + " " + norm(p.id)) + '">' +
         '<td><div class="thumb">' + media(p) + "</div></td>" +
         '<td><a href="' + productUrl(p) + '" target="_blank" rel="noopener">' + esc(fullName(p)) + "</a><br><small class=\"muted\">" + esc(p.brand) + (p.inStock ? "" : " · hết size") + "</small></td>" +
