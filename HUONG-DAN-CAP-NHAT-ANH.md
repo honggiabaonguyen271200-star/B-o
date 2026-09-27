@@ -54,6 +54,20 @@ Lưu ý: không đặt chữ to che giày; logo shop nhỏ ở góc là đủ. �
 - Nền trắng hoặc tờ giấy A2/A3, ánh sáng cửa sổ ban ngày; hộp chụp (lightbox) mini giúp ảnh đều màu hơn.
 - Chuyển ảnh sang máy tính một lần (Zalo "Cloud của tôi", Google Photos, hoặc cáp), rồi kéo thả theo cách 2.
 
+## Cách 2b — Một file zip lớn cho nhiều mẫu (nhanh nhất khi có sẵn ảnh cả lô)
+
+1. Mỗi mẫu giày là **một file zip nhỏ** (VD file Canva tải về) **hoặc một thư mục**, **đặt tên = mã sản phẩm**: `U204L9FU.zip`, `1183C102-001.zip`…
+   Mẫu không có mã: đặt đúng tên như trong Google Sheet (VD `Samba OG White Gum`). Tên dài có chứa mã cũng được.
+   Tên file không được chứa dấu `/` — nếu tên trong bảng có `/` thì chỉ cần để mã.
+2. Gom tất cả vào một thư mục → chuột phải → **Nén thành file ZIP** (Send to → Compressed folder).
+3. Mở `D:\B-o` bằng File Explorer → **kéo file zip lớn thả vào `nhap-anh-zip.bat`**.
+   Cửa sổ đen báo: mẫu nào đã nhập bao nhiêu ảnh, mẫu nào bỏ qua (đã có ảnh), tên nào **không khớp** để bạn sửa lại.
+4. Commit + Sync trong Antigravity.
+
+- Ảnh trong mỗi mẫu xếp theo tên file (1, 2, … 10): ảnh đầu tiên là ảnh chính. Tối đa 12 ảnh/mẫu.
+- Mẫu đã có ảnh được giữ nguyên. Muốn **thay cả bộ** ảnh cũ bằng bộ mới: nhờ Agent chạy `python scripts/import_image_zip.py <file.zip> --ghi-de`.
+- Cũng có thể gửi file zip này cho Claude để Claude nhập giúp và đẩy lên web.
+
 ## Cách 3 — Công cụ bên thứ ba (khi cần ảnh đẹp, đồng bộ hơn)
 
 | Công cụ | Dùng cho | Ghi chú |

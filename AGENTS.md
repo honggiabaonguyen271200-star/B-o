@@ -20,9 +20,10 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 | `data/shop.js` | **Thông tin shop** (SĐT, Zalo, ngân hàng, pháp lý, siteUrl), lưu ý form (`FIT_NOTES`), dòng giày từng hãng (`LINES`) |
 | `data/products.js` | **Tự sinh — không sửa tay.** Tạo bằng `scripts/build_products.py` |
 | `scripts/build_products.py` | Đọc bảng hàng Google Sheet (.xlsx) → `data/products.js`, `sitemap.xml`, `robots.txt` |
+| `scripts/import_image_zip.py` | Nhập ảnh hàng loạt từ zip lớn (mỗi mẫu = zip nhỏ/thư mục đặt tên theo mã hoặc tên trong bảng) → `images/products/`; `--ghi-de` thay bộ cũ |
 | `scripts/extract_images.py` | Lấy ảnh chèn trong bảng .xlsx (cùng dòng với sản phẩm) → `images/products/<MÃ>.webp`; `--ghi-de` để thay ảnh đã có |
 | `images/products/` | Ảnh sản phẩm, tên file = mã sản phẩm: `U204LMMC.webp`, ảnh phụ `U204LMMC-2.webp` … `-12` (tối đa 12, `MAX_SHOTS`). Ưu tiên WebP ≤1200px; không chép ảnh gốc điện thoại |
-| `xem-web.bat`, `cap-nhat-hang.bat` | Windows: bấm đúp để xem web trên máy; kéo thả file .xlsx vào để cập nhật hàng |
+| `xem-web.bat`, `cap-nhat-hang.bat`, `nhap-anh-zip.bat` | Windows: bấm đúp để xem web trên máy; kéo thả file .xlsx vào để cập nhật hàng; kéo thả zip ảnh lớn để nhập ảnh hàng loạt |
 | `images/banners/`, `images/khach-hang/` | Banner (`banner-1.jpg`…, `new-balance.jpg`…), ảnh khách (`1.jpg`…) |
 
 ## Quy tắc quan trọng
