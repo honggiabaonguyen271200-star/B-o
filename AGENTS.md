@@ -37,6 +37,11 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 7. Đơn hàng không có máy chủ: khách gửi đơn qua Zalo (tin nhắn soạn sẵn); tuỳ chọn ghi vào Google Sheet qua `orderEndpoint` (xem `HUONG-DAN-DON-HANG.md`).
 8. Trước khi sửa: **Pull** code mới nhất. Sau khi sửa: mở web kiểm tra trên cỡ điện thoại và máy tính, không có lỗi trong Console, rồi mới Commit và Push.
 
+## Skill thiết kế cho trợ lý AI
+
+- `.claude/skills/` (Claude Code) và `.agents/skills/` (Antigravity) chứa skill hỗ trợ thiết kế giao diện: `frontend-design` (Anthropic) và bộ `ui-ux-pro-max` (cài bằng `npm install -g ui-ux-pro-max-cli` rồi `uipro init --ai claude` / `--ai antigravity`).
+- Chỉ dùng để tham khảo khi chỉnh giao diện. Website vẫn là HTML/CSS/JS thuần: không đưa npm, framework, Tailwind hay thư viện từ các skill này vào website. Giữ giọng văn và bố cục theo quy tắc ở trên.
+
 ## Hướng dẫn cho chủ shop
 
 - `HUONG-DAN-ANTIGRAVITY.md` — quy trình làm việc hằng ngày trên Antigravity
