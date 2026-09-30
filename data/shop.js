@@ -36,6 +36,21 @@ window.SHOP = {
   siteUrl: "https://honggiabaonguyen271200-star.github.io/B-o/", // đổi thành tên miền .vn khi có
   orderEndpoint: "",       // Link Google Apps Script để lưu đơn vào Google Sheet (xem HUONG-DAN-DON-HANG.md)
   announcement: "S&LIFE SNEAKERS — ONLY AUTHENTIC · GIÀY CHÍNH HÃNG, HÀNG SẴN",
+  // Thanh chữ chạy đầu trang (tự đổi câu). Chỉ ghi điều shop thực sự áp dụng. Để [] thì dùng dòng announcement ở trên.
+  announcements: [
+    "Giày chính hãng — mã sản phẩm khớp tem hộp",
+    "Đồng kiểm: mở hộp kiểm tra trước khi trả tiền",
+    "Đổi size trong 3 ngày nếu còn nguyên hộp, tem",
+  ],
+  // Câu hỏi thường gặp ở trang chủ: [câu hỏi, trả lời]
+  faq: [
+    ["Làm sao biết giày chính hãng?", "Mỗi đôi có mã sản phẩm khớp với tem hộp. Bạn tra mã đó trên trang chủ của hãng sẽ ra đúng mẫu, đúng màu. Giao đủ hộp, giấy gói, tem và phụ kiện đi kèm."],
+    ["Chọn size thế nào cho vừa?", "Đo chiều dài bàn chân (cm) rồi xem lưu ý form của từng dòng ở trang Hướng dẫn chọn size. Còn phân vân, gửi shop số cm chân kèm tên đôi giày đang đi vừa nhất để được tư vấn."],
+    ["Được kiểm tra hàng trước khi trả tiền không?", "Có. Shop gửi ảnh chụp thật trước khi đóng gói, bạn được mở hộp kiểm tra khi nhận hàng rồi mới trả tiền."],
+    ["Đổi size như thế nào?", "Đổi trong 3 ngày kể từ khi giao hàng, giày còn nguyên hộp, tem và chưa đi ngoài trời; khách hỗ trợ phí đổi trả. Sai size do shop tư vấn thì shop chịu phí đổi."],
+    ["Thanh toán và giao hàng ra sao?", "Ship toàn quốc qua SPX Express, Viettel Post…; nội thành Hà Nội, TP.HCM có ship nhanh (chuyển khoản trước). COD đặt cọc 30% giá bán, phần còn lại trả khi nhận hàng."],
+    ["Mẫu hoặc size mình cần không có trên web?", "Size không có trong danh sách là đã hết tại shop. Bạn nhắn Zalo tên mẫu và size, shop kiểm tra và báo giá order."],
+  ],
   // Ưu đãi hiện ở trang sản phẩm. Chỉ ghi những gì shop thực sự áp dụng.
   perks: [
     "Mã sản phẩm khớp tem hộp, tra trên trang chủ hãng ra đúng mẫu",

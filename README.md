@@ -40,7 +40,7 @@ Cần cài **Python** (https://python.org, nhớ tích ô *Add Python to PATH*) 
 | `index.html` — Trang chủ | Thanh thông báo, slider banner, cam kết, dòng giày nổi bật, thương hiệu, sản phẩm từng hãng, ảnh khách hàng, 4 bước đặt hàng |
 | Menu | Máy tính: menu ngang, rê chuột vào hãng xổ ra các dòng. Điện thoại: nút **MENU** → hãng → dòng |
 | `shop.html` — Danh mục | Tất cả giày / theo hãng (`?brand=`) / theo dòng (`&line=`) / tìm kiếm. Lọc size · màu · giá · code nam/nữ, sắp xếp, phân trang, sản phẩm đã xem |
-| `product.html` — Sản phẩm | Ảnh chính + ảnh phụ, chọn size, lưu ý form, **Thêm vào giỏ** / **Mua ngay** (Zalo), tab mô tả · thông tin · đổi trả, gợi ý cùng dòng / cùng tầm giá |
+| `product.html` — Sản phẩm | Ảnh chính + ảnh phụ, chọn size, lưu ý form, **Thêm vào giỏ** / **Mua ngay** (sang Đặt hàng) / **Tư vấn Zalo**, mô tả · thông tin · đổi trả, gợi ý cùng dòng / cùng tầm giá |
 | `cart.html` → `dat-hang.html` | Giỏ hàng → đặt hàng 3 bước: thông tin giao hàng → COD cọc 30% hoặc chuyển khoản → mã đơn, mã QR VietQR, gửi đơn qua Zalo |
 | `gioi-thieu.html`, `lien-he.html`, `policy.html`, `chinh-sach-bao-mat.html`, `size-guide.html` | Giới thiệu, liên hệ, chính sách đổi trả · vận chuyển · thanh toán, bảo mật, hướng dẫn chọn size |
 | `anh.html` — Kiểm tra ảnh | Trang nội bộ cho chủ shop: tên file ảnh cần đặt cho từng mẫu, mẫu nào đã có / chưa có ảnh |

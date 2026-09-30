@@ -22,6 +22,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_products as bp  # noqa: E402
+import image_manifest  # noqa: E402
 from extract_images import MAX_SHOTS, to_webp  # noqa: E402
 
 IMG_RE = re.compile(r"\.(jpe?g|png|webp)$", re.I)
@@ -118,6 +119,7 @@ def main():
             total += 1
         done.append("%s (%d ảnh)" % (stem, len(files)))
 
+    image_manifest.write()  # cập nhật danh sách ảnh cho website
     print("Đã nhập %d ảnh cho %d mẫu:" % (total, len(done)))
     for d in done:
         print("  ✓ " + d)

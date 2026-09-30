@@ -2,7 +2,7 @@
 
 > Mở file này dạng dễ đọc: bấm vào file trong cột Explorer rồi nhấn **Ctrl + Shift + V**.
 
-Thư mục web trên máy: `C:\Users\HP\Documents\B-o`
+Thư mục web trên máy: `D:\B-o` (đã chuyển từ `C:\Users\HP\Documents\B-o` vì ổ C đầy)
 
 ---
 
@@ -77,7 +77,7 @@ Cách chép và lưu giống D3.
 
 ### D5. Cập nhật hàng từ Google Sheet (mỗi khi bảng thay đổi)
 1. Google Sheet → **Tệp → Tải xuống → Microsoft Excel (.xlsx)**.
-2. Mở **File Explorer** → `Documents\B-o` → **kéo file .xlsx thả vào `cap-nhat-hang.bat`**.
+2. Mở **File Explorer** → `D:\B-o` → **kéo file .xlsx thả vào `cap-nhat-hang.bat`**.
    (Hoặc nhờ Agent: *"Cập nhật hàng từ file C:\Users\HP\Downloads\<tên file>.xlsx bằng scripts/build_products.py."*)
 3. F5 trình duyệt kiểm tra vài mẫu, rồi Commit + Sync (mục C).
 

@@ -12,7 +12,7 @@ Có 3 cách, làm theo thứ tự — cách 1 làm trước vì hoàn toàn tự
 Bảng hàng đã có cột **Hình ảnh**. Ảnh chèn trong bảng được lấy ra tự động, đặt đúng tên mã, thu nhỏ cho web.
 
 1. Mở Google Sheet → **Tệp → Tải xuống → Microsoft Excel (.xlsx)**.
-2. Mở thư mục `Documents\B-o` bằng File Explorer → **kéo file .xlsx thả vào `cap-nhat-hang.bat`**.
+2. Mở thư mục `D:\B-o` bằng File Explorer → **kéo file .xlsx thả vào `cap-nhat-hang.bat`**.
    Cửa sổ đen sẽ: cập nhật hàng → lấy ảnh → báo "Đã lưu … ảnh".
 3. Trong Antigravity: **Source Control → Commit → Sync** để đưa ảnh lên web.
 
@@ -35,7 +35,7 @@ Không cần đổi tên file bằng tay.
    Mẫu đã có ảnh thì ảnh mới được thêm tiếp vào số còn trống.
 5. Xong một đợt → Commit + Sync trong Antigravity.
 
-Ảnh được tự thu nhỏ (cạnh dài 1200px) và đổi sang JPG. Ảnh iPhone dạng HEIC: gửi qua Zalo/Messenger cho chính mình rồi tải về (thành JPG), hoặc cài iPhone: **Cài đặt → Camera → Định dạng → Tương thích nhất**.
+Ảnh được tự thu nhỏ (cạnh dài 1200px) và đổi sang WebP. Trang cũng tự ghi lại `images/products/danh-sach.js` (danh sách ảnh để web xếp mẫu có ảnh thật lên trước) — nhớ Commit cả file này. Ảnh iPhone dạng HEIC: gửi qua Zalo/Messenger cho chính mình rồi tải về (thành JPG), hoặc cài iPhone: **Cài đặt → Camera → Định dạng → Tương thích nhất**.
 
 ### Dùng Canva: 1 thiết kế = 1 đôi giày, kéo thẳng file zip
 

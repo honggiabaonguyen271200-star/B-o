@@ -17,11 +17,13 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 | `anh.html` | Trang nội bộ: kiểm tra mẫu nào đã có ảnh; kéo thả ảnh để lưu đúng tên vào `images/products` (Chrome/Edge) |
 | `assets/js/app.js` | Toàn bộ chức năng (header, menu, lọc, giỏ hàng, đặt hàng, ảnh). Mỗi trang chạy hàm `init…` theo `<body data-page>` |
 | `assets/css/style.css` | Giao diện |
-| `data/shop.js` | **Thông tin shop** (SĐT, Zalo, ngân hàng, pháp lý, siteUrl), lưu ý form (`FIT_NOTES`), dòng giày từng hãng (`LINES`) |
+| `data/shop.js` | **Thông tin shop** (SĐT, Zalo, ngân hàng, pháp lý, siteUrl, câu chạy đầu trang `announcements`, câu hỏi thường gặp `faq`), lưu ý form (`FIT_NOTES`), dòng giày từng hãng (`LINES`) |
 | `data/products.js` | **Tự sinh — không sửa tay.** Tạo bằng `scripts/build_products.py` |
 | `scripts/build_products.py` | Đọc bảng hàng Google Sheet (.xlsx) → `data/products.js`, `sitemap.xml`, `robots.txt` |
 | `scripts/import_image_zip.py` | Nhập ảnh hàng loạt từ zip lớn (mỗi mẫu = zip nhỏ/thư mục đặt tên theo mã hoặc tên trong bảng) → `images/products/`; `--ghi-de` thay bộ cũ |
 | `scripts/extract_images.py` | Lấy ảnh chèn trong bảng .xlsx (cùng dòng với sản phẩm) → `images/products/<MÃ>.webp`; `--ghi-de` để thay ảnh đã có |
+| `images/products/danh-sach.js` | **Tự sinh** — danh sách ảnh đang có (anh.html, `import_image_zip.py`, `extract_images.py` tự ghi; chạy tay: `python scripts/image_manifest.py`). Thiếu/cũ thì web vẫn tự dò ảnh |
+| `images/brand/` | Logo S&LIFE (SVG/PNG), favicon, icon; màu thương hiệu trong `images/brand/README.md` |
 | `images/products/` | Ảnh sản phẩm, tên file = mã sản phẩm: `U204LMMC.webp`, ảnh phụ `U204LMMC-2.webp` … `-12` (tối đa 12, `MAX_SHOTS`). Ưu tiên WebP ≤1200px; không chép ảnh gốc điện thoại |
 | `xem-web.bat`, `cap-nhat-hang.bat`, `nhap-anh-zip.bat` | Windows: bấm đúp để xem web trên máy; kéo thả file .xlsx vào để cập nhật hàng; kéo thả zip ảnh lớn để nhập ảnh hàng loạt |
 | `images/banners/`, `images/khach-hang/` | Banner (`banner-1.jpg`…, `new-balance.jpg`…), ảnh khách (`1.jpg`…) |
@@ -36,6 +38,12 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 6. Thông tin pháp lý, liên hệ chỉ sửa trong `data/shop.js`; ô để trống sẽ tự ẩn.
 7. Đơn hàng không có máy chủ: khách gửi đơn qua Zalo (tin nhắn soạn sẵn); tuỳ chọn ghi vào Google Sheet qua `orderEndpoint` (xem `HUONG-DAN-DON-HANG.md`).
 8. Trước khi sửa: **Pull** code mới nhất. Sau khi sửa: mở web kiểm tra trên cỡ điện thoại và máy tính, không có lỗi trong Console, rồi mới Commit và Push.
+
+## Giao diện
+
+- Màu theo logo: gradient `#004AAD → #771CAE → #DB3137`, nền trắng/`--mist`; biến màu ở đầu `assets/css/style.css`. Tiêu đề: Barlow Condensed in hoa; nội dung: Be Vietnam Pro.
+- Mẫu chưa có ảnh hiện ô trung tính "Ảnh thật đang cập nhật" — không vẽ/giả ảnh sản phẩm.
+- Thiết kế mới đang làm trên nhánh `thiet-ke-moi` (xem `HANDOFF.md`, `docs/thiet-ke-moi/`).
 
 ## Skill thiết kế cho trợ lý AI
 
