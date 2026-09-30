@@ -2,5 +2,6 @@ User-agent: *
 Disallow: /anh.html
 Disallow: /dat-hang.html
 Disallow: /cart.html
+Disallow: /yeu-cau.html
 
 Sitemap: https://honggiabaonguyen271200-star.github.io/B-o/sitemap.xml

@@ -15,11 +15,14 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 | `index.html`, `shop.html`, `product.html`, `cart.html`, `dat-hang.html`, `yeu-cau.html` | Trang chủ, danh mục (hãng `?brand=` / dòng `&line=`), sản phẩm (`?id=`), giỏ hàng, gửi yêu cầu qua Messenger, tóm tắt yêu cầu (`?r=`) |
 | `gioi-thieu.html`, `lien-he.html`, `policy.html`, `chinh-sach-bao-mat.html`, `size-guide.html` | Trang thông tin, chính sách |
 | `anh.html` | Trang nội bộ: kiểm tra mẫu nào đã có ảnh; kéo thả ảnh để lưu đúng tên vào `images/products` (Chrome/Edge) |
-| `assets/js/app.js` | Toàn bộ chức năng (header, menu, lọc, giỏ hàng, đặt hàng, ảnh). Mỗi trang chạy hàm `init…` theo `<body data-page>` |
+| `assets/js/app.js` | Toàn bộ chức năng (header, menu, lọc, giỏ hàng, gửi yêu cầu). Mỗi trang chạy hàm `init…` theo `<body data-page>` |
+| `assets/js/anh.js` | Công cụ ảnh của `anh.html` (chỉ tải ở trang đó), dùng hàm chung qua `window.SLIFE` |
 | `assets/css/style.css` | Giao diện |
 | `data/shop.js` | **Thông tin shop** (`messenger` — kênh chính, pháp lý, siteUrl, `features.wishlist`, `announcements`, `faq`, biệt danh tìm kiếm `aliases`, `orderEndpoint`, `ga4Id`), lưu ý form (`FIT_NOTES`), dòng giày từng hãng (`LINES`), bảng size theo hãng (`SIZE_CHARTS`) |
 | `data/products.js` | **Tự sinh — không sửa tay.** Tạo bằng `scripts/build_products.py` |
-| `scripts/build_products.py` | Đọc bảng hàng Google Sheet (.xlsx) → `data/products.js`, `sitemap.xml`, `robots.txt` |
+| `scripts/build_products.py` | Đọc bảng hàng Google Sheet (.xlsx) → `data/products.js`, rồi tự chạy `static_pages.py` |
+| `scripts/static_pages.py` | **Tự sinh** từ `products.js` + `danh-sach.js` + `siteUrl`: `sp/<id>.html` (link chia sẻ có og:image, tự chuyển sang `product.html?id=`), `sp/anh/<MÃ>.jpg`, `404.html`, `sitemap.xml` (trang chính + mẫu còn hàng), `robots.txt`, dòng preload ảnh hero trong `index.html`. Chạy lại sau khi đổi ảnh/`siteUrl` (`xem-web.bat` và các script ảnh tự chạy) |
+| `sp/`, `404.html` | **Tự sinh — không sửa tay.** Tin nhắn Messenger và nút chia sẻ dùng link `sp/<id>.html` |
 | `scripts/import_image_zip.py` | Nhập ảnh hàng loạt từ zip lớn (mỗi mẫu = zip nhỏ/thư mục đặt tên theo mã hoặc tên trong bảng) → `images/products/`; `--ghi-de` thay bộ cũ |
 | `scripts/extract_images.py` | Lấy ảnh chèn trong bảng .xlsx (cùng dòng với sản phẩm) → `images/products/<MÃ>.webp`; `--ghi-de` để thay ảnh đã có |
 | `images/products/danh-sach.js` | **Tự sinh** — danh sách ảnh đang có (anh.html, `import_image_zip.py`, `extract_images.py` tự ghi; chạy tay: `python scripts/image_manifest.py`). Thiếu/cũ thì web vẫn tự dò ảnh |

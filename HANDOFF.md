@@ -1,8 +1,55 @@
 # HANDOFF — Thiết kế mới S&LIFE Sneaker (nhánh `thiet-ke-moi`)
 
-Cập nhật đêm 30/09 → sáng 01/10/2026 · **Mốc 2**: làm theo câu trả lời WEB của chủ shop (`docs/thiet-ke-moi/TRA-LOI-WEB.md`, đối chiếu `01-DIEM-CHOT-TU-TRA-LOI.md`).
+Cập nhật đêm 30/09/2026 · **Mốc 2b** (việc không cần chủ shop quyết), nối tiếp **Mốc 2** (làm theo câu trả lời WEB: `docs/thiet-ke-moi/TRA-LOI-WEB.md`, `01-DIEM-CHOT-TU-TRA-LOI.md`).
 
 Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách đang xem vẫn là bản cũ. Chưa gộp, chưa mua dịch vụ, chưa tạo tài khoản nào, chưa ghi vào Google Sheet thật.
+
+## Chủ shop cần duyệt
+
+**Thử trên điện thoại (việc đầu tiên):**
+
+1. Bấm icon Messenger ở đầu trang: có mở đúng hội thoại với tài khoản của bạn không? Nếu không, đổi `messenger` trong `data/shop.js` thành `https://www.facebook.com/honggiabaoslife/`.
+2. Chạy trọn hai hành trình: tìm mã → chọn size → Gửi yêu cầu → Sao chép → Mở Messenger → dán; và "Tư vấn size" trên trang sản phẩm.
+
+**Cần bạn trả lời / kiểm:**
+
+3. **Bảng size** (WEB-88: không được sai size):
+   - **Nike/Jordan** và **New Balance** đang theo bảng quy đổi phổ biến, ghi "để tham khảo" — cần bạn đối chiếu với bảng trên web hãng trước khi gộp.
+   - **Asics, Onitsuka Tiger, Adidas, Puma, Salomon, On:** máy làm việc của Claude **bị chặn truy cập web chính thức** của cả 6 hãng (thử ngày 30/09/2026: asics.com, onitsukatiger.com, adidas.com, adidas.com.vn, asics.com.vn, puma.com, salomon.com, on.com — đều bị chặn). Không đoán số, nên các hãng này vẫn hiện "shop đang cập nhật" và mời nhắn Messenger.
+   - Muốn thêm: gửi link hoặc ảnh chụp bảng size trên web hãng, Claude chép vào `SIZE_CHARTS` kèm link nguồn và ngày lấy, ghi "tham khảo — shop xác nhận".
+4. **Câu "Sai size do shop tư vấn: shop chịu phí đổi" đã bỏ:** WEB-69 chỉ chọn hai trường hợp (shop giao sai/lỗi → shop chịu; đổi theo nhu cầu → khách chịu). Muốn giữ lời hứa này thì báo để thêm lại.
+5. **"Hàng mới về"** (WEB-43) chưa làm.
+   - Thứ tự hiện tại: có ảnh thật trước → còn nhiều size trước → theo thứ tự trong bảng.
+   - Đề xuất: thêm cột tuỳ chọn **"Mới về"** (ghi ngày, VD `01/10/2026`) trong Google Sheet. Bạn đồng ý thì `build_products.py` đọc cột này để có mục "Hàng mới về".
+6. **Link chia sẻ mới `…/sp/<mã>.html`** (mốc 2b, mục 3) — **chưa kiểm bằng công cụ Facebook Sharing Debugger**:
+   - máy làm việc bị chặn Facebook;
+   - các trang này chỉ có trên web thật sau khi gộp.
+   Sau khi gộp, bạn làm:
+   - mở https://developers.facebook.com/tools/debug/ → dán một link, ví dụ `https://honggiabaonguyen271200-star.github.io/B-o/sp/u204lmmc.html` → **Scrape Again** → xem có ảnh giày, tên, giá không;
+   - rồi dán link đó vào Messenger cho chính mình.
+7. **Sitemap bỏ các trang hãng** (`shop.html?brand=…`): làm đúng yêu cầu "chỉ trang chính + mẫu còn hàng". Muốn Google thấy thêm trang hãng thì báo để thêm lại.
+8. **Lỗi 404 ảnh trong Console:** web vẫn tự dò ảnh `.webp`/`.jpg` cho mẫu chưa có trong `danh-sach.js`, để ảnh chép tay vẫn hiện. Mỗi mẫu chưa ảnh sinh 2 dòng lỗi đỏ trong Console, dù khách không thấy gì.
+   - Đề xuất: khi đã có `danh-sach.js` thì thôi dò; bù lại, mỗi lần thêm ảnh phải cập nhật danh sách (anh.html, `cap-nhat-hang.bat`, `nhap-anh-zip.bat` đều tự làm).
+   - Đồng ý thì báo.
+
+**Giả định đã chọn (không phản đối thì giữ):**
+
+9. Size đã hết vẫn hiện mờ trong dải size của hãng (bấm vào thì mời nhắn Messenger), để khách biết size mình có hay không. Không có chữ "order".
+10. Mỗi size 1 đôi trong giỏ; mua nhiều đôi thì trao đổi trong tin nhắn (WEB-47).
+11. Giữ lọc "Dành cho" (code nữ/GS, thu gọn) vì menu "Theo nhu cầu" dùng nó; bỏ lọc màu.
+12. Trang gửi yêu cầu chỉ có các ô không bắt buộc (tên gọi, cm chân, tỉnh, ghi chú). Số điện thoại và địa chỉ trao đổi trong Messenger.
+13. Trang chủ mở sẵn tab New Balance ở "Mẫu theo hãng" (hãng nhiều ảnh thật nhất).
+14. Mô tả trong link chia sẻ chỉ ghi giá, **không ghi size còn**: Facebook lưu bản xem trước nhiều ngày, size ghi sẵn dễ sai khi hàng đã bán.
+15. `xem-web.bat` giờ tự tạo lại `sp/`, `sitemap.xml`, ảnh xem trước mỗi lần mở, nên Source Control có thể báo `sitemap.xml` đổi ngày. Cứ Commit + Sync bình thường.
+
+**Tuỳ chọn:** cài sổ yêu cầu theo `HUONG-DAN-DON-HANG.md`; tạo Google Analytics 4 và dán `ga4Id` vào `shop.js`.
+
+**Trước khi gộp (Claude làm khi bạn duyệt):**
+
+- lấy commit ảnh mới trên nhánh chính (merge, không ghi đè ảnh);
+- chạy `python scripts/image_manifest.py` rồi `python scripts/static_pages.py`;
+- chạy lại bộ kiểm tra;
+- rồi mới gộp vào `claude/shoe-shop-website-3dln52`.
 
 ## Xem thử
 
@@ -14,7 +61,74 @@ Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách
 - **Ảnh so sánh font:** `docs/thiet-ke-moi/font/so-sanh-font.png` (mở thử: `so-sanh-font.html`).
 - **Ảnh mốc 1** vẫn ở `docs/thiet-ke-moi/so-sanh/`.
 
-## Đã làm theo câu trả lời WEB
+## Mốc 2b — đã làm (đêm 30/09)
+
+1. **Ô "Dòng giày nổi bật" chưa có ảnh:**
+   - Trước: hai lớp chữ chồng nhau ở 360/390px.
+   - Giờ: tên hãng nhỏ phía trên, **tên dòng ghi một lần**, số mẫu phía dưới.
+   - Ô có ảnh thật vẫn dùng ảnh thật.
+   - Đã chụp kiểm ở 360 và 390px, cả khi có font và khi font chưa tải.
+2. **"ONLY AUTHENTIC" khi font chưa tải:**
+   - Thêm font dự phòng `Bricolage Fallback`: lấy Arial/Helvetica/Roboto có sẵn trên máy, thu nhỏ bằng `size-adjust: 72%` cho vừa khổ chữ hẹp.
+   - Tiêu đề lớn được phép xuống dòng thay vì tràn.
+   - Đã kiểm khi chặn tải font: không tràn ngang ở 360/390px.
+3. **Link chia sẻ có ảnh xem trước:** script mới `scripts/static_pages.py` tự chạy sau `build_products.py`, `import_image_zip.py`, `extract_images.py`, `xem-web.bat`. Nó tạo:
+   - `sp/<mã>.html` cho **393 mẫu còn hàng**:
+     - có `og:title` (tên + mã), `og:description` (giá), `og:image`, `canonical` → `product.html?id=…`;
+     - tự chuyển sang trang sản phẩm bằng JavaScript. Facebook không chạy JavaScript nên vẫn đọc được ảnh và tên.
+   - `og:image`:
+     - 16 mẫu có ảnh thật: `sp/anh/<MÃ>.jpg`, đổi sang JPEG vì Facebook đọc JPEG chắc chắn hơn WebP; tổng ~1 MB;
+     - 377 mẫu chưa ảnh: logo S&LIFE.
+   - `404.html`: mẫu đã bán hết thì trang `sp/` bị xoá, nhưng link cũ khách giữ vẫn tự mở trang sản phẩm (báo tạm hết size).
+   - **Tin nhắn tư vấn, tin nhắn Gửi yêu cầu (mỗi mẫu một link), nút Chia sẻ Facebook, Sao chép link** đều dùng link `sp/`.
+   - Không sửa tay `products.js`.
+   - **Chưa kiểm bằng Facebook Sharing Debugger** (xem mục cần duyệt số 6).
+4. **`sitemap.xml`:**
+   - Chỉ còn 7 trang chính + 393 mẫu còn hàng (400 link), `lastmod` = ngày chạy script.
+   - `robots.txt` chặn thêm `yeu-cau.html`.
+5. **Tốc độ:**
+   - **Tải trước ảnh giày ở banner đầu trang:** script ghi dòng `preload` vào `index.html`, chọn đúng ảnh web sẽ hiện (đã kiểm khớp).
+   - Ảnh banner và ảnh chính trang sản phẩm **hiện ngay, không mờ dần 0,35 giây** — vì hiệu ứng mờ làm Google tính LCP muộn hơn.
+   - **Tách `app.js`:** chỉ tách phần gọn:
+     - công cụ ảnh nội bộ của `anh.html` → `assets/js/anh.js`, chỉ tải ở trang đó;
+     - `app.js` của khách giảm từ 43 KB xuống 38,6 KB (đã nén).
+   - **Chưa tách tiếp** trang chủ / danh mục / sản phẩm:
+     - chúng dùng chung khoảng 30 hàm, tách ra phải chuyển mọi chỗ gọi hàm qua một đầu mối chung, dễ sót lỗi;
+     - lợi ích ước tính chỉ ~20 KB ≈ 0,1 giây trên 4G yếu.
+   - **Đo lại cùng điều kiện mốc 2** (điện thoại 390px, CPU ×4, gzip, trung vị 3 lần). Bảng so sánh bản mốc 2 → bản 2b:
+
+| Mạng | Trang | FCP | LCP | Tải xong | Dữ liệu tải |
+|---|---|---|---|---|---|
+| 4G ổn định (9 Mbps, 60 ms, CPU x4) | Trang chủ | 0.38s → 0.36s | **1.78s → 1.32s** | 1.48s → 1.60s | 274 → 271 KB |
+| 4G ổn định (9 Mbps, 60 ms, CPU x4) | Danh mục | 0.34s → 0.35s | 1.60s → 1.63s | 1.49s → 1.48s | 466 → 463 KB |
+| 4G ổn định (9 Mbps, 60 ms, CPU x4) | Sản phẩm | 1.07s → 1.20s | **1.57s → 1.30s** | 1.16s → 1.83s | 730 → 726 KB |
+| 4G yếu (1,6 Mbps, 150 ms, CPU x4) | Trang chủ | 0.77s → 0.86s | **2.39s → 1.68s** | 2.63s → 2.65s | 274 → 271 KB |
+| 4G yếu (1,6 Mbps, 150 ms, CPU x4) | Danh mục | 0.81s → 0.78s | 2.62s → 2.52s | 3.59s → 3.55s | 466 → 463 KB |
+| 4G yếu (1,6 Mbps, 150 ms, CPU x4) | Sản phẩm | 1.56s → 1.62s | **2.66s → 2.12s** | 5.11s → 5.10s | 730 → 726 KB |
+
+   Kết luận trung thực:
+
+   - **LCP trang chủ nhanh hơn 26–30%, trang sản phẩm nhanh hơn 17–20%.** Mọi phép đo LCP giờ dưới 2,5 giây (mức "tốt" của Google).
+   - Danh mục gần như không đổi.
+   - Chênh lệch FCP (±0,1s) và "tải xong" trang sản phẩm trên 4G ổn định (1,16 → 1,83s) nằm trong dao động giữa các lần đo. Cột này gồm cả ảnh tải sau, khách không phải chờ.
+   - Muốn nhanh hơn nữa: viết sẵn banner đầu trang vào HTML (không chờ JavaScript) — để sau.
+6. **Bảng size 6 hãng:** không vào được web chính thức (xem mục cần duyệt số 3), nên **không thêm số nào**.
+
+**Đã kiểm lại sau mốc 2b:**
+
+- 42/42 kiểm tra hành trình đạt; kiểm tra "tin nhắn tư vấn có link" giờ đòi link `sp/`.
+- axe-core 0 lỗi trên 9 trang.
+- Không tràn ngang ở 360 / 390 / 768 / 1024px.
+- Không lỗi JavaScript.
+- Kiểm riêng mốc 2b:
+  - `sp/ct60scl1.html` chuyển đúng sang trang sản phẩm; ảnh og tải được (image/jpeg);
+  - mẫu chưa ảnh dùng logo; link `sp/` của mẫu không còn thì 404.html chuyển đúng;
+  - preload trùng ảnh banner; không cảnh báo "preload không dùng";
+  - tin nhắn và nút Facebook dùng link `sp/`;
+  - `anh.html` vẫn chạy sau khi tách file;
+  - `build_products.py` chạy thử trên bản sao với bảng thử: tạo đúng `sp/`, sitemap, và xoá trang của mẫu đã hết.
+
+## Mốc 2 — đã làm theo câu trả lời WEB
 
 ### A. Thay đổi bắt buộc
 
@@ -123,7 +237,7 @@ Kết luận trung thực:
 - **Tải xong nhanh hơn ở cả 6 phép đo** (nhanh hơn 8–57%), đạt mục tiêu "khoảng 3 giây trên 4G ổn định" (WEB-83).
 - **LCP chậm hơn:** màn đầu giờ là ảnh giày thật (bản cũ chỉ là khối chữ) và nội dung dựng bằng JavaScript. LCP vẫn dưới 2,5s — mức "tốt" của Google — ở mọi phép đo.
 - **FCP chậm hơn chút** vì font mới.
-- **Việc có thể làm thêm:** tải trước ảnh hero; tách `app.js` (~145 KB chưa nén, ~43 KB đã nén) theo trang.
+- Việc tải trước ảnh hero và tách `app.js` đã làm ở mốc 2b (bảng đo mới ở trên).
 
 **Truy cập:**
 
@@ -131,7 +245,7 @@ Kết luận trung thực:
 - Chữ nội dung tăng lên 16px.
 - Chọn size, thêm giỏ, đóng giỏ trượt đều làm được hoàn toàn bằng bàn phím; focus quay về đúng chỗ.
 
-## Đã kiểm (có bằng chứng)
+## Đã kiểm ở mốc 2 (có bằng chứng)
 
 Kiểm bằng Chromium tự động (Playwright), có font thật, giả lập điện thoại iPhone 390px và Android 360px. Môi trường không có WebKit/Safari thật (xem mục chưa kiểm).
 
@@ -169,22 +283,7 @@ Không có lỗi JS trong Console. Chỉ còn lỗi tải ảnh 404 khi web dò 
 - **Link `m.me/honggiabaoslife` mở đúng hội thoại trên điện thoại** — việc đầu tiên chủ shop nên thử sáng nay. Nếu không mở đúng, đổi `messenger` trong `shop.js` thành `https://www.facebook.com/honggiabaoslife/`.
 - Apps Script trên Google thật (chủ shop tự cài theo hướng dẫn).
 - raw.githack (bị chặn từ máy làm việc).
-
-## Giả định đã chọn (chủ shop duyệt giúp)
-
-1. **Bảng size theo hãng:**
-   - Mới có **Nike/Jordan** và **New Balance** (nam/unisex), theo bảng quy đổi phổ biến của hãng, ghi rõ "để tham khảo".
-   - **Chủ shop cần đối chiếu với bảng trên web hãng trước khi gộp** (WEB-88: không được sai size).
-   - Các hãng khác hiện "shop đang cập nhật" và mời nhắn Messenger. Gửi bảng size chuẩn thì Claude thêm vào `SIZE_CHARTS`.
-2. **Bỏ câu "Sai size do shop tư vấn: shop chịu phí đổi":** WEB-69 chỉ chọn hai trường hợp (shop giao sai/lỗi → shop chịu; đổi theo nhu cầu → khách chịu). Nếu vẫn muốn giữ lời hứa này, báo để thêm lại.
-3. **Size đã hết vẫn hiện mờ** trong dải size của hãng (bấm vào mời nhắn Messenger tư vấn), để khách biết size mình có hay không. Không có chữ "order". Muốn chỉ hiện size còn thì tắt được.
-4. **Mỗi size 1 đôi** trong giỏ; mua nhiều đôi trao đổi trong tin nhắn (WEB-47).
-5. **Bộ lọc:** giữ lọc "Dành cho" (code nữ/GS, thu gọn) vì menu "Theo nhu cầu" dùng nó; bỏ lọc màu.
-6. **Trang gửi yêu cầu chỉ có các ô không bắt buộc** (tên gọi, cm chân, tỉnh, ghi chú). Số điện thoại và địa chỉ trao đổi trong Messenger (WEB-85 bỏ qua → thu ít nhất).
-7. **"Hàng mới về"** (WEB-43): chưa làm.
-   - Thứ tự mặc định hiện tại: **có ảnh thật trước → còn nhiều size trước → theo thứ tự trong bảng**.
-   - Đề xuất: thêm một cột tuỳ chọn **"Mới về"** (ghi ngày, VD `01/10/2026`) trong Google Sheet. Khi chủ shop đồng ý, `build_products.py` sẽ đọc cột này để có mục "Hàng mới về" và sắp xếp theo ngày.
-8. **Mẫu theo hãng ở trang chủ** mở sẵn tab New Balance (hãng nhiều ảnh thật nhất), nên hơi trùng khối "Hàng sẵn, mua ngay". Khi có thêm ảnh hãng khác, có thể đổi tab mặc định.
+- Xem trước link khi dán vào Messenger/Facebook (xem mốc 2b).
 
 ## WEB-73 — những gì chưa công khai
 
@@ -197,16 +296,3 @@ Không có lỗi JS trong Console. Chỉ còn lỗi tải ảnh 404 khi web dò 
 
 - Bỏ `scripts/__pycache__` và các `__pycache__` trong skill khỏi repo.
 - Thêm `.gitignore` (Python cache, file hệ điều hành, file tạm).
-
-## Việc tiếp theo
-
-1. **Sáng 01/10, chủ shop thử trên điện thoại:**
-   - bấm icon Messenger ở đầu trang, xem có mở đúng hội thoại với tài khoản của mình không;
-   - chạy trọn hai hành trình: tìm mã → chọn size → Gửi yêu cầu → Sao chép → Mở Messenger → dán; và tư vấn size trên trang sản phẩm.
-2. Kiểm bảng size Nike/Jordan và New Balance (giả định 1); trả lời giả định 2 và 7.
-3. (Tuỳ chọn) Cài sổ yêu cầu theo `HUONG-DAN-DON-HANG.md`; tạo GA4 và dán `ga4Id`.
-4. Claude sửa theo nhận xét. **Trước khi gộp:**
-   - lấy commit ảnh mới trên nhánh chính (merge, không ghi đè ảnh);
-   - chạy `python scripts/image_manifest.py`;
-   - chạy lại bộ kiểm tra;
-   - rồi mới gộp vào `claude/shoe-shop-website-3dln52`.

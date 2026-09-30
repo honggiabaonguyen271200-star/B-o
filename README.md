@@ -55,10 +55,12 @@ gioi-thieu.html, lien-he.html, policy.html,
 chinh-sach-bao-mat.html, size-guide.html                        Trang thông tin, chính sách
 anh.html                                                         Trang nội bộ kiểm tra ảnh
 assets/css/style.css          Giao diện
-assets/js/app.js              Toàn bộ chức năng (menu, lọc, giỏ hàng, đặt hàng, ảnh)
+assets/js/app.js              Toàn bộ chức năng (menu, lọc, giỏ hàng, gửi yêu cầu)
+assets/js/anh.js              Công cụ ảnh của anh.html (chỉ tải ở trang đó)
 data/shop.js                  Thông tin shop, lưu ý form (FIT_NOTES), dòng giày từng hãng (LINES)
 data/products.js              Danh sách sản phẩm — TỰ SINH, không sửa tay
-scripts/build_products.py     Bảng hàng .xlsx → data/products.js, sitemap.xml, robots.txt
+scripts/build_products.py     Bảng hàng .xlsx → data/products.js (rồi tự chạy static_pages.py)
+scripts/static_pages.py       Tự sinh: sp/ (link chia sẻ có ảnh xem trước), 404.html, sitemap.xml, robots.txt
 scripts/google-apps-script-don-hang.gs   Mã dán vào Google Sheet để lưu đơn
 images/products/              Ảnh sản phẩm (tên = mã sản phẩm)
 images/banners/               Banner trang chủ, banner từng hãng
@@ -79,7 +81,7 @@ Làm mỗi khi bảng Google Sheet thay đổi:
    pip install openpyxl        # chỉ cần lần đầu
    python scripts/build_products.py "C:\Users\HP\Downloads\bang-hang.xlsx"
    ```
-3. Commit và Sync (push) các file `data/products.js`, `sitemap.xml`, `robots.txt`.
+3. Commit và Sync (push) tất cả file thay đổi: `data/products.js`, thư mục `sp/`, `sitemap.xml`, `robots.txt`, `index.html`.
 
 Script đọc bảng theo quy ước đang dùng:
 - Mỗi trang tính là một thương hiệu / dòng giày; dòng tiêu đề bắt đầu bằng ô **Tên**.
