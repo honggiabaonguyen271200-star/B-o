@@ -108,3 +108,17 @@ Làm theo `HUONG-DAN-TEN-MIEN.md`. Khi đã mua tên miền, nhờ Agent:
 - Không dán mật khẩu, mã OTP, thông tin thẻ vào khung Agent hay vào code.
 - Mỗi lần một việc; xong việc nào **Commit + Sync** việc đó.
 - Nếu vừa sửa trên trang GitHub (tải ảnh bằng web) hoặc nhờ Claude sửa, nhớ **Pull** trước khi làm tiếp trong Antigravity.
+
+---
+
+## F. Khi khách đã cọc một size (cập nhật tồn kho)
+
+Website chỉ hiện **hàng sẵn**, lấy từ bảng hàng Google Sheet. Khi khách đã cọc một đôi:
+
+1. Trên Google Sheet: bỏ đánh dấu size đó (xoá số 1 hoặc bỏ tô xanh) ở dòng mẫu giày.
+2. **Tệp → Tải xuống → Microsoft Excel (.xlsx)** → kéo file vào `cap-nhat-hang.bat`.
+3. Commit + Sync. 1–2 phút sau web không còn hiện size đó.
+
+Hoặc nhắn Agent: *"Khách đã cọc mẫu U204LMMC size 40. Tôi đã sửa Google Sheet và tải file về `D:\Downloads\<tên file>.xlsx` — cập nhật hàng bằng scripts/build_products.py rồi push."*
+
+Không sửa tay `data/products.js`: lần cập nhật sau từ Sheet sẽ ghi đè mất.

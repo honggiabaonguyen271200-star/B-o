@@ -1120,3 +1120,7 @@ body[data-page="home"] .ft { margin-top: 0; }
 .pd__buy2:not(:has(.wish)) { grid-template-columns: 1fr; }
 .hero__title { line-height: .94; }
 .co > div, .co__summary { min-width: 0; }
+/* Tương phản đạt WCAG AA */
+.pill--ok { color: #11603D; }
+.sizes button.is-off { color: #6E6980; }
+.prose a:not(.btn) { text-decoration: underline; text-underline-offset: 3px; }

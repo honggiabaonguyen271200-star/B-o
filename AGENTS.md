@@ -12,12 +12,12 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 
 | File | Vai trò |
 | --- | --- |
-| `index.html`, `shop.html`, `product.html`, `cart.html`, `dat-hang.html` | Trang chủ, danh mục (hãng `?brand=` / dòng `&line=`), sản phẩm (`?id=`), giỏ hàng, đặt hàng |
+| `index.html`, `shop.html`, `product.html`, `cart.html`, `dat-hang.html`, `yeu-cau.html` | Trang chủ, danh mục (hãng `?brand=` / dòng `&line=`), sản phẩm (`?id=`), giỏ hàng, gửi yêu cầu qua Messenger, tóm tắt yêu cầu (`?r=`) |
 | `gioi-thieu.html`, `lien-he.html`, `policy.html`, `chinh-sach-bao-mat.html`, `size-guide.html` | Trang thông tin, chính sách |
 | `anh.html` | Trang nội bộ: kiểm tra mẫu nào đã có ảnh; kéo thả ảnh để lưu đúng tên vào `images/products` (Chrome/Edge) |
 | `assets/js/app.js` | Toàn bộ chức năng (header, menu, lọc, giỏ hàng, đặt hàng, ảnh). Mỗi trang chạy hàm `init…` theo `<body data-page>` |
 | `assets/css/style.css` | Giao diện |
-| `data/shop.js` | **Thông tin shop** (SĐT, Zalo, ngân hàng, pháp lý, siteUrl, câu chạy đầu trang `announcements`, câu hỏi thường gặp `faq`), lưu ý form (`FIT_NOTES`), dòng giày từng hãng (`LINES`) |
+| `data/shop.js` | **Thông tin shop** (`messenger` — kênh chính, pháp lý, siteUrl, `features.wishlist`, `announcements`, `faq`, biệt danh tìm kiếm `aliases`, `orderEndpoint`, `ga4Id`), lưu ý form (`FIT_NOTES`), dòng giày từng hãng (`LINES`), bảng size theo hãng (`SIZE_CHARTS`) |
 | `data/products.js` | **Tự sinh — không sửa tay.** Tạo bằng `scripts/build_products.py` |
 | `scripts/build_products.py` | Đọc bảng hàng Google Sheet (.xlsx) → `data/products.js`, `sitemap.xml`, `robots.txt` |
 | `scripts/import_image_zip.py` | Nhập ảnh hàng loạt từ zip lớn (mỗi mẫu = zip nhỏ/thư mục đặt tên theo mã hoặc tên trong bảng) → `images/products/`; `--ghi-de` thay bộ cũ |
@@ -36,12 +36,14 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 4. Shop **chỉ bán giày**; không thêm quần áo, phụ kiện.
 5. Giọng văn: điềm đạm, đáng tin, không "SALE SỐC", không đồng hồ đếm ngược giả, không giá gạch ngang khi không có giá gốc thật.
 6. Thông tin pháp lý, liên hệ chỉ sửa trong `data/shop.js`; ô để trống sẽ tự ẩn.
-7. Đơn hàng không có máy chủ: khách gửi đơn qua Zalo (tin nhắn soạn sẵn); tuỳ chọn ghi vào Google Sheet qua `orderEndpoint` (xem `HUONG-DAN-DON-HANG.md`).
+7. Tư vấn và chốt đơn qua **Messenger Facebook cá nhân** của chủ shop (`SHOP.messenger`): web soạn sẵn tin nhắn → khách Sao chép + Mở Messenger. Không thu tiền, không hiện số tài khoản/VietQR, không ghi cứng tiền cọc/COD. Không tự xoá giỏ, không bao giờ báo "đã nhận đơn". Sổ yêu cầu tuỳ chọn qua `orderEndpoint` (xem `HUONG-DAN-DON-HANG.md`).
 8. Trước khi sửa: **Pull** code mới nhất. Sau khi sửa: mở web kiểm tra trên cỡ điện thoại và máy tính, không có lỗi trong Console, rồi mới Commit và Push.
+9. **Chỉ hiện hàng sẵn** (mẫu còn size). Không có mục/nhãn hàng order. Tên thương hiệu: **S&LIFE Sneaker**.
+10. Ít chuyển động: không pop-up tự bật, không nút nổi che nội dung, không tự chạy slider.
 
 ## Giao diện
 
-- Màu theo logo: gradient `#004AAD → #771CAE → #DB3137`, nền trắng/`--mist`; biến màu ở đầu `assets/css/style.css`. Tiêu đề: Barlow Condensed in hoa; nội dung: Be Vietnam Pro.
+- Màu theo logo: gradient `#004AAD → #771CAE → #DB3137` chỉ làm điểm nhấn, nền trắng/`--mist`; biến màu ở đầu `assets/css/style.css`. Font: **Bricolage Grotesque** (một họ chữ; tiêu đề in hoa ở `font-stretch: 75%`). Không dùng Inter/Roboto/Poppins/Be Vietnam Pro.
 - Mẫu chưa có ảnh hiện ô trung tính "Ảnh thật đang cập nhật" — không vẽ/giả ảnh sản phẩm.
 - Thiết kế mới đang làm trên nhánh `thiet-ke-moi` (xem `HANDOFF.md`, `docs/thiet-ke-moi/`).
 

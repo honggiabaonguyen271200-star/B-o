@@ -1,6 +1,6 @@
-# S&LIFE Sneakers — Website bán giày chính hãng
+# S&LIFE Sneaker — Website bán giày chính hãng
 
-Website của shop **S&LIFE Sneakers**, dựng từ bảng hàng sẵn trên Google Sheet. Khách xem giày theo hãng → dòng → mẫu, chọn size, đặt hàng qua Zalo (hoặc giỏ hàng + chuyển khoản VietQR).
+Website của shop **S&LIFE Sneaker**, dựng từ bảng hàng sẵn trên Google Sheet. Khách xem giày (chỉ hàng sẵn) theo hãng → dòng → mẫu, chọn size, rồi gửi yêu cầu cho shop qua **Messenger** — tư vấn và chốt đơn trong tin nhắn, website không thu tiền.
 
 - Web đang chạy: https://honggiabaonguyen271200-star.github.io/B-o/
 - HTML/CSS/JavaScript thuần: **không cần server, không build, không cài gì thêm**. Đưa lên GitHub Pages là chạy (miễn phí).
@@ -16,7 +16,7 @@ Website của shop **S&LIFE Sneakers**, dựng từ bảng hàng sẵn trên Goo
 | Xem web trên máy | Bấm đúp **`xem-web.bat`** (hoặc gõ `.\xem-web.bat` trong Terminal) → trình duyệt mở http://localhost:8080 |
 | Cập nhật hàng từ Google Sheet | Tải bảng hàng dạng .xlsx, **kéo thả file vào `cap-nhat-hang.bat`** |
 | Thêm ảnh sản phẩm | Chép ảnh vào `images/products/`, tên file = mã sản phẩm (`U204LMMC.jpg`) |
-| Sửa SĐT, Zalo, ngân hàng… | Mở `data/shop.js` |
+| Sửa link Messenger, thông tin shop, câu hỏi thường gặp… | Mở `data/shop.js` |
 | Đưa thay đổi lên web thật | Source Control → **Commit** → **Sync Changes**. Web tự cập nhật sau 1–2 phút |
 
 Cần cài **Python** (https://python.org, nhớ tích ô *Add Python to PATH*) để chạy hai file `.bat`.
@@ -27,7 +27,7 @@ Cần cài **Python** (https://python.org, nhớ tích ô *Add Python to PATH*) 
 | --- | --- |
 | [HUONG-DAN-ANTIGRAVITY.md](HUONG-DAN-ANTIGRAVITY.md) | **Đọc đầu tiên.** Quy trình làm việc hằng ngày, nhờ trợ lý AI sửa web, lưu lên GitHub, danh sách việc cần hoàn thiện |
 | [HUONG-DAN-CAP-NHAT-ANH.md](HUONG-DAN-CAP-NHAT-ANH.md) | Tải ảnh sản phẩm, banner, ảnh khách hàng |
-| [HUONG-DAN-DON-HANG.md](HUONG-DAN-DON-HANG.md) | Tự động lưu đơn hàng vào Google Sheet |
+| [HUONG-DAN-DON-HANG.md](HUONG-DAN-DON-HANG.md) | Sổ yêu cầu mua trên Google Sheet (không bắt buộc) |
 | [HUONG-DAN-TEN-MIEN.md](HUONG-DAN-TEN-MIEN.md) | Tên miền .vn, thủ tục pháp lý, SEO |
 | [AGENTS.md](AGENTS.md) | Quy tắc cho trợ lý AI (Antigravity, Claude Code…). Mở đầu mỗi cuộc trò chuyện: *"Đọc file AGENTS.md và làm theo quy tắc trong đó."* |
 
@@ -37,15 +37,15 @@ Cần cài **Python** (https://python.org, nhớ tích ô *Add Python to PATH*) 
 
 | Trang | Nội dung |
 | --- | --- |
-| `index.html` — Trang chủ | Thanh thông báo, slider banner, cam kết, dòng giày nổi bật, thương hiệu, sản phẩm từng hãng, ảnh khách hàng, 4 bước đặt hàng |
+| `index.html` — Trang chủ | Hàng sẵn mua ngay, cam kết, theo hãng, theo nhu cầu, dòng giày nổi bật, tư vấn size, mẫu theo hãng, câu hỏi thường gặp |
 | Menu | Máy tính: menu ngang, rê chuột vào hãng xổ ra các dòng. Điện thoại: nút **MENU** → hãng → dòng |
-| `shop.html` — Danh mục | Tất cả giày / theo hãng (`?brand=`) / theo dòng (`&line=`) / tìm kiếm. Lọc size · màu · giá · code nam/nữ, sắp xếp, phân trang, sản phẩm đã xem |
-| `product.html` — Sản phẩm | Ảnh chính + ảnh phụ, chọn size, lưu ý form, **Thêm vào giỏ** / **Mua ngay** (sang Đặt hàng) / **Tư vấn Zalo**, mô tả · thông tin · đổi trả, gợi ý cùng dòng / cùng tầm giá |
-| `cart.html` → `dat-hang.html` | Giỏ hàng → đặt hàng 3 bước: thông tin giao hàng → COD cọc 30% hoặc chuyển khoản → mã đơn, mã QR VietQR, gửi đơn qua Zalo |
+| `shop.html` — Danh mục | Hàng sẵn / theo hãng (`?brand=`) / theo dòng (`&line=`) / tìm kiếm (mã, tên, biệt danh). Lọc hãng · dòng giày · size · giá · code nam/nữ, sắp xếp, phân trang, sản phẩm đã xem |
+| `product.html` — Sản phẩm | Ảnh chính + ảnh phụ, chọn size, lưu ý form, lưu ý form + bảng size trước nút mua, **Thêm vào giỏ** / **Gửi yêu cầu mua** / **Tư vấn size qua Messenger**, mô tả · thông tin · đổi trả, gợi ý cùng dòng / cùng tầm giá |
+| `cart.html` → `dat-hang.html` → `yeu-cau.html` | Giỏ hàng → Gửi yêu cầu: web soạn sẵn tin nhắn, khách **Sao chép** + **Mở Messenger**; giỏ chỉ xoá khi khách bấm "Tôi đã gửi". `yeu-cau.html` là link tóm tắt yêu cầu gửi kèm tin nhắn |
 | `gioi-thieu.html`, `lien-he.html`, `policy.html`, `chinh-sach-bao-mat.html`, `size-guide.html` | Giới thiệu, liên hệ, chính sách đổi trả · vận chuyển · thanh toán, bảo mật, hướng dẫn chọn size |
 | `anh.html` — Kiểm tra ảnh | Trang nội bộ cho chủ shop: tên file ảnh cần đặt cho từng mẫu, mẫu nào đã có / chưa có ảnh |
 
-**Khách đặt hàng thế nào:** chọn size → website soạn sẵn tin nhắn `Mã: U204LMMC / Size: 40 / Chân dài: 25 cm` → mở Zalo của shop → khách dán và gửi. Không cần máy chủ.
+**Khách mua thế nào:** chọn size → **Gửi yêu cầu** → website soạn sẵn tin nhắn (mẫu, mã, size, giá, link tóm tắt) → khách sao chép, mở Messenger của chủ shop, dán và gửi → shop xác nhận size, phí ship và tiền cọc trong tin nhắn. Không cần máy chủ, không thu tiền trên web.
 
 ## Cấu trúc thư mục
 
@@ -96,10 +96,12 @@ Chi tiết: [HUONG-DAN-CAP-NHAT-ANH.md](HUONG-DAN-CAP-NHAT-ANH.md).
 
 ## Sửa thông tin shop — `data/shop.js`
 
-- **Liên hệ:** số điện thoại, Zalo, Facebook, Instagram, TikTok, giờ mở cửa.
-- **Thanh toán:** tài khoản ngân hàng (dùng để tạo mã QR), % đặt cọc, số ngày đổi trả.
+- **Liên hệ:** `messenger` (kênh chính), Facebook, Instagram, TikTok, giờ trả lời; Zalo, số điện thoại chỉ hiện nhỏ ở trang Liên hệ.
+- **Tài khoản ngân hàng:** chỉ lưu trong file, **không hiện trên web** — shop gửi qua tin nhắn.
+- **Bật/tắt:** `features.wishlist` (nút Yêu thích, đang tắt). **Biệt danh tìm kiếm:** `aliases`. **Câu hỏi thường gặp:** `faq`.
+- **Bảng size theo hãng:** `window.SIZE_CHARTS` (chủ shop kiểm lại với bảng trên web hãng).
 - **Pháp lý:** tên hộ kinh doanh, địa chỉ, email, mã số thuế, link Bộ Công Thương. **Ô để trống sẽ tự ẩn** trên website.
-- **Website:** `siteUrl` (đổi khi có tên miền .vn), `orderEndpoint` (lưu đơn vào Google Sheet), dòng thông báo đầu trang, ưu đãi ở trang sản phẩm.
+- **Website:** `siteUrl` (đổi khi có tên miền .vn), `orderEndpoint` (sổ yêu cầu trên Google Sheet), `ga4Id` (đo lượt xem, không bắt buộc), dòng thông báo đầu trang, ưu đãi ở trang sản phẩm.
 - **Dòng giày:** mục `window.LINES`. Ví dụ thêm dòng 9060 cho New Balance: `["9060", /9060/i],`.
 - **Lưu ý form:** mục `window.FIT_NOTES` (lời khuyên chọn size theo dòng giày).
 
