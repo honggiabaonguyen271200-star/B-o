@@ -955,8 +955,9 @@
           return '<a class="line-card" href="' + lineUrl(x.brand, x.line) + '">' + media(p) +
             '<span class="line-card__txt"><b>' + esc(title) + "</b><small>" + x.count + " mẫu</small></span></a>";
         }
-        return '<a class="line-card line-card--text" href="' + lineUrl(x.brand, x.line) + '"><span class="line-card__word' + (word.length > 5 ? " is-long" : "") + '" aria-hidden="true"><span>' + esc(word) + "</span></span>" +
-          '<span class="line-card__txt"><b>' + esc(title) + "</b><small>" + x.count + " mẫu</small></span></a>";
+        // Chưa có ảnh thật: chỉ ghi tên dòng một lần (tên hãng nhỏ phía trên), không lặp nhãn ở đáy
+        return '<a class="line-card line-card--text" href="' + lineUrl(x.brand, x.line) + '" aria-label="' + esc(title) + ", " + x.count + ' mẫu">' +
+          '<span class="line-card__plain"><small>' + esc(x.brand) + '</small><b class="' + (word.length > 9 ? "is-long" : word.length > 5 ? "is-mid" : "") + '">' + esc(word) + "</b><em>" + x.count + " mẫu</em></span></a>";
       }).join("");
     }
 

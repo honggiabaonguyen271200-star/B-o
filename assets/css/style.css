@@ -1,4 +1,15 @@
-/* S&LIFE Sneakers — giao diện. Màu lấy từ logo (xem images/brand/README.md). */
+/* S&LIFE Sneaker — giao diện. Màu lấy từ logo (xem images/brand/README.md). */
+/* Font dự phòng cho tiêu đề in hoa khi Bricolage chưa tải xong / không tải được:
+   font máy có sẵn, thu nhỏ còn ~72% để bề ngang gần bằng Bricolage bản hẹp → chữ lớn không tràn mép. */
+@font-face {
+  font-family: "Bricolage Fallback";
+  src: local("Arial Narrow Bold"), local("ArialNarrow-Bold"), local("Arial Bold"), local("Arial-BoldMT"),
+       local("Helvetica Neue Bold"), local("HelveticaNeue-Bold"), local("Roboto Bold"), local("Roboto-Bold"),
+       local("Liberation Sans Bold"), local("DejaVu Sans Bold");
+  font-weight: 600 900;
+  size-adjust: 72%;
+  ascent-override: 100%;
+}
 :root {
   --c-cobalt: #004AAD;
   --c-indigo: #3E32AD;
@@ -23,7 +34,7 @@
   --shadow-2: 0 18px 40px rgba(22, 18, 43, .16);
   /* Một họ chữ: Bricolage Grotesque — nội dung ở độ rộng thường, tiêu đề ở độ rộng hẹp (font-stretch 75%) */
   --font: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque", "Bricolage Fallback", "Arial Narrow", sans-serif;
   --max: 1320px;
   --gut: 16px;
   --hd-h: 116px;           /* chiều cao header dính (điện thoại: 2 hàng) */
@@ -1124,3 +1135,14 @@ body[data-page="home"] .ft { margin-top: 0; }
 .pill--ok { color: #11603D; }
 .sizes button.is-off { color: #6E6980; }
 .prose a:not(.btn) { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Dòng giày nổi bật — ô chưa có ảnh thật: một tên dòng duy nhất (tên hãng nhỏ ở trên) */
+.line-card__plain { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; padding: 10%; text-align: center; }
+.line-card__plain small { font-size: clamp(11px, 6cqi, 14px); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.line-card__plain b { max-width: 100%; font-family: var(--font-display); font-stretch: 75%; font-weight: 800; text-transform: uppercase; line-height: 1.02; font-size: 24cqi; color: var(--c-violet); overflow-wrap: break-word; }
+.line-card__plain b.is-mid { font-size: 17cqi; }
+.line-card__plain b.is-long { font-size: 13cqi; }
+.line-card:first-child .line-card__plain b { font-size: 15cqi; }
+.line-card__plain em { font-style: normal; font-size: clamp(12px, 6cqi, 14px); color: var(--muted); }
+/* Tiêu đề lớn: không bao giờ tràn mép, kể cả khi đang dùng font dự phòng */
+.hero__title span, .coll__title, .pd h1, .page-title, .sec__title { max-width: 100%; overflow-wrap: break-word; }
