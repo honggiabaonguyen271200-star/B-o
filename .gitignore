@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+
+# Hệ điều hành / trình soạn thảo
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+
+# File tạm
+*.tmp
+*.log

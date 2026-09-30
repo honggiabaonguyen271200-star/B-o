@@ -1,12 +1,16 @@
 // Thông tin cửa hàng — sửa tại đây, toàn bộ website tự cập nhật.
 window.SHOP = {
-  name: "S&LIFE Sneakers",
+  name: "S&LIFE Sneaker",
   tagline: "Giày chính hãng, hàng sẵn tại shop",
   owner: "Mr. Bảo",
   phone: "0941598395",
   phoneDisplay: "0941 598 395",
-  zalo: "https://zalo.me/0941598395",
-  facebook: "https://www.facebook.com/profile.php?id=61594467666215", // Facebook shop Sneaker (Fanpage chính thức, nút Messenger)
+  // Kênh tư vấn và chốt đơn chính: Messenger Facebook cá nhân của chủ shop.
+  // messenger: link mở hội thoại. Nếu trên điện thoại link m.me không mở đúng, đổi thành link trang cá nhân (facebookOwner).
+  messenger: "https://m.me/honggiabaoslife",
+  messengerName: "Nguyễn Hồng Gia Bảo",
+  zalo: "https://zalo.me/0941598395",   // kênh phụ, chỉ hiện ở trang Liên hệ
+  facebook: "https://www.facebook.com/profile.php?id=61594467666215", // Facebook Page S&LIFE Sneaker
   facebookSneaker: "https://www.facebook.com/profile.php?id=61594467666215",
   facebookOwner: "https://www.facebook.com/honggiabaoslife/", // Facebook cá nhân chủ shop
   facebookGarment: "https://www.facebook.com/profile.php?id=61594441897601", // Facebook shop Garment
@@ -15,49 +19,72 @@ window.SHOP = {
   instagramSneaker: "https://www.instagram.com/s.life_sneakers/",
   instagramGarment: "https://www.instagram.com/s.life_garment/", // Instagram shop Garment
   tiktok: "https://www.tiktok.com/@slifesneaker",
+  // Tài khoản ngân hàng: KHÔNG hiện trên website. Shop gửi số tài khoản và tiền cọc qua tin nhắn.
   bank: {
     name: "Techcombank",
-    bin: "TCB",            // mã ngân hàng để tạo mã QR chuyển khoản (VietQR)
+    bin: "TCB",
     number: "19035107259014",
     holder: "Nguyen Hong Gia Bao",
   },
-  depositPercent: 30,
   returnDays: 3,
   openHours: "9:00 – 21:00",
 
-  // --- Thông tin pháp lý: điền khi có, ô nào để trống sẽ tự ẩn trên website ---
-  legalName: "",           // Tên hộ kinh doanh / công ty, VD: "Hộ kinh doanh S&LIFE Sneakers"
-  address: "",             // Địa chỉ cửa hàng / nơi đăng ký kinh doanh
-  email: "",               // VD: "lienhe@slifesneakers.vn"
+  // Bật/tắt tính năng. wishlist: nút tim "Yêu thích" (để giai đoạn sau).
+  features: { wishlist: false },
+
+  // --- Thông tin pháp lý: điền khi đã rà soát xong, ô nào để trống sẽ tự ẩn trên website ---
+  legalName: "",           // Tên hộ kinh doanh / công ty
+  address: "",             // Địa chỉ đăng ký kinh doanh
+  email: "",
   taxCode: "",             // Mã số thuế / số giấy phép kinh doanh
   bctUrl: "",              // Link hồ sơ "Đã thông báo Bộ Công Thương" trên online.gov.vn
 
   // --- Website ---
   siteUrl: "https://honggiabaonguyen271200-star.github.io/B-o/", // đổi thành tên miền .vn khi có
-  orderEndpoint: "",       // Link Google Apps Script để lưu đơn vào Google Sheet (xem HUONG-DAN-DON-HANG.md)
-  announcement: "S&LIFE SNEAKERS — ONLY AUTHENTIC · GIÀY CHÍNH HÃNG, HÀNG SẴN",
-  // Thanh chữ chạy đầu trang (tự đổi câu). Chỉ ghi điều shop thực sự áp dụng. Để [] thì dùng dòng announcement ở trên.
+  // Sổ yêu cầu (không bắt buộc): link Web app của Google Apps Script, xem HUONG-DAN-DON-HANG.md. Để trống vẫn gửi qua Messenger bình thường.
+  orderEndpoint: "",
+  // Đo lượt xem và hành trình mua (không bắt buộc): mã Google Analytics 4 dạng "G-XXXXXXX". Để trống thì không gửi dữ liệu đi đâu.
+  ga4Id: "",
+  announcement: "S&LIFE SNEAKER — ONLY AUTHENTIC · GIÀY CHÍNH HÃNG, HÀNG SẴN",
+  // Dòng chữ đầu trang (máy tính hiện cả 3, điện thoại hiện câu đầu). Chỉ ghi điều shop thực sự áp dụng.
   announcements: [
     "Giày chính hãng — mã sản phẩm khớp tem hộp",
-    "Đồng kiểm: mở hộp kiểm tra trước khi trả tiền",
+    "Tư vấn size theo form từng dòng qua Messenger",
     "Đổi size trong 3 ngày nếu còn nguyên hộp, tem",
   ],
   // Câu hỏi thường gặp ở trang chủ: [câu hỏi, trả lời]
   faq: [
-    ["Làm sao biết giày chính hãng?", "Mỗi đôi có mã sản phẩm khớp với tem hộp. Bạn tra mã đó trên trang chủ của hãng sẽ ra đúng mẫu, đúng màu. Giao đủ hộp, giấy gói, tem và phụ kiện đi kèm."],
-    ["Chọn size thế nào cho vừa?", "Đo chiều dài bàn chân (cm) rồi xem lưu ý form của từng dòng ở trang Hướng dẫn chọn size. Còn phân vân, gửi shop số cm chân kèm tên đôi giày đang đi vừa nhất để được tư vấn."],
-    ["Được kiểm tra hàng trước khi trả tiền không?", "Có. Shop gửi ảnh chụp thật trước khi đóng gói, bạn được mở hộp kiểm tra khi nhận hàng rồi mới trả tiền."],
-    ["Đổi size như thế nào?", "Đổi trong 3 ngày kể từ khi giao hàng, giày còn nguyên hộp, tem và chưa đi ngoài trời; khách hỗ trợ phí đổi trả. Sai size do shop tư vấn thì shop chịu phí đổi."],
-    ["Thanh toán và giao hàng ra sao?", "Ship toàn quốc qua SPX Express, Viettel Post…; nội thành Hà Nội, TP.HCM có ship nhanh (chuyển khoản trước). COD đặt cọc 30% giá bán, phần còn lại trả khi nhận hàng."],
-    ["Mẫu hoặc size mình cần không có trên web?", "Size không có trong danh sách là đã hết tại shop. Bạn nhắn Zalo tên mẫu và size, shop kiểm tra và báo giá order."],
+    ["Làm sao biết giày chính hãng?", "Mỗi đôi có mã sản phẩm khớp với tem hộp. Bạn tra mã đó trên trang chủ của hãng sẽ ra đúng mẫu, đúng màu. Shop gửi ảnh chụp thật đôi giày trước khi giao."],
+    ["Chọn size thế nào cho vừa?", "Xem lưu ý form và bảng size ngay trên trang sản phẩm. Còn phân vân, nhắn Messenger cho shop số cm chân kèm tên đôi giày đang đi vừa nhất — shop tư vấn cụ thể cho từng mẫu."],
+    ["Đặt mua như thế nào?", "Chọn mẫu và size, bấm Gửi yêu cầu. Website soạn sẵn tin nhắn (tên mẫu, mã, size, giá); bạn sao chép và gửi cho shop qua Messenger. Không cần tạo tài khoản."],
+    ["Đặt cọc và thanh toán ra sao?", "Sau khi xác nhận còn size, shop gửi số tài khoản và mức cọc qua Messenger. Website không thu tiền và không lưu thông tin thanh toán."],
+    ["Giao hàng mất bao lâu, phí ship bao nhiêu?", "Shop gửi qua SPX Express hoặc Viettel Post; phí ship do đơn vị vận chuyển tính, shop báo khi xác nhận đơn. Hà Nội và TP.HCM có thể giao trong ngày."],
+    ["Đổi size như thế nào?", "Đổi size trong 3 ngày kể từ khi nhận hàng, giày còn nguyên hộp, tem và chưa đi ngoài trời. Đổi theo nhu cầu thì bạn chịu phí ship; giao sai hoặc hàng lỗi đã xác nhận thì shop chịu."],
+    ["Có được kiểm hàng khi nhận không?", "Việc đồng kiểm tuỳ đơn vị vận chuyển, shop xác nhận riêng với bạn khi chốt đơn."],
+    ["Mẫu hoặc size mình cần không có trên web?", "Website chỉ hiện hàng đang có sẵn. Bạn nhắn Messenger tên mẫu và size, shop tư vấn thêm."],
   ],
-  // Ưu đãi hiện ở trang sản phẩm. Chỉ ghi những gì shop thực sự áp dụng.
+  // Cam kết hiện ở trang sản phẩm. Chỉ ghi những gì shop thực sự áp dụng.
   perks: [
     "Mã sản phẩm khớp tem hộp, tra trên trang chủ hãng ra đúng mẫu",
-    "Đồng kiểm: mở hộp kiểm tra trước khi trả tiền",
+    "Tư vấn size theo form từng dòng trước khi chốt đơn",
+    "Shop gửi ảnh chụp thật đôi giày trước khi giao",
     "Đổi size trong 3 ngày nếu còn nguyên hộp, tem, chưa đi ngoài trời",
-    "Shop gửi ảnh chụp thật đôi giày trước khi đóng gói",
   ],
+  // Biệt danh khi tìm kiếm: gõ bên trái sẽ tìm thêm các cụm bên phải (gõ không dấu cũng được). Thêm tuỳ ý.
+  aliases: {
+    "af1": ["air force 1"],
+    "aj1": ["jordan 1"],
+    "jd1": ["jordan 1"],
+    "aj4": ["jordan 4"],
+    "nb": ["new balance"],
+    "ot": ["onitsuka tiger"],
+    "mexico": ["mexico 66"],
+    "panda": ["panda", "white black", "black white"],
+    "giay tennis": ["vapor", "court lite", "gp challenge", "dedicate", "resolution", "solution speed", "challenger", "court ff", "game ff"],
+    "tennis": ["vapor", "court lite", "gp challenge", "dedicate", "resolution", "solution speed", "challenger", "court ff", "game ff"],
+    "chay bo": ["kayano", "nimbus", "cumulus", "gt-2160", "gt-1000"],
+    "de gum": ["gum"],
+  },
 };
 
 // Lưu ý form theo từng dòng giày (lấy từ mục "3. CHỌN SIZE" trong bảng hàng).
@@ -128,3 +155,25 @@ window.LINES = {
   "Salomon": [["XT-6", /xt-6/i]],
   "On": [["The Roger", /roger/i]],
 };
+
+
+// Bảng size tham khảo theo hãng (nam / unisex): [US, UK, EU, cm chiều dài bàn chân].
+// CHỦ SHOP KIỂM LẠI với bảng size trên web chính thức của hãng trước khi đưa lên bản chính.
+// Hãng chưa có bảng: trang sản phẩm ghi "shop đang cập nhật" và mời nhắn Messenger.
+window.SIZE_CHARTS = {
+  "Nike": [
+    ["3.5", "3", "35,5", "22,5"], ["4", "3.5", "36", "23"], ["4.5", "4", "36,5", "23,5"], ["5", "4.5", "37,5", "23,5"],
+    ["5.5", "5", "38", "24"], ["6", "5.5", "38,5", "24"], ["6.5", "6", "39", "24,5"], ["7", "6", "40", "25"],
+    ["7.5", "6.5", "40,5", "25,5"], ["8", "7", "41", "26"], ["8.5", "7.5", "42", "26,5"], ["9", "8", "42,5", "27"],
+    ["9.5", "8.5", "43", "27,5"], ["10", "9", "44", "28"], ["10.5", "9.5", "44,5", "28,5"], ["11", "10", "45", "29"],
+    ["11.5", "10.5", "45,5", "29,5"], ["12", "11", "46", "30"],
+  ],
+  "New Balance": [
+    ["4", "3.5", "36", "22"], ["4.5", "4", "37", "22,5"], ["5", "4.5", "37,5", "23"], ["5.5", "5", "38", "23,5"],
+    ["6", "5.5", "38,5", "24"], ["6.5", "6", "39,5", "24,5"], ["7", "6.5", "40", "25"], ["7.5", "7", "40,5", "25,5"],
+    ["8", "7.5", "41,5", "26"], ["8.5", "8", "42", "26,5"], ["9", "8.5", "42,5", "27"], ["9.5", "9", "43", "27,5"],
+    ["10", "9.5", "44", "28"], ["10.5", "10", "44,5", "28,5"], ["11", "10.5", "45", "29"], ["11.5", "11", "45,5", "29,5"],
+    ["12", "11.5", "46,5", "30"],
+  ],
+};
+window.SIZE_CHARTS["Jordan"] = window.SIZE_CHARTS["Nike"];

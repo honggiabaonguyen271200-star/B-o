@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>S&amp;LIFE Sneakers — Giày chính hãng, hàng sẵn</title>
-<meta name="description" content="S&amp;LIFE Sneakers — giày chính hãng New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma. Hàng sẵn, đồng kiểm khi nhận, đổi size 3 ngày.">
-<meta property="og:title" content="S&amp;LIFE Sneakers — Giày chính hãng, hàng sẵn">
-<meta property="og:description" content="S&amp;LIFE Sneakers — giày chính hãng New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma. Hàng sẵn, đồng kiểm khi nhận, đổi size 3 ngày.">
+<title>S&amp;LIFE Sneaker — Giày chính hãng, hàng sẵn</title>
+<meta name="description" content="S&amp;LIFE Sneaker — giày chính hãng New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma. Hàng sẵn, tư vấn size theo form, đổi size 3 ngày.">
+<meta property="og:title" content="S&amp;LIFE Sneaker — Giày chính hãng, hàng sẵn">
+<meta property="og:description" content="S&amp;LIFE Sneaker — giày chính hãng New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma. Hàng sẵn, tư vấn size theo form, đổi size 3 ngày.">
 <meta property="og:image" content="https://honggiabaonguyen271200-star.github.io/B-o/images/brand/slife-logo-square-1200.jpg">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#3E32AD">
@@ -15,19 +15,18 @@
 <link rel="apple-touch-icon" href="images/brand/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body data-page="home">
 <div id="site-header"></div>
 <main id="main">
-  <h1 class="sr-only">S&amp;LIFE Sneakers — giày chính hãng, hàng sẵn: New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma</h1>
+  <h1 class="sr-only">S&amp;LIFE Sneaker — giày chính hãng, hàng sẵn: New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma</h1>
   <section class="hero" data-hero aria-roledescription="carousel" aria-label="Giới thiệu S&amp;LIFE">
     <div class="hero__track" data-hero-track></div>
     <div class="hero__ctrl"><div class="container">
       <div class="hero__dots" data-hero-dots></div>
       <div class="hero__nav">
-        <button type="button" class="hero__btn" data-hero-pause aria-label="Tạm dừng tự chuyển"></button>
         <button type="button" class="hero__btn" data-hero-go="-1" aria-label="Slide trước"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
         <button type="button" class="hero__btn hero__btn--next" data-hero-go="1" aria-label="Slide sau"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
       </div>
@@ -35,26 +34,29 @@
   </section>
 
   <div class="container">
+    <div data-picks></div>
+
     <div class="perks" data-perks></div>
 
     <section class="sec">
-      <div class="sec__head"><h2 class="sec__title">Thương hiệu</h2><p class="sec__sub">Chọn hãng để xem các dòng giày đang có size tại shop.</p></div>
+      <div class="sec__head"><h2 class="sec__title">Theo thương hiệu</h2><p class="sec__sub">Chọn hãng để xem các dòng giày đang có size tại shop.</p></div>
       <div class="brands" data-brands></div>
     </section>
 
-    <div data-picks></div>
+    <section class="sec">
+      <div class="sec__head"><h2 class="sec__title">Theo nhu cầu</h2></div>
+      <div class="needs" data-needs></div>
+    </section>
 
     <section class="sec">
       <div class="sec__head"><h2 class="sec__title">Dòng giày nổi bật</h2><p class="sec__sub">Những dòng đang có nhiều mẫu và nhiều size nhất.</p></div>
       <div class="lines" data-lines></div>
     </section>
-  </div>
 
-  <section class="story" data-story aria-label="Về S&amp;LIFE"></section>
+    <section class="sec"><div class="consult" data-consult></div></section>
 
-  <div class="container">
     <section class="sec" data-by-brand>
-      <div class="sec__head"><h2 class="sec__title">Theo thương hiệu</h2></div>
+      <div class="sec__head"><h2 class="sec__title">Mẫu theo hãng</h2></div>
       <div class="tabs-row" role="tablist" aria-label="Chọn thương hiệu"></div>
       <div data-by-brand-body></div>
     </section>
@@ -67,7 +69,7 @@
     <section class="sec">
       <div class="sec__head"><h2 class="sec__title">Câu hỏi thường gặp</h2></div>
       <div class="faq" data-faq></div>
-      <div class="sec__foot"><a class="sec__link" href="policy.html">Xem đầy đủ chính sách</a></div>
+      <div class="sec__foot"><a class="sec__link" href="policy.html">Xem đầy đủ cách mua và đổi size</a></div>
     </section>
   </div>
 

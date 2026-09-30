@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Đặt hàng — S&amp;LIFE Sneakers</title>
-<meta name="description" content="S&amp;LIFE Sneakers — giày chính hãng New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma. Hàng sẵn, đồng kiểm khi nhận, đổi size 3 ngày.">
-<meta property="og:title" content="Đặt hàng — S&amp;LIFE Sneakers">
-<meta property="og:description" content="S&amp;LIFE Sneakers — giày chính hãng New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma. Hàng sẵn, đồng kiểm khi nhận, đổi size 3 ngày.">
+<title>Gửi yêu cầu — S&amp;LIFE Sneaker</title>
+<meta name="description" content="S&amp;LIFE Sneaker — giày chính hãng New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma. Hàng sẵn, tư vấn size theo form, đổi size 3 ngày.">
+<meta property="og:title" content="Gửi yêu cầu — S&amp;LIFE Sneaker">
+<meta property="og:description" content="S&amp;LIFE Sneaker — giày chính hãng New Balance, Asics, Onitsuka Tiger, Jordan, Nike, Adidas, Puma. Hàng sẵn, tư vấn size theo form, đổi size 3 ngày.">
 <meta property="og:image" content="https://honggiabaonguyen271200-star.github.io/B-o/images/brand/slife-logo-square-1200.jpg">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#3E32AD">
@@ -15,51 +15,41 @@
 <link rel="apple-touch-icon" href="images/brand/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&display=swap" rel="stylesheet">
 <meta name="robots" content="noindex">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body data-page="checkout">
 <div id="site-header"></div>
 <main id="main" class="container">
+  <div class="pd-top"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Trang chủ</a><span aria-hidden="true">/</span><a href="cart.html">Giỏ hàng</a><span aria-hidden="true">/</span><b style="font-weight:500">Gửi yêu cầu</b></nav></div>
   <div class="co" data-checkout>
     <div>
-      <div class="co__steps"><a href="cart.html">Giỏ hàng</a> › <span data-crumb-step="1">Thông tin giao hàng</span> › <span data-crumb-step="2">Thanh toán</span> › <span data-crumb-step="3">Gửi đơn</span></div>
-
-      <section data-step="1">
-        <h2>Thông tin giao hàng</h2>
-        <form data-co-form novalidate>
-          <div class="field"><label for="co-name">Họ và tên</label><input id="co-name" name="name" autocomplete="name" required></div>
-          <div class="co__two">
-            <div class="field"><label for="co-phone">Số điện thoại</label><input id="co-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required></div>
-            <div class="field"><label for="co-email">Email (không bắt buộc)</label><input id="co-email" name="email" type="email" autocomplete="email"></div>
-          </div>
-          <div class="field"><label for="co-province">Tỉnh / thành</label><select id="co-province" name="province" required></select></div>
-          <div class="field"><label for="co-address">Địa chỉ (số nhà, đường, phường / xã)</label><input id="co-address" name="address" autocomplete="street-address" required></div>
-          <div class="co__two">
-            <div class="field"><label for="co-foot">Chiều dài bàn chân (cm)</label><input id="co-foot" name="foot" inputmode="decimal" placeholder="VD: 25"><span class="hint">Shop kiểm tra lại size giúp. <a href="size-guide.html" style="text-decoration:underline">Cách đo</a></span></div>
-            <div class="field"><label for="co-note">Ghi chú</label><input id="co-note" name="note" placeholder="VD: giao giờ hành chính"></div>
-          </div>
-          <label class="agree"><input type="checkbox" name="agree" checked> <span>Tôi đồng ý để S&amp;LIFE Sneakers dùng thông tin trên để xác nhận và giao đơn hàng, theo <a href="chinh-sach-bao-mat.html" target="_blank">chính sách bảo mật</a>.</span></label>
-          <div class="co__nav"><a href="cart.html">‹ Giỏ hàng</a><button class="btn" type="submit">Tiếp tục đến phương thức thanh toán</button></div>
-        </form>
-      </section>
-
-      <section data-step="2" hidden>
-        <h2>Phương thức thanh toán</h2>
-        <div class="co__pay">
-          <div>
-            <div class="pay-opt"><label><input type="radio" name="pay" value="cod" checked> Thanh toán khi nhận hàng (COD)</label><div class="pay-opt__body" data-cod-text></div></div>
-            <div class="pay-opt"><label><input type="radio" name="pay" value="bank"> Chuyển khoản ngân hàng</label><div class="pay-opt__body" data-bank-text></div></div>
-          </div>
-          <p class="muted" style="font-size:13.5px;margin:0">Sau khi hoàn tất, website tạo mã QR chuyển khoản có sẵn số tiền và mã đơn. Bạn nên chờ shop xác nhận còn size rồi hẵng chuyển.</p>
-          <div class="co__nav"><button class="link" type="button" data-back>‹ Thông tin giao hàng</button><button class="btn" type="button" data-finish>Hoàn tất đơn hàng</button></div>
+      <h1 class="page-title">Gửi yêu cầu cho shop</h1>
+      <p class="co__lead">Website soạn sẵn tin nhắn cho bạn. Bạn gửi qua Messenger, shop xác nhận size, phí ship và tiền cọc ngay trong tin nhắn. Không cần tạo tài khoản.</p>
+      <form class="req-form" data-req-form novalidate>
+        <div class="co__two">
+          <div class="field"><label for="rq-name">Tên gọi</label><input id="rq-name" name="name" autocomplete="given-name" placeholder="Không bắt buộc"></div>
+          <div class="field"><label for="rq-foot">Chiều dài bàn chân (cm)</label><input id="rq-foot" name="foot" inputmode="decimal" placeholder="VD: 25 — không bắt buộc"><span class="hint">Để shop tư vấn size sát hơn. <a class="link" href="size-guide.html">Cách đo</a></span></div>
         </div>
-      </section>
+        <div class="field"><label for="rq-province">Nhận hàng tại</label><select id="rq-province" name="province"></select><span class="hint">Để shop báo phí ship. Địa chỉ cụ thể bạn gửi sau trong tin nhắn.</span></div>
+        <div class="field"><label for="rq-note">Ghi chú</label><textarea id="rq-note" name="note" placeholder="VD: cần gấp, muốn xem thêm ảnh đôi này…"></textarea></div>
+      </form>
 
-      <section data-step="3" hidden><div data-done></div></section>
+      <h2 class="req__h">Tin nhắn soạn sẵn</h2>
+      <div class="order-msg req__msg" data-req-msg aria-live="polite"></div>
+      <ol class="req__steps">
+        <li><button type="button" class="btn btn--ghost btn--block" data-req-copy>1. Sao chép tin nhắn</button></li>
+        <li><a class="btn btn--msgr btn--block" data-req-open data-go target="_blank" rel="noopener" href="#">2. Mở Messenger và dán, gửi cho shop</a></li>
+      </ol>
+      <p class="req__status" data-req-status hidden></p>
+      <div class="req__after">
+        <p class="muted">Gửi xong rồi? Giỏ hàng được giữ nguyên cho tới khi bạn xác nhận.</p>
+        <button type="button" class="btn btn--sm" data-req-sent>Tôi đã gửi cho shop — xoá giỏ</button>
+        <a class="link" data-req-link href="#" target="_blank" rel="noopener">Link tóm tắt yêu cầu</a>
+      </div>
     </div>
-    <aside class="co__summary" data-summary></aside>
+    <aside class="co__summary" data-summary aria-label="Mẫu bạn chọn"></aside>
   </div>
 </main>
 <div id="site-footer"></div>
