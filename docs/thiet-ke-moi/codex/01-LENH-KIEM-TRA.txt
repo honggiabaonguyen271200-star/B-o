@@ -1,0 +1,11 @@
+Tiếp tục website S&LIFE Sneakers trong repo B-o đang có. Mục tiêu của tôi là website đẹp, thao tác dễ và có gu thẩm mỹ trên toàn bộ trải nghiệm; không thu hẹp thành giỏ hàng/thanh toán.
+
+Đầu tiên đọc AGENTS.md, cấu trúc mã và các skill frontend-design, ui-ux-pro-max, brand/design-system đã có; kiểm nhánh và thay đổi hiện tại. Giữ nền HTML/CSS/JS hiện hành trừ khi có lý do và quyết định rõ. Không xóa/đổi tên ảnh tôi đang cập nhật, không sửa dữ liệu sinh tự động bằng tay.
+
+Chạy website và kiểm bằng mắt trên desktop/mobile. Giao ảnh trước, danh sách vấn đề có bằng chứng và hai hướng thiết kế cụ thể cho cùng trang chủ/danh mục/chi tiết: tối giản chú trọng sản phẩm và phong cách tạp chí sneaker. Dựa giọng S&LIFE điềm đạm có gu để đề xuất một hướng, rồi dựng bản thử có thể bấm, không dừng ở lời mô tả.
+
+Đầu ra đợt đầu: trang chủ, danh mục, chi tiết sản phẩm hoàn chỉnh trên mobile/desktop với hệ màu, font tiếng Việt, khoảng cách, card, icon, nút thống nhất. Cải thiện header/menu, bố cục đầu trang, khu tuyển chọn, tìm mẫu/mã, lọc hãng/size/giá, sắp xếp, gallery/zoom, chọn size, hàng sẵn/order, hướng dẫn size và tư vấn. Kiểm ở 360/390/768/1440px; không tràn ngang hoặc nút nổi che thông tin. Dùng dữ liệu thật, trạng thái thiếu ảnh trung thực.
+
+Tiếp tục các trang phụ, chính sách/FAQ/liên hệ có dữ liệu thật; loading/empty/error/focus, giỏ và nhận đơn đáng tin cậy; hiệu năng, bàn phím/contrast, SEO/chia sẻ, cập nhật kho/ảnh và bàn giao. Không bịa review, huy hiệu hay chính sách. Lựa chọn tư vấn Zalo hay thanh toán đầy đủ chỉ chặn phần kiến trúc giao dịch phụ thuộc, không chặn công việc thiết kế.
+
+Kiểm tra phát hiện cũ orderEndpoint trống và việc gửi đơn/xóa giỏ; báo rõ trạng thái thật. Test luồng thành công, thiếu size, không có kết quả, mạng lỗi, gửi lặp, tải lại. Giao ảnh trước/sau, bản thử, điều đã kiểm và việc còn thiếu. Chưa coi website hoàn thiện chỉ vì đặt thử được một đơn. Không sửa đồng thời với Antigravity trên cùng nhánh và không xuất bản khi chưa có bản thử đã kiểm.

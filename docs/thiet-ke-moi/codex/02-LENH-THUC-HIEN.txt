@@ -1,0 +1,1 @@
+Tiếp tục bản thử theo 05-PHAM-VI-THAM-MY-UX.md và kết quả kiểm tra thực tế. Hoàn thiện hệ thiết kế cùng trang chủ/danh mục/chi tiết trên mobile và desktop trước; song song sửa lỗi giao dịch trong phạm vi đã chốt. Không đợi quyết định thanh toán để làm thiết kế. Giao bản chạy được, ảnh trước/sau và bằng chứng kiểm tra từng hạng mục.
