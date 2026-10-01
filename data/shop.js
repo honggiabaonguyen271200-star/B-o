@@ -8,9 +8,14 @@ window.SHOP = {
   // Kênh tư vấn và chốt đơn chính: Facebook cá nhân của chủ shop. Mọi nút "Tư vấn / Nhắn Facebook" mở link này.
   facebookChat: "https://www.facebook.com/honggiabaoslife/",
   facebookChatName: "Nguyễn Hồng Gia Bảo",
-  // true: Android mở link Facebook bằng Chrome; iPhone đang ở trong Zalo/TikTok thì thử mở Chrome.
-  // Trong app Facebook/Instagram, Chrome, Safari, máy tính: mở như link thường. Đặt false để luôn mở như link thường.
-  openInChrome: true,
+  // Điện thoại: bấm nút Facebook là mở thẳng app Facebook (false: mở như link thường trong trình duyệt).
+  openFacebookApp: true,
+  // ID số của Facebook cá nhân (không bắt buộc). Có ID thì iPhone mở đúng trang cá nhân trong app chắc chắn hơn.
+  // Cách lấy: xem HANDOFF.md, mục "Chủ shop cần duyệt".
+  facebookId: "",
+  // Máy tính đang dùng trình duyệt khác Chrome (Edge, Cốc Cốc…): hỏi "Sao chép link để mở bằng Chrome" hay "Mở luôn".
+  // false: mở luôn bằng trình duyệt đang dùng, không hỏi.
+  desktopAskChrome: true,
   zalo: "https://zalo.me/0941598395",   // kênh phụ, chỉ hiện ở trang Liên hệ
   facebook: "https://www.facebook.com/profile.php?id=61594467666215", // Facebook Page S&LIFE Sneaker
   facebookSneaker: "https://www.facebook.com/profile.php?id=61594467666215",

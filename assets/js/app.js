@@ -432,15 +432,17 @@
     window.gtag("config", SHOP.ga4Id);
   }
   /* ---------- Facebook: kênh tư vấn và chốt đơn chính ----------
-     Bấm nút là mở thẳng Facebook của shop (SHOP.facebookChat), mở ở nơi khách thường đã đăng nhập Facebook:
-     - Android: mở bằng Chrome (trừ khi đang ở trong app Facebook/Instagram hoặc đã ở Chrome);
-     - iPhone: Safari tự mở app Facebook; đang ở trong Zalo/TikTok… thì thử mở Chrome, không có Chrome thì mở như thường;
-     - máy tính: mở tab mới.
+     Bấm nút là mở Facebook của shop (SHOP.facebookChat) ở nơi khách đã đăng nhập Facebook:
+     - điện thoại: mở thẳng app Facebook (Android: intent tới app; iPhone: fb://), không mở được thì mở link như thường;
+     - đang ở trong app Facebook / Messenger: mở ngay tại đó;
+     - máy tính dùng Chrome: mở tab mới. Máy tính dùng trình duyệt khác (Edge, Cốc Cốc…): trang web không tự bật được
+       Chrome, nên hiện hộp chọn "Sao chép link để mở bằng Chrome" hoặc "Mở luôn bằng trình duyệt này".
      Trên trang sản phẩm, thông tin mẫu (tên, mã, size, giá, link) được chép sẵn để khách dán vào tin nhắn. */
   function fbLink(label, cls, extra) {
     return '<a class="btn btn--fb ' + (cls || "") + '" href="' + esc(SHOP.facebookChat) + '" target="_blank" rel="noopener" data-fb' + (extra || "") + ">" + I.fbc + (label || "Nhắn Facebook cho shop") + "</a>";
   }
   var fbContext = null; // trang sản phẩm gán hàm soạn tin nhắn cho mẫu đang xem
+  var fbPending = "";   // tin nhắn vừa chép, để chép lại trong hộp chọn trình duyệt
   function consultMsg(p, size) {
     return "Chào shop, mình cần tư vấn đôi này:\n" + fullName(p) + "\n" +
       "Mã: " + (p.code || p.name) + " / Size: " + (size || "…") + "\n" +
@@ -448,30 +450,60 @@
       "Chân mình dài: … cm\n" +
       "Link: " + shareUrl(p);
   }
+  function device() {
+    var ua = navigator.userAgent, brands = (navigator.userAgentData && navigator.userAgentData.brands) || [];
+    var android = /Android/i.test(ua), ios = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+    return {
+      android: android, ios: ios, mobile: android || ios || /Mobi/i.test(ua),
+      fbApp: /FBAN|FBAV|FB_IAB|FBIOS|MessengerForiOS/i.test(ua),
+      chrome: brands.length ? brands.some(function (b) { return b.brand === "Google Chrome"; }) : /Chrome\/\d/.test(ua) && !/Edg\/|OPR\/|coc_coc|YaBrowser|Vivaldi/i.test(ua),
+      name: /Edg\//.test(ua) ? "Edge" : /coc_coc/i.test(ua) ? "Cốc Cốc" : /Firefox\//.test(ua) ? "Firefox" : /OPR\//.test(ua) ? "Opera" : /Safari\//.test(ua) && !/Chrome\//.test(ua) ? "Safari" : "trình duyệt này",
+    };
+  }
   function openFacebook(e) {
-    var url = SHOP.facebookChat, ua = navigator.userAgent;
-    if (!SHOP.openInChrome || !url) return;
-    var android = /Android/i.test(ua), ios = /iPhone|iPad|iPod/i.test(ua);
-    var fbApp = /FBAN|FBAV|FB_IAB|Instagram/i.test(ua);
-    if (fbApp) return; // đang trong app Facebook/Instagram: đã đăng nhập sẵn, mở ngay tại đó
-    var target = null, rest = url.replace(/^https?:\/\//, "");
-    if (android) {
-      var isChrome = /Chrome\/\d/.test(ua) && !/; wv\)|Zalo|TikTok|musical_ly|Bytedance|Line\/|SamsungBrowser|OPR\/|EdgA|coc_coc|YaBrowser|UCBrowser|MiuiBrowser|HeyTap|Firefox/i.test(ua);
-      if (!isChrome) target = "intent://" + rest + "#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=" + encodeURIComponent(url) + ";end";
-    } else if (ios && /Zalo|TikTok|musical_ly|Bytedance|Line\//i.test(ua)) {
-      target = "googlechromes://" + rest;
+    var url = SHOP.facebookChat, d = device();
+    if (!url || d.fbApp) return; // trong app Facebook: link mở ngay trong app
+    if (d.mobile) {
+      if (SHOP.openFacebookApp === false) return;
+      var target = d.android
+        ? "intent://" + url.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.facebook.katana;S.browser_fallback_url=" + encodeURIComponent(url) + ";end"
+        : d.ios ? (SHOP.facebookId ? "fb://profile/" + SHOP.facebookId : "fb://facewebmodal/f?href=" + encodeURIComponent(url)) : null;
+      if (!target) return;
+      e.preventDefault();
+      location.href = target;
+      // Không mở được app (chưa cài, trình duyệt trong app khác chặn): mở link như thường
+      setTimeout(function () { if (!document.hidden) location.href = url; }, 1600);
+      return;
     }
-    if (!target) return; // Chrome, Safari, máy tính: mở link như bình thường
+    if (d.chrome || SHOP.desktopAskChrome === false || storage("slife_fb_here")) return;
     e.preventDefault();
-    location.href = target;
-    // Không mở được Chrome (chưa cài, app chặn): vẫn mở Facebook như link thường
-    setTimeout(function () { if (!document.hidden) location.href = url; }, 1600);
+    chooseBrowser(url, d.name);
+  }
+  function chooseBrowser(url, name) {
+    var m = modal(
+      "<h3>Mở Facebook của shop</h3>" +
+      '<p class="muted" style="font-size:14.5px;margin:8px 0 0">Bạn đang xem web bằng <b>' + esc(name) + "</b>. Trang web không tự mở được Chrome. Nếu Facebook của bạn đăng nhập trên <b>Chrome</b>:</p>" +
+      '<ol class="steps-mini fb-steps"><li><button type="button" class="btn btn--fb btn--sm" data-fbc-link data-autofocus>' + I.fbc + "Sao chép link Facebook shop</button><br>rồi mở Chrome, dán vào thanh địa chỉ (Ctrl + V), Enter.</li>" +
+      (fbPending ? '<li>Ở trang Facebook của shop, bấm <b>Nhắn tin</b>. Quay lại đây bấm <button type="button" class="btn btn--ghost btn--sm" data-fbc-msg>Sao chép tin nhắn</button> rồi dán vào khung chat.</li>' : "") + "</ol>" +
+      '<div class="modal__actions"><a class="btn btn--ghost" href="' + esc(url) + '" target="_blank" rel="noopener" data-fbc-here>Mở luôn bằng ' + esc(name) + "</a></div>" +
+      '<label class="check" style="margin-top:10px"><input type="checkbox" data-fbc-remember> Lần sau mở luôn bằng ' + esc(name) + ", không hỏi lại</label>"
+    );
+    m.el.addEventListener("click", function (ev) {
+      if (ev.target.closest("[data-fbc-link]")) { copyText(url); toast("Đã chép link — mở Chrome, dán vào thanh địa chỉ"); track("copy_fb_link", {}); }
+      if (ev.target.closest("[data-fbc-msg]")) { copyText(fbPending); toast("Đã chép tin nhắn — dán vào khung chat Facebook"); }
+      if (ev.target.closest("[data-fbc-here]")) {
+        if ($("[data-fbc-remember]", m.el).checked) storage("slife_fb_here", 1);
+        if (fbPending) copyText(fbPending);
+        setTimeout(m.close, 0);
+      }
+    });
   }
   document.addEventListener("click", function (e) {
     var a = e.target.closest("[data-fb]");
     if (!a) return;
     if (a.hasAttribute("data-fb-copy") && fbContext) {
-      copyText(fbContext(a.dataset.fbSize || null));
+      fbPending = fbContext(a.dataset.fbSize || null);
+      copyText(fbPending);
       toast("Đã chép sẵn thông tin mẫu — dán vào tin nhắn cho shop");
       track("copy_message", { source: "san_pham" });
     }
@@ -1943,7 +1975,8 @@
     $("[data-req-open]").insertAdjacentHTML("afterbegin", I.fbc);
     $("[data-req-open]").addEventListener("click", function () {
       refresh();
-      copyText(msgEl.textContent);
+      fbPending = msgEl.textContent;
+      copyText(fbPending);
       toast("Đã chép tin nhắn — dán vào khung chat Facebook của shop");
       logOnce();
     });

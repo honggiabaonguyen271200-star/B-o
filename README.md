@@ -98,7 +98,7 @@ Chi tiết: [HUONG-DAN-CAP-NHAT-ANH.md](HUONG-DAN-CAP-NHAT-ANH.md).
 
 ## Sửa thông tin shop — `data/shop.js`
 
-- **Liên hệ:** `facebookChat` (kênh chính, `openInChrome` mở bằng Chrome trên Android), Facebook, Instagram, TikTok, giờ trả lời; Zalo, số điện thoại chỉ hiện nhỏ ở trang Liên hệ.
+- **Liên hệ:** `facebookChat` (kênh chính; điện thoại mở app Facebook — `openFacebookApp`, `facebookId`; máy tính không dùng Chrome thì hỏi — `desktopAskChrome`), Facebook, Instagram, TikTok, giờ trả lời; Zalo, số điện thoại chỉ hiện nhỏ ở trang Liên hệ.
 - **Tài khoản ngân hàng:** chỉ lưu trong file, **không hiện trên web** — shop gửi qua tin nhắn.
 - **Bật/tắt:** `features.wishlist` (nút Yêu thích, đang tắt). **Biệt danh tìm kiếm:** `aliases`. **Câu hỏi thường gặp:** `faq`.
 - **Bảng size theo hãng:** `window.SIZE_CHARTS` (chủ shop kiểm lại với bảng trên web hãng).

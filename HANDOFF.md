@@ -8,23 +8,30 @@ Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách
 
 ## Chủ shop cần duyệt
 
-**Thử trên điện thoại thật (Claude không có máy thật để thử):**
+**Nút Facebook — cập nhật 01/10 theo video bạn gửi (thử lại giúp):**
 
-1. **Nút Facebook** (icon đầu trang, "Tư vấn qua Facebook" ở trang sản phẩm, "Chép tin nhắn và mở Facebook shop" ở trang Gửi yêu cầu):
-   - Android, mở web từ Zalo / TikTok / Cốc Cốc / Samsung Internet: phải bật **Chrome** và vào đúng trang `facebook.com/honggiabaoslife`;
-   - Android đang ở Chrome, hoặc trong app Facebook / Instagram: mở ngay tại đó;
-   - iPhone Safari: thường tự mở **app Facebook**;
-   - iPhone trong Zalo / TikTok: thử mở Chrome; máy không cài Chrome thì sau khoảng 1,5 giây tự mở Facebook như link thường.
+1. **Điện thoại:** bấm nút Facebook (icon đầu trang, "Tư vấn qua Facebook", "Chép tin nhắn và mở Facebook shop") là **mở thẳng app Facebook**, vào trang `honggiabaoslife`.
+   - Android: gọi thẳng app Facebook (gói `com.facebook.katana`).
+   - iPhone: gọi app Facebook qua `fb://`.
+   - Đang ở trong app Facebook / Messenger: mở ngay tại đó.
+   - Máy không có app hoặc app (Zalo, TikTok…) chặn: sau khoảng 1,5 giây tự mở link Facebook như thường.
    - Ở trang sản phẩm, sau khi bấm, vào khung chat và **dán**: phải có tên mẫu, mã, size đã chọn, giá, link.
-2. **Logo đầu trang:** giờ là logo gốc ô vuông (đủ "S&LIFE" và "Since 2021"), cao 52px trên điện thoại, 62px trên máy tính. Ở cỡ này chữ "Since 2021" rất nhỏ nhưng không bị cắt. Muốn logo to hơn thì báo, header sẽ cao thêm.
-
-**Cần biết về Facebook trong Chrome (giới hạn của trình duyệt, không sửa được bằng code):**
-
-3. Website **không ép được mọi trình duyệt** mở Chrome:
-   - iPhone chỉ mở được Chrome khi máy có cài Chrome;
-   - một số app (Zalo, TikTok) có thể chặn việc mở app khác. Lúc đó web tự mở Facebook ngay trong app.
-   - Khách đăng nhập Facebook ở đâu (app Facebook, Chrome) thì vào đó là không phải đăng nhập lại; web ưu tiên đúng các chỗ đó.
-   - Tắt hẳn việc chuyển sang Chrome: đặt `openInChrome: false` trong `data/shop.js`.
+   - **iPhone chắc chắn hơn nếu có ID số của Facebook bạn.** Cách lấy trên máy tính:
+     1. mở Chrome, vào `facebook.com/honggiabaoslife`;
+     2. bấm Ctrl + U, rồi Ctrl + F, gõ `"userID"`;
+     3. chép dãy số ngay sau đó, gửi cho Claude để dán vào `facebookId` trong `data/shop.js`.
+     Chưa có ID thì iPhone vẫn thử mở app; nếu app mở mà không vào đúng trang của bạn thì báo lại.
+2. **Máy tính — vì sao video của bạn mở Edge:** bạn đang xem web bằng **Edge**, nên link mở trong Edge.
+   - Trang web **không có cách nào tự bật Chrome** từ Edge (Windows không cho, Chrome cũng không có lệnh mở từ web).
+   - Khách xem web bằng **Chrome** thì link Facebook mở ngay trong Chrome, đã đăng nhập sẵn.
+   - Xem web bằng trình duyệt khác (Edge, Cốc Cốc, Firefox): bấm nút Facebook sẽ hiện hộp nhỏ **"Mở Facebook của shop"**, có 3 lựa chọn:
+     - **Sao chép link Facebook shop**: dán vào Chrome;
+     - **Sao chép tin nhắn**: dán vào khung chat;
+     - **Mở luôn bằng Edge**: có ô "lần sau không hỏi lại".
+   - Ảnh hộp chọn: `docs/thiet-ke-moi/so-sanh-moc-3/07-hop-chon-trinh-duyet-edge.jpg`.
+   - Muốn bỏ hộp này: đặt `desktopAskChrome: false` trong `data/shop.js`.
+   - **Mẹo cho chính bạn:** đặt Chrome làm trình duyệt mặc định (Windows: Cài đặt → Ứng dụng → Ứng dụng mặc định → Google Chrome → Đặt mặc định). Khi đó link từ Zalo, Antigravity… đều mở bằng Chrome.
+3. **Logo đầu trang:** giờ là logo gốc ô vuông (đủ "S&LIFE" và "Since 2021"), cao 52px trên điện thoại, 62px trên máy tính. Ở cỡ này chữ "Since 2021" rất nhỏ nhưng không bị cắt. Muốn logo to hơn thì báo, header sẽ cao thêm.
 
 **Bảng size — cần bạn xem lại 4 điểm:**
 
@@ -80,7 +87,7 @@ Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách
 3. **Menu "Thương hiệu" chữ to hơn một chút:** dòng giày 16px, tên hãng 22px, số mẫu 13px.
 4. **Facebook thay Messenger ở mọi nơi:** header, menu điện thoại, trang chủ, trang sản phẩm, giỏ, gửi yêu cầu, liên hệ, giới thiệu, chính sách, bảo mật, FAQ, footer.
    - Link: `facebookChat: "https://www.facebook.com/honggiabaoslife/"`.
-   - Mở bằng Chrome theo quy tắc ở mục cần duyệt số 1–3.
+   - Cách mở: xem mục cần duyệt số 1–2 (điện thoại mở app Facebook; máy tính không dùng Chrome thì hiện hộp chọn).
    - Trang Liên hệ bỏ dòng "Facebook cá nhân" (trùng nút chính).
 5. **Bỏ nút "Gửi yêu cầu mua"** ở trang sản phẩm. Thay chỗ đó là "Tư vấn qua Facebook": bấm là mở thẳng Facebook, **không qua hộp thoại**, thông tin mẫu + size đã chép sẵn.
    - Trang Gửi yêu cầu (từ giỏ) gộp "Sao chép" + "Mở" thành **một nút**.
@@ -103,15 +110,20 @@ Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách
 - **45/45 kiểm tra hành trình đạt.** Các kiểm tra mới: logo gốc; không còn nhãn hãng; không còn nút "Gửi yêu cầu mua"; nút Facebook mở đúng `facebook.com/honggiabaoslife` và đã chép mã, size, giá, link.
 - axe-core 0 lỗi trên 9 trang.
 - Không tràn ngang ở 360 / 390 / 768 / 1024px, kể cả khi mở bảng Nike 6 cột ở 360px.
-- **Nút Facebook theo từng loại máy** (giả lập trình duyệt bằng chuỗi nhận dạng, không phải máy thật):
+- **Nút Facebook theo từng loại máy** (bản 01/10 sau video; giả lập trình duyệt bằng chuỗi nhận dạng, không phải máy thật):
 
   | Loại máy | Kết quả |
   |---|---|
-  | Android Chrome, app Facebook, iPhone Safari, iPhone Chrome, máy tính | mở tab Facebook |
-  | Android Zalo / Cốc Cốc | gọi Chrome (`intent://…package=com.android.chrome`) |
-  | iPhone Zalo | gọi `googlechromes://` |
+  | Android (Chrome, Zalo, Cốc Cốc) | gọi app Facebook (`intent://…package=com.facebook.katana`) |
+  | iPhone (Safari, Zalo, Chrome) | gọi app Facebook (`fb://facewebmodal/…`) |
+  | Trong app Facebook | mở ngay trong app |
+  | Máy tính Chrome | mở tab Facebook |
+  | Máy tính Edge / Cốc Cốc | hiện hộp chọn |
 
-  Máy thử không có app Chrome, nên các trường hợp gọi Chrome tự quay về Facebook sau 1,6 giây — đúng như thiết kế.
+  - Máy thử không có app Facebook, nên các trường hợp gọi app tự mở link Facebook sau 1,6 giây — đúng như thiết kế dự phòng.
+  - Hộp chọn trên Edge: nút 1 chép đúng link Facebook, nút 2 chép đúng tin nhắn mẫu + size.
+  - "Mở luôn" mở tab Facebook. Đánh dấu "không hỏi lại" thì lần sau mở thẳng.
+  - Kết quả kiểm tra: **47/47 hành trình đạt**, 0 lỗi 404, Console sạch, axe 0 lỗi.
 - Bảng size mở sẵn đúng bảng:
   - Nike code nữ → Nữ;
   - On (size 36,5–39) → Nữ;

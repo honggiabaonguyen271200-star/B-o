@@ -1153,3 +1153,4 @@ body[data-page="home"] .ft { margin-top: 0; }
 .modal .chart__tabs { margin-left: 0; margin-right: 0; }
 .chart__table td:first-child { white-space: nowrap; }
 .pd__fbnote { margin: 10px 0 0; font-size: 13.5px; color: var(--muted); }
+.fb-steps li { margin-bottom: 10px; } .fb-steps .btn { margin: 6px 0 4px; }
