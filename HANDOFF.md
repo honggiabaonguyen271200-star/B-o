@@ -1,12 +1,18 @@
 # HANDOFF — Thiết kế mới S&LIFE Sneaker (nhánh `thiet-ke-moi`)
 
-Cập nhật 01/10/2026 · **Mốc 3**: làm theo 8 góp ý của chủ shop (logo, nhãn hãng, menu, Facebook thay Messenger, bỏ "Gửi yêu cầu mua", bảng size, bỏ "Mới về", hết lỗi 404). Nối tiếp mốc 2b và mốc 2 (bên dưới).
+Cập nhật 01/10/2026 · **Mốc 4**: logo hãng + hệ màu mới (xem mục "Mốc 4"). **Mốc 3**: làm theo 8 góp ý của chủ shop (logo, nhãn hãng, menu, Facebook thay Messenger, bỏ "Gửi yêu cầu mua", bảng size, bỏ "Mới về", hết lỗi 404). Nối tiếp mốc 2b và mốc 2 (bên dưới).
 
 Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách đang xem vẫn là bản cũ. Chưa gộp, chưa mua dịch vụ, chưa tạo tài khoản nào, chưa ghi vào Google Sheet thật.
 
 > Từ mốc 3, kênh tư vấn là **Facebook** (`facebookChat` trong `data/shop.js`). Các chỗ ghi "Messenger" ở mục mốc 2 / 2b bên dưới là lịch sử, không còn đúng.
 
 ## Chủ shop cần duyệt
+
+**Mốc 4 — giao diện mới (xem ảnh trong `docs/thiet-ke-moi/so-sanh-moc-4/`):**
+
+- **Còn thiếu logo Puma.** Gửi file logo Puma (nền trắng, logo đen, giống các logo khác) thì ô Puma sẽ có logo; hiện đang ghi chữ "PUMA".
+- **Higgsfield:** không có trong danh mục kết nối của Claude, nên Claude không tự kết nối được (và không tạo tài khoản thay bạn). Giao diện mới làm bằng CSS và logo / ảnh thật của shop. Website **không dùng ảnh giày do AI vẽ** (quy tắc "chỉ ảnh thật").
+- Logo các hãng hiện **một màu mực**, rê chuột đổi sang tím, để tường logo đồng đều. Muốn giữ màu gốc (VD Asics xanh navy) thì báo.
 
 **Nút Facebook — cập nhật 01/10 theo video bạn gửi (thử lại giúp):**
 
@@ -75,6 +81,28 @@ Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách
 - **Ảnh trước/sau mốc 2** (web đang chạy ↔ bản mới): `docs/thiet-ke-moi/so-sanh-moc-2/` — trang chủ, danh mục, sản phẩm, gửi yêu cầu; mỗi trang ở 390px và 1440px.
 - **Ảnh so sánh font:** `docs/thiet-ke-moi/font/so-sanh-font.png` (mở thử: `so-sanh-font.html`).
 - **Ảnh mốc 1** vẫn ở `docs/thiet-ke-moi/so-sanh/`.
+
+## Mốc 4 — đã làm (01/10): logo hãng, hệ màu có chủ đích
+
+**Vì sao đổi:** trước đây gradient logo phủ lên gần như mọi thứ (thanh chữ đầu trang, banner, nút, ô đang chọn, vạch footer, ô hãng khi rê chuột), nên nhìn đơn điệu và rối.
+
+**Giờ mỗi màu có một việc riêng:**
+
+| Màu | Dùng cho |
+|---|---|
+| **Gradient** | chỉ còn ở **logo S&LIFE** và **banner đầu** |
+| **Mực** `#15112B` | chữ, nút chính "Thêm vào giỏ", thanh chữ đầu trang, ô đang chọn trong danh mục |
+| **Tím** `#771CAE` | size đang chọn, thanh giá, số bộ lọc, logo hãng khi rê chuột |
+| **Cobalt** `#004AAD` | rê chuột lên nút, link |
+| **Đỏ** `#DB3137` | chỉ số lượng trong giỏ |
+| **Xanh Facebook** | riêng các nút Facebook |
+
+- **Banner đầu kiểu "sân khấu":** nền mực, ba vệt đèn cobalt → tím → đỏ chiếu sau ảnh giày; ảnh giày đặt thẳng, không xoay.
+- **Cam kết:** bốn biểu tượng mỗi cái một màu của logo trên nền nhạt.
+- **Tiêu đề khu vực:** dấu nhấn là ba vạch màu tách rời (không còn gradient).
+- **"Theo thương hiệu":** tường logo thật của 8 hãng bạn gửi (`images/brands/`); ô "Tất cả hàng sẵn" nền mực. Trang hãng (VD Giày Jordan) có logo hãng trên tiêu đề.
+- **Đã bỏ:** vạch gradient ở footer, chữ gradient ở ô dòng giày, nền gradient nhạt ở ô dòng giày.
+- **Đã kiểm:** 47/47 hành trình đạt, 0 lỗi 404, Console sạch, axe 0 lỗi; ảnh ở 1440px và 390px.
 
 ## Mốc 3 — đã làm (01/10)
 

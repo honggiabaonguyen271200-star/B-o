@@ -26,6 +26,7 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 | `scripts/import_image_zip.py` | Nhập ảnh hàng loạt từ zip lớn (mỗi mẫu = zip nhỏ/thư mục đặt tên theo mã hoặc tên trong bảng) → `images/products/`; `--ghi-de` thay bộ cũ |
 | `scripts/extract_images.py` | Lấy ảnh chèn trong bảng .xlsx (cùng dòng với sản phẩm) → `images/products/<MÃ>.webp`; `--ghi-de` để thay ảnh đã có |
 | `images/products/danh-sach.js`, `images/anh-khac.js` | **Tự sinh** — danh sách ảnh sản phẩm / banner + ảnh khách đang có (`static_pages.py`, anh.html, script ảnh tự ghi). Web chỉ hiện ảnh trong danh sách; thiếu file danh sách thì tự dò như cũ |
+| `images/brands/` | Logo các hãng (PNG nền trong suốt, một màu; web tô màu bằng CSS mask). Tên file = slug hãng (`new-balance.png`…). Thiếu Puma → hiện chữ "PUMA". Thêm logo: sửa danh sách `BRAND_LOGOS` trong `app.js` |
 | `images/brand/` | Logo S&LIFE (SVG/PNG), favicon, icon; màu thương hiệu trong `images/brand/README.md` |
 | `images/products/` | Ảnh sản phẩm, tên file = mã sản phẩm: `U204LMMC.webp`, ảnh phụ `U204LMMC-2.webp` … `-12` (tối đa 12, `MAX_SHOTS`). Ưu tiên WebP ≤1200px; không chép ảnh gốc điện thoại |
 | `xem-web.bat`, `cap-nhat-hang.bat`, `nhap-anh-zip.bat` | Windows: bấm đúp để xem web trên máy; kéo thả file .xlsx vào để cập nhật hàng; kéo thả zip ảnh lớn để nhập ảnh hàng loạt |
@@ -46,7 +47,7 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 
 ## Giao diện
 
-- Màu theo logo: gradient `#004AAD → #771CAE → #DB3137` chỉ làm điểm nhấn, nền trắng/`--mist`; biến màu ở đầu `assets/css/style.css`. Font: **Bricolage Grotesque** (một họ chữ; tiêu đề in hoa ở `font-stretch: 75%`). Không dùng Inter/Roboto/Poppins/Be Vietnam Pro.
+- Màu theo logo, dùng có chủ đích (mốc 4): **gradient chỉ ở logo và "ánh đèn" banner đầu** (nền mực + ba vệt sáng cobalt/tím/đỏ). Mực `#15112B`: chữ, nút chính. Tím `#771CAE`: thứ đang chọn (size, lọc). Cobalt `#004AAD`: link, rê chuột. Đỏ `#DB3137`: chỉ để gây chú ý (số giỏ). Nền trắng/`--mist` `#F4F2FA`. Không phủ gradient lên nút, thanh, ô. Biến màu ở đầu `assets/css/style.css`, khối "Mốc 4" ở cuối file. Font: **Bricolage Grotesque** (một họ chữ; tiêu đề in hoa ở `font-stretch: 75%`). Không dùng Inter/Roboto/Poppins/Be Vietnam Pro.
 - Mẫu chưa có ảnh hiện ô trung tính "Ảnh thật đang cập nhật" — không vẽ/giả ảnh sản phẩm.
 - Thiết kế mới đang làm trên nhánh `thiet-ke-moi` (xem `HANDOFF.md`, `docs/thiet-ke-moi/`).
 

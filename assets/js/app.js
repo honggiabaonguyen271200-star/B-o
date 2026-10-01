@@ -74,6 +74,14 @@
   function fullName(p) { return "Giày " + p.name + (p.code ? " " + p.code : ""); }
   function productUrl(p) { return "product.html?id=" + encodeURIComponent(p.id); }
   function brandUrl(b) { return "shop.html?brand=" + slug(b); }
+  // Logo hãng (images/brands/<hãng>.png, nền trong suốt, tô màu bằng CSS mask). Hãng chưa có logo: hiện tên in hoa.
+  var BRAND_LOGOS = ["new-balance", "asics", "onitsuka-tiger", "jordan", "nike", "adidas", "salomon", "on"];
+  function brandLogo(name, cls, wordCls) {
+    var s = slug(name);
+    if (BRAND_LOGOS.indexOf(s) < 0) return wordCls ? '<span class="' + wordCls + '" aria-hidden="true">' + esc(name.toUpperCase()) + "</span>" : "";
+    var u = "url(images/brands/" + s + ".png)"; // ghi thẳng vào thẻ để đường dẫn tính từ trang, không từ file CSS
+    return '<span class="' + cls + '" style="-webkit-mask-image:' + u + ";mask-image:" + u + '" role="img" aria-label="Logo ' + esc(name) + '"></span>';
+  }
   function lineUrl(b, l) { return (b ? "shop.html?brand=" + slug(b) + "&line=" : "shop.html?line=") + slug(l); }
   function absUrl(path) { return new URL(path, SHOP.siteUrl || location.href).href; }
   // Link gửi đi (Facebook): trang chia sẻ sp/<mã>.html có ảnh xem trước, tự mở trang sản phẩm
@@ -985,10 +993,10 @@
     var brandEl = $("[data-brands]");
     if (brandEl) {
       brandEl.innerHTML = brands.map(function (b) {
-        return '<a class="brand-tile" href="' + brandUrl(b.name) + '"><span class="brand-tile__mono" aria-hidden="true">' + esc(initials(b.name)) + "</span>" +
-          "<span><b>" + esc(b.name) + "</b><small>" + b.count + " mẫu có sẵn</small></span>" + I.chev + "</a>";
+        return '<a class="brand-tile" href="' + brandUrl(b.name) + '">' + brandLogo(b.name, "brand-tile__logo", "brand-tile__word") +
+          '<span class="brand-tile__meta"><b>' + esc(b.name) + "</b><small>" + b.count + " mẫu có sẵn</small></span></a>";
       }).join("") +
-        '<a class="brand-tile brand-tile--all" href="shop.html"><span class="brand-tile__mono" aria-hidden="true">' + IN_STOCK.length + "</span><span><b>Tất cả hàng sẵn</b><small>Mọi hãng</small></span>" + I.chev + "</a>";
+        '<a class="brand-tile brand-tile--all" href="shop.html"><span class="brand-tile__word" aria-hidden="true">' + IN_STOCK.length + '</span><span class="brand-tile__meta"><b>Tất cả hàng sẵn</b><small>Mọi hãng</small></span></a>';
     }
     var needsEl = $("[data-needs]");
     if (needsEl) needsEl.innerHTML = needsList().map(function (x) { return '<a class="need" href="' + x.href + '"><b>' + esc(x.label) + "</b><span>" + esc(x.sub) + " · " + x.n + " mẫu</span></a>"; }).join("");
@@ -1121,6 +1129,7 @@
     var title = wishMode ? "Yêu thích" : line ? lineTitle(brand, line) : brand ? "Giày " + brand : state.q ? "Kết quả cho “" + state.q + "”" : "Giày chính hãng";
     var titleEl = $("[data-title]");
     titleEl.innerHTML = brand && !line ? 'Giày <span class="grad-text">' + esc(brand) + "</span>" : esc(title);
+    if (brand && !line) titleEl.insertAdjacentHTML("beforebegin", brandLogo(brand, "coll__brandlogo").replace(/role="img" aria-label="[^"]*"/, 'aria-hidden="true"'));
     document.title = title + " — " + SHOP.name;
     var trail = [["Trang chủ", "index.html"], ["Hàng sẵn", brand || line || state.q || wishMode ? "shop.html" : ""]];
     if (brand) trail.push(["Giày " + brand, line ? brandUrl(brand) : ""]);
