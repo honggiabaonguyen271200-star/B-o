@@ -16,11 +16,10 @@ Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách
    - Đang ở trong app Facebook / Messenger: mở ngay tại đó.
    - Máy không có app hoặc app (Zalo, TikTok…) chặn: sau khoảng 1,5 giây tự mở link Facebook như thường.
    - Ở trang sản phẩm, sau khi bấm, vào khung chat và **dán**: phải có tên mẫu, mã, size đã chọn, giá, link.
-   - **iPhone chắc chắn hơn nếu có ID số của Facebook bạn.** Cách lấy trên máy tính:
-     1. mở Chrome, vào `facebook.com/honggiabaoslife`;
-     2. bấm Ctrl + U, rồi Ctrl + F, gõ `"userID"`;
-     3. chép dãy số ngay sau đó, gửi cho Claude để dán vào `facebookId` trong `data/shop.js`.
-     Chưa có ID thì iPhone vẫn thử mở app; nếu app mở mà không vào đúng trang của bạn thì báo lại.
+   - **iPhone:** đã điền ID số `100080431367928` (chủ shop gửi 01/10) vào `facebookId`, nên iPhone mở thẳng `fb://profile/100080431367928` trong app.
+     - **Cần kiểm 1 lần:** mở `https://www.facebook.com/profile.php?id=100080431367928`. Phải ra đúng trang Nguyễn Hồng Gia Bảo.
+     - Lý do: số "userId" trong mã nguồn trang là của tài khoản **đang đăng nhập**. Nếu lúc đó bạn đăng nhập bằng tài khoản khác thì số sẽ sai.
+     - Sai thì xoá số trong `facebookId` (để `""`), iPhone sẽ mở bằng link thường.
 2. **Máy tính — vì sao video của bạn mở Edge:** bạn đang xem web bằng **Edge**, nên link mở trong Edge.
    - Trang web **không có cách nào tự bật Chrome** từ Edge (Windows không cho, Chrome cũng không có lệnh mở từ web).
    - Khách xem web bằng **Chrome** thì link Facebook mở ngay trong Chrome, đã đăng nhập sẵn.

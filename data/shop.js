@@ -12,7 +12,7 @@ window.SHOP = {
   openFacebookApp: true,
   // ID số của Facebook cá nhân (không bắt buộc). Có ID thì iPhone mở đúng trang cá nhân trong app chắc chắn hơn.
   // Cách lấy: xem HANDOFF.md, mục "Chủ shop cần duyệt".
-  facebookId: "",
+  facebookId: "100080431367928", // chủ shop gửi 01/10; kiểm: facebook.com/profile.php?id=100080431367928 phải ra đúng trang cá nhân
   // Máy tính đang dùng trình duyệt khác Chrome (Edge, Cốc Cốc…): hỏi "Sao chép link để mở bằng Chrome" hay "Mở luôn".
   // false: mở luôn bằng trình duyệt đang dùng, không hỏi.
   desktopAskChrome: true,
