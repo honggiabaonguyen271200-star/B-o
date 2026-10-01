@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 """Sinh các file tĩnh đi kèm website từ data/products.js (không cần file .xlsx):
 
+- images/products/danh-sach.js  danh sách ảnh sản phẩm (web chỉ hiện ảnh có trong danh sách, không dò tên file → không lỗi 404)
+- images/anh-khac.js           danh sách banner (images/banners/) và ảnh khách (images/khach-hang/)
 - sp/<mã>.html   trang chia sẻ nhẹ cho từng mẫu còn hàng: có og:title, og:image, og:description để
-                 Messenger/Facebook hiện ảnh + tên + giá khi dán link, rồi tự chuyển sang product.html?id=…
+                 Facebook hiện ảnh + tên + giá khi dán link, rồi tự chuyển sang product.html?id=…
 - sp/anh/<MÃ>.jpg ảnh xem trước (JPEG, Facebook đọc chắc chắn hơn WebP), lấy từ ảnh chính của mẫu
 - 404.html       link sp/ của mẫu đã hết hàng vẫn mở được trang sản phẩm (GitHub Pages)
 - sitemap.xml    chỉ trang chính + mẫu còn hàng, lastmod = ngày chạy
 - robots.txt
 - index.html     dòng tải trước ảnh giày ở banner đầu trang (giữa hai dòng đánh dấu hero-preload)
 
-Tự chạy sau build_products.py, import_image_zip.py, extract_images.py. Chạy tay (ví dụ sau khi lưu ảnh bằng anh.html):
+Tự chạy sau build_products.py, import_image_zip.py, extract_images.py và mỗi lần mở xem-web.bat. Chạy tay:
     python scripts/static_pages.py
 Địa chỉ website lấy từ siteUrl trong data/shop.js — đổi tên miền thì chạy lại lệnh trên.
 """
@@ -18,7 +20,11 @@ import html
 import json
 import re
 from pathlib import Path
+import sys
 from urllib.parse import quote
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import image_manifest  # noqa: E402
 
 try:
     from PIL import Image
@@ -95,7 +101,7 @@ def share_page(p, base, img):
     else:
         price = "Giá từ " + money(min(prices))
     title = "Giày " + p["name"] + (" " + p["code"] if p.get("code") else "")
-    desc = price + " · Hàng chính hãng, có sẵn tại S&LIFE Sneaker. Xem size còn và hỏi size qua Messenger."
+    desc = price + " · Hàng chính hãng, có sẵn tại S&LIFE Sneaker. Xem size còn và hỏi size qua Facebook."
     path, w, h = img
     alt = title if path != LOGO else "S&LIFE Sneaker"
     meta = [
@@ -156,6 +162,18 @@ def page_404(base):
 """ % home
 
 
+def write_site_images():
+    """Banner và ảnh khách đang có -> images/anh-khac.js (web đọc danh sách này thay vì dò tên file)."""
+    out = {}
+    for key, folder in (("banners", "banners"), ("khach-hang", "khach-hang")):
+        d = ROOT / "images" / folder
+        out[key] = sorted(f.name for f in d.iterdir() if f.is_file() and re.search(r"\.(jpe?g|png|webp)$", f.name, re.I)) if d.exists() else []
+    (ROOT / "images" / "anh-khac.js").write_text(
+        "// File tự sinh bởi scripts/static_pages.py (chạy khi mở xem-web.bat) — không sửa tay.\n"
+        "window.SITE_IMAGES = " + json.dumps(out, ensure_ascii=False) + ";\n", encoding="utf-8")
+    return out
+
+
 def hero_star(in_stock, manifest):
     """Giống app.js (initHome): mẫu có ảnh thật, nhiều size nhất, đứng trước trong bảng."""
     photos = [p for p in in_stock if manifest.get(p.get("code") or p["id"])]
@@ -191,6 +209,8 @@ def write_sitemap(base, in_stock):
 
 
 def main():
+    image_manifest.write()  # ảnh chép tay vào images/products cũng được đưa vào danh sách
+    write_site_images()
     base = site_url()
     products = read_js(ROOT / "data" / "products.js", "PRODUCTS")
     if not base or products is None:

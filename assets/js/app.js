@@ -76,7 +76,7 @@
   function brandUrl(b) { return "shop.html?brand=" + slug(b); }
   function lineUrl(b, l) { return (b ? "shop.html?brand=" + slug(b) + "&line=" : "shop.html?line=") + slug(l); }
   function absUrl(path) { return new URL(path, SHOP.siteUrl || location.href).href; }
-  // Link gửi đi (Messenger, Facebook): trang chia sẻ sp/<mã>.html có ảnh xem trước, tự mở trang sản phẩm
+  // Link gửi đi (Facebook): trang chia sẻ sp/<mã>.html có ảnh xem trước, tự mở trang sản phẩm
   function shareUrl(p) { return absUrl(p.inStock ? "sp/" + encodeURIComponent(p.id) + ".html" : productUrl(p)); }
   function initials(b) {
     var w = b.split(/\s+/);
@@ -177,7 +177,10 @@
   }
 
   /* ---------- Ảnh ----------
-     Ảnh sản phẩm: images/products/<MÃ>.webp, ảnh phụ <MÃ>-2.webp… Website tự dò, không cần khai báo.
+     Ảnh sản phẩm: images/products/<MÃ>.webp, ảnh phụ <MÃ>-2.webp… Có danh sách images/products/danh-sach.js thì
+     chỉ hiện ảnh trong danh sách (không dò tên file nên không có lỗi 404); danh sách tự cập nhật khi mở xem-web.bat,
+     dùng anh.html hoặc các công cụ nhập ảnh. Thiếu danh sách thì dò như cũ.
+     Banner, ảnh khách: danh sách images/anh-khac.js (tự sinh), thiếu thì dò như cũ.
      Banner trang chủ: images/banners/banner-1.jpg … (thêm vào hero)
      Banner hãng: images/banners/<tên-hãng>.jpg (VD new-balance.jpg, onitsuka-tiger.jpg)
      Ảnh khách hàng: images/khach-hang/1.jpg … 24.jpg */
@@ -212,6 +215,13 @@
     }
     return next();
   }
+  // Banner / ảnh khách trong images/anh-khac.js: trả về đường dẫn các file khớp mẫu tên, theo số thứ tự
+  var SITE_IMAGES = window.SITE_IMAGES || null;
+  function listedImages(folder, re) {
+    return (SITE_IMAGES[folder] || []).filter(function (f) { return re.test(f); })
+      .sort(function (a, b) { return (parseInt(a.replace(/\D+/g, ""), 10) || 0) - (parseInt(b.replace(/\D+/g, ""), 10) || 0); })
+      .map(function (f) { return "images/" + folder + "/" + f; });
+  }
   // Dò ảnh đánh số base1, base2… cho đến khi thiếu
   function findSeries(base, from, max, exts) {
     var found = [], n = from;
@@ -226,6 +236,7 @@
   function loadShots(p, onShot) {
     var known = shotsOf(p);
     if (known) { known.forEach(onShot); return; }
+    if (MANIFEST) return; // có danh sách mà không có mẫu này: chưa có ảnh
     var base = imgBase(p);
     findImage(base, EXTS).then(function (first) {
       if (!first) return;
@@ -241,11 +252,12 @@
   function media(p, o) {
     o = o || {};
     var shots = shotsOf(p), base = imgBase(p);
+    var probeImg = !shots && !MANIFEST; // có danh sách mà mẫu chưa có ảnh: chỉ hiện ô "Ảnh thật đang cập nhật"
     return '<div class="media">' +
       '<div class="media__ph" aria-hidden="true"><img src="images/brand/slife-mark-gradient.svg" alt="" width="60" height="61"><span>Ảnh thật đang cập nhật</span></div>' +
       // Ảnh banner đầu trang (đã tải trước) hiện ngay, không mờ dần — ảnh hiện sớm hơn
-      '<img class="media__img' + (o.eager && shots ? " ok" : "") + '" alt="' + esc(fullName(p)) + '" src="' + esc(shots ? shots[0] : base + "." + EXTS[0]) + '" data-base="' + esc(base) + '" data-i="' + (shots ? -1 : 0) + '"' +
-      (o.eager ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async" onload="__slifeOk(this)" onerror="__slifeImg(this)">' +
+      (shots || probeImg ? '<img class="media__img' + (o.eager && shots ? " ok" : "") + '" alt="' + esc(fullName(p)) + '" src="' + esc(shots ? shots[0] : base + "." + EXTS[0]) + '" data-base="' + esc(base) + '" data-i="' + (shots ? -1 : 0) + '"' +
+      (o.eager ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async" onload="__slifeOk(this)" onerror="__slifeImg(this)">' : "") +
       (o.alt && shots && shots[1] ? '<img class="media__alt" alt="" data-src="' + esc(shots[1]) + '" onload="this.classList.add(\'ok\')">' : "") +
       "</div>";
   }
@@ -269,6 +281,7 @@
     phone: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11.4 11.4 0 003.6.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1l-2.2 2.23z"/></svg>',
     ms: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.4 2 2 6.1 2 11.7c0 2.9 1.2 5.5 3.2 7.2V22l3-1.6c1.2.3 2.5.5 3.8.5 5.6 0 10-4.1 10-9.7S17.6 2 12 2zm1 12.9l-2.6-2.7-4.9 2.7 5.4-5.7 2.6 2.7 4.8-2.7-5.3 5.7z"/></svg>',
     fb: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5H16l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.5V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8v3h2.6V21z"/></svg>',
+    fbc: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-1.56 19.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0012 2z"/></svg>',
     ig: svg('<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/>', { w: 1.8 }),
     tt: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.3 2.3 1.7 3.8 4 4v3.1c-1.4.1-2.7-.3-4-1.1v6.1c0 4-3.5 6.3-6.9 5.4-4.3-1.2-5-6.9-1.3-9 1-.6 2.2-.8 3.4-.7v3.2c-.4-.1-.8-.1-1.2 0-1.5.3-2.3 1.9-1.6 3.2.9 1.6 3.6 1.4 3.9-.8V3z"/></svg>',
     link: svg('<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>', { w: 1.8 }),
@@ -418,41 +431,53 @@
     window.gtag("js", new Date());
     window.gtag("config", SHOP.ga4Id);
   }
-  // Nút mở Messenger (kênh tư vấn, chốt đơn chính)
-  function msgrLink(label, cls, extra) {
-    return '<a class="btn btn--msgr ' + (cls || "") + '" href="' + esc(SHOP.messenger) + '" target="_blank" rel="noopener" data-msgr' + (extra || "") + ">" + I.ms + (label || "Nhắn Messenger") + "</a>";
+  /* ---------- Facebook: kênh tư vấn và chốt đơn chính ----------
+     Bấm nút là mở thẳng Facebook của shop (SHOP.facebookChat), mở ở nơi khách thường đã đăng nhập Facebook:
+     - Android: mở bằng Chrome (trừ khi đang ở trong app Facebook/Instagram hoặc đã ở Chrome);
+     - iPhone: Safari tự mở app Facebook; đang ở trong Zalo/TikTok… thì thử mở Chrome, không có Chrome thì mở như thường;
+     - máy tính: mở tab mới.
+     Trên trang sản phẩm, thông tin mẫu (tên, mã, size, giá, link) được chép sẵn để khách dán vào tin nhắn. */
+  function fbLink(label, cls, extra) {
+    return '<a class="btn btn--fb ' + (cls || "") + '" href="' + esc(SHOP.facebookChat) + '" target="_blank" rel="noopener" data-fb' + (extra || "") + ">" + I.fbc + (label || "Nhắn Facebook cho shop") + "</a>";
   }
-  // Hộp thoại soạn sẵn tin nhắn: Messenger không điền sẵn được, nên có "Sao chép" + "Mở Messenger"
-  function messengerModal(title, build, askFoot, source) {
-    var m = modal(
-      "<h3>" + esc(title) + "</h3>" +
-      (askFoot ? '<div class="field" style="margin-top:10px"><label for="m-foot">Chiều dài bàn chân (cm) — không bắt buộc</label><input id="m-foot" inputmode="decimal" placeholder="VD: 25"><span class="hint">Để shop tư vấn size sát hơn.</span></div>' : "") +
-      '<p class="muted" style="font-size:14px;margin:12px 0 0">Tin nhắn soạn sẵn:</p><div class="order-msg" data-msg></div>' +
-      '<ol class="steps-mini"><li>Bấm <b>Sao chép tin nhắn</b>.</li><li>Bấm <b>Mở Messenger</b>, dán vào khung chat và gửi cho ' + esc(SHOP.messengerName || "shop") + ".</li></ol>" +
-      '<div class="modal__actions"><button type="button" class="btn btn--ghost" data-copy-msg>Sao chép tin nhắn</button>' + msgrLink("Mở Messenger", "", " data-go") + "</div>"
-    );
-    var msgEl = $("[data-msg]", m.el), foot = $("#m-foot", m.el);
-    function refresh() { msgEl.textContent = build(foot ? foot.value.trim() : ""); }
-    if (foot) foot.addEventListener("input", refresh);
-    refresh();
-    $("[data-copy-msg]", m.el).addEventListener("click", function () {
-      copyText(msgEl.textContent).then(function () { toast("Đã sao chép — mở Messenger rồi dán vào khung chat"); });
-      track("copy_message", { source: source || "tu_van" });
-    });
-    $("[data-go]", m.el).addEventListener("click", function () {
-      copyText(msgEl.textContent);
-      track("open_messenger", { source: source || "tu_van" });
-    });
-    return m;
+  var fbContext = null; // trang sản phẩm gán hàm soạn tin nhắn cho mẫu đang xem
+  function consultMsg(p, size) {
+    return "Chào shop, mình cần tư vấn đôi này:\n" + fullName(p) + "\n" +
+      "Mã: " + (p.code || p.name) + " / Size: " + (size || "…") + "\n" +
+      (p.inStock ? "Giá: " + money(size ? itemPrice(p, size) : p.minPrice) + "\n" : "") +
+      "Chân mình dài: … cm\n" +
+      "Link: " + shareUrl(p);
   }
-  function askMessenger(p, size) {
-    messengerModal(p.inStock ? "Tư vấn qua Messenger" : "Nhắn shop qua Messenger", function (foot) {
-      return "Chào shop, mình cần tư vấn đôi này:\n" + fullName(p) + "\n" +
-        "Mã: " + (p.code || p.name) + " / Size: " + (size || "…") + (foot ? " / Chân dài: " + foot.replace(/\s*cm$/i, "") + " cm" : "") + "\n" +
-        (p.inStock ? "Giá: " + money(size ? itemPrice(p, size) : p.minPrice) + "\n" : "") +
-        "Link: " + shareUrl(p);
-    }, true, "san_pham");
+  function openFacebook(e) {
+    var url = SHOP.facebookChat, ua = navigator.userAgent;
+    if (!SHOP.openInChrome || !url) return;
+    var android = /Android/i.test(ua), ios = /iPhone|iPad|iPod/i.test(ua);
+    var fbApp = /FBAN|FBAV|FB_IAB|Instagram/i.test(ua);
+    if (fbApp) return; // đang trong app Facebook/Instagram: đã đăng nhập sẵn, mở ngay tại đó
+    var target = null, rest = url.replace(/^https?:\/\//, "");
+    if (android) {
+      var isChrome = /Chrome\/\d/.test(ua) && !/; wv\)|Zalo|TikTok|musical_ly|Bytedance|Line\/|SamsungBrowser|OPR\/|EdgA|coc_coc|YaBrowser|UCBrowser|MiuiBrowser|HeyTap|Firefox/i.test(ua);
+      if (!isChrome) target = "intent://" + rest + "#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=" + encodeURIComponent(url) + ";end";
+    } else if (ios && /Zalo|TikTok|musical_ly|Bytedance|Line\//i.test(ua)) {
+      target = "googlechromes://" + rest;
+    }
+    if (!target) return; // Chrome, Safari, máy tính: mở link như bình thường
+    e.preventDefault();
+    location.href = target;
+    // Không mở được Chrome (chưa cài, app chặn): vẫn mở Facebook như link thường
+    setTimeout(function () { if (!document.hidden) location.href = url; }, 1600);
   }
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("[data-fb]");
+    if (!a) return;
+    if (a.hasAttribute("data-fb-copy") && fbContext) {
+      copyText(fbContext(a.dataset.fbSize || null));
+      toast("Đã chép sẵn thông tin mẫu — dán vào tin nhắn cho shop");
+      track("copy_message", { source: "san_pham" });
+    }
+    track("open_facebook", { source: a.dataset.fbSource || document.body.dataset.page });
+    openFacebook(e);
+  });
 
   // Chọn size nhanh từ thẻ sản phẩm
   function quickAdd(p) {
@@ -499,7 +524,7 @@
       '<div class="card__badges">' + tags.join("") + "</div>" + wishBtn(p) +
       (p.inStock ? '<button type="button" class="card__quick" data-quick="' + esc(p.id) + '" aria-label="Thêm nhanh ' + esc(p.name) + ' vào giỏ">' + I.bagPlus + "<span>Thêm nhanh</span></button>" : "") +
       "</div>" +
-      '<div class="card__body">' + (norm(p.name).indexOf(norm(p.brand)) === 0 ? "" : '<div class="card__brand">' + esc(p.brand) + "</div>") +
+      '<div class="card__body">' +
       '<h3 class="card__name"><a href="' + url + '">' + esc(p.name) + "</a></h3>" +
       (p.code ? '<div class="card__code">' + esc(p.code) + "</div>" : "") +
       (p.inStock ? '<div class="card__sizes">Size ' + esc(sizes.join(" · ")) + "</div>" : "") +
@@ -575,7 +600,7 @@
             '<div class="mini__price">' + money(itemPrice(p, it.size)) + "</div></div>";
         }).join("") + "</div>" +
           '<div class="mini__foot"><div class="mini__sum"><span>Tạm tính (' + cartCount(cart) + ' đôi)</span><b>' + money(cartTotal(cart)) + "</b></div>" +
-          '<p class="muted" style="font-size:13px;margin:0">Shop xác nhận size, phí ship và tiền cọc qua Messenger.</p>' +
+          '<p class="muted" style="font-size:13px;margin:0">Shop xác nhận size, phí ship và tiền cọc qua Facebook.</p>' +
           '<div class="row2"><a class="btn btn--ghost" href="cart.html">Xem giỏ hàng</a><a class="btn btn--grad" href="dat-hang.html" data-autofocus>Gửi yêu cầu</a></div>' +
           '<button type="button" class="link" data-mini-close style="justify-self:center">Tiếp tục mua sắm</button></div>'
         : '<div class="mini__empty"><p>Giỏ hàng đang trống.</p><a class="btn btn--grad" href="shop.html">Xem hàng sẵn</a></div>');
@@ -612,7 +637,7 @@
           "</div></div>" : "") +
         '<header class="hd"><div class="container hd__row">' +
         '<button type="button" class="icon-btn hd__menu" data-menu-open aria-label="Mở menu" aria-controls="menu" aria-expanded="false">' + I.menu + "</button>" +
-        '<a class="logo" href="index.html" aria-label="' + esc(SHOP.name) + ' — Trang chủ"><img class="logo__mark" src="images/brand/slife-mark-gradient.svg" alt="" width="40" height="41"><img class="logo__word" src="images/brand/slife-wordmark-ink.svg" alt="S&amp;LIFE" width="58" height="19"></a>' +
+        '<a class="logo" href="index.html" aria-label="' + esc(SHOP.name) + ' — Trang chủ"><img class="logo__img" src="images/brand/slife-logo-square-192.webp" alt="S&amp;LIFE Since 2021" width="52" height="52"></a>' +
         '<form class="search" action="shop.html" role="search" data-search>' + '<svg class="search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>' +
         '<input type="search" name="q" value="' + esc(q) + '" placeholder="Tìm tên, mã hoặc biệt danh, VD: 204L, AF1" aria-label="Tìm giày theo tên, mã hoặc biệt danh" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-pop">' +
         '<button type="submit" class="search__go">Tìm</button><div class="search__pop" id="search-pop" role="listbox" aria-label="Gợi ý tìm kiếm" hidden></div></form>' +
@@ -633,7 +658,7 @@
         navLink("size-guide.html", "Chọn size") + navLink("lien-he.html", "Liên hệ") +
         "</nav>" +
         '<div class="hd__icons">' +
-        '<a class="icon-btn hd__msgr" href="' + esc(SHOP.messenger) + '" target="_blank" rel="noopener" aria-label="Nhắn Messenger cho shop" data-msgr>' + I.ms + "</a>" +
+        '<a class="icon-btn hd__fb" href="' + esc(SHOP.facebookChat) + '" target="_blank" rel="noopener" aria-label="Nhắn Facebook cho shop" data-fb>' + I.fbc + "</a>" +
         (WISH ? '<a class="icon-btn" href="shop.html?wish=1" aria-label="Yêu thích">' + I.heart + '<span class="badge" data-wish-count hidden>0</span></a>' : "") +
         '<a class="icon-btn" href="cart.html" aria-label="Giỏ hàng">' + I.bag + '<span class="badge" data-cart-count hidden>0</span></a>' +
         "</div></div></header>" +
@@ -658,7 +683,7 @@
         needs.map(function (x) { return '<a href="' + x.href + '">' + esc(x.label) + "</a>"; }).join("") + "</div>" +
         '<div class="drawer__title">Hỗ trợ</div><div class="m-links">' +
         '<a href="size-guide.html">Hướng dẫn chọn size</a><a href="policy.html">Mua hàng, giao hàng &amp; đổi size</a><a href="gioi-thieu.html">Giới thiệu</a><a href="lien-he.html">Liên hệ</a><a href="cart.html">Giỏ hàng</a></div>' +
-        '<div class="m-contact"><p style="margin:0 0 10px">Tư vấn size và chốt đơn qua Messenger (' + esc(SHOP.openHours) + ").</p>" + msgrLink("Nhắn Messenger cho shop", "btn--block") + "</div>" +
+        '<div class="m-contact"><p style="margin:0 0 10px">Tư vấn size và chốt đơn qua Facebook (' + esc(SHOP.openHours) + ").</p>" + fbLink("Nhắn Facebook cho shop", "btn--block") + "</div>" +
         "</div></div></div>" +
         // Giỏ trượt
         '<div class="drawer drawer--right" id="mini" aria-hidden="true"><div class="drawer__backdrop" data-mini-close></div>' +
@@ -670,7 +695,7 @@
     var footerEl = $("#site-footer");
     if (footerEl) {
       var social = [
-        [SHOP.messenger, I.ms, "Messenger " + (SHOP.messengerName || "")],
+        [SHOP.facebookChat, I.fbc, "Facebook " + (SHOP.facebookChatName || "")],
         SHOP.facebookOwner ? [SHOP.facebookOwner, I.fb, "Facebook " + (SHOP.facebookName || "chủ shop")] : null,
         SHOP.instagram ? [SHOP.instagram, I.ig, "Instagram S&LIFE Sneaker"] : null,
         SHOP.tiktok ? [SHOP.tiktok, I.tt, "TikTok S&LIFE"] : null,
@@ -690,7 +715,7 @@
         (SHOP.address ? "<li>Địa chỉ: " + esc(SHOP.address) + "</li>" : "") +
         (SHOP.email ? '<li>Email: <a href="mailto:' + esc(SHOP.email) + '">' + esc(SHOP.email) + "</a></li>" : "") +
         (SHOP.taxCode ? "<li>MST / GPKD: " + esc(SHOP.taxCode) + "</li>" : "") +
-        "<li>Tư vấn qua Messenger: " + esc(SHOP.openHours) + "</li></ul>" +
+        "<li>Tư vấn qua Facebook: " + esc(SHOP.openHours) + "</li></ul>" +
         '<div class="ft__social">' + social.map(function (s) {
           return '<a href="' + esc(s[0]) + '" target="_blank" rel="noopener" aria-label="' + esc(s[2]) + '" title="' + esc(s[2]) + '">' + s[1] + "</a>";
         }).join("") + "</div></div>" +
@@ -700,9 +725,9 @@
         "</ul></div>" +
         '<div><h4>Hỗ trợ</h4><ul><li><a href="gioi-thieu.html">Giới thiệu</a></li><li><a href="policy.html#dat-hang">Cách mua hàng</a></li><li><a href="size-guide.html">Hướng dẫn chọn size</a></li><li><a href="policy.html#doi-tra">Đổi size, đổi trả</a></li><li><a href="policy.html#ship">Giao hàng, đặt cọc</a></li><li><a href="policy.html#khieu-nai">Giải quyết khiếu nại</a></li><li><a href="chinh-sach-bao-mat.html">Chính sách bảo mật</a></li><li><a href="lien-he.html">Liên hệ</a></li></ul></div>' +
         "<div><h4>Mua hàng</h4>" +
-        '<ol class="ft__steps"><li>Chọn mẫu và size còn sẵn</li><li>Gửi yêu cầu cho shop qua Messenger</li><li>Shop xác nhận size, phí ship và tiền cọc</li></ol>' +
+        '<ol class="ft__steps"><li>Chọn mẫu và size còn sẵn</li><li>Gửi yêu cầu cho shop qua Facebook</li><li>Shop xác nhận size, phí ship và tiền cọc</li></ol>' +
         '<p class="ft__note">Website không thu tiền. Số tài khoản và mức cọc shop gửi riêng trong tin nhắn.</p>' +
-        msgrLink("Nhắn Messenger", "btn--sm ft__msgr") +
+        fbLink("Nhắn Facebook", "btn--sm ft__fb") +
         (SHOP.bctUrl ? '<a class="ft__bct" href="' + esc(SHOP.bctUrl) + '" target="_blank" rel="noopener">✓ Đã thông báo Bộ Công Thương</a>' : "") +
         "</div></div>" +
         '<div class="ft__bottom"><span>© ' + new Date().getFullYear() + " " + esc(SHOP.name) + ' · Since 2021</span><button type="button" data-top>Lên đầu trang ↑</button></div>' +
@@ -734,8 +759,6 @@
         megaBtn.setAttribute("aria-expanded", open);
       } else if (!t.closest(".mega")) closeMegas();
       if (t.closest("[data-top]")) window.scrollTo({ top: 0, behavior: REDUCED ? "auto" : "smooth" });
-      var ms = t.closest("[data-msgr]");
-      if (ms && !ms.hasAttribute("data-go")) track("open_messenger", { source: document.body.dataset.page });
       var w = t.closest("[data-wish]");
       if (w) { e.preventDefault(); toggleWish(w.dataset.wish); }
       var qa = t.closest("[data-quick]");
@@ -794,7 +817,7 @@
             '<span><span class="sug__name">' + esc(p.name) + '</span><span class="sug__code">' + esc(p.code || p.brand) + (p.inStock ? "" : " · hết size") + "</span></span>" +
             '<span class="sug__price">' + (p.inStock ? money(p.minPrice) : "") + "</span></a>";
         }).join("") + '<a class="sug-all" href="shop.html?q=' + encodeURIComponent(q) + '" id="sg-all" role="option" data-sug>Xem tất cả ' + res.length + " kết quả" + I.arrow.replace("<svg", '<svg width="18" height="18"') + "</a>"
-        : '<div class="sug-empty">Chưa thấy mẫu “' + esc(q) + '”. Thử gõ mã in trên tem hộp, hoặc <a href="' + esc(SHOP.messenger) + '" target="_blank" rel="noopener" data-msgr>nhắn Messenger</a> để shop tìm giúp.</div>';
+        : '<div class="sug-empty">Chưa thấy mẫu “' + esc(q) + '”. Thử gõ mã in trên tem hộp, hoặc <a href="' + esc(SHOP.facebookChat) + '" target="_blank" rel="noopener" data-fb>nhắn Facebook</a> để shop tìm giúp.</div>';
       show(true);
     }
     input.addEventListener("input", debounce(render, 90));
@@ -897,14 +920,14 @@
         '<div class="hero__slide hero__slide--ink"><div class="container hero__in"><div>' +
         '<div class="hero__kicker">Tư vấn trước khi chốt</div>' +
         '<h2 class="hero__title"><span>Hỏi size</span><span>trước khi mua</span></h2>' +
-        '<p class="hero__lead">Nhắn Messenger số cm chân và đôi bạn đang đi vừa nhất — shop tư vấn theo form từng dòng, gửi ảnh chụp thật trước khi giao.</p>' +
-        '<div class="hero__cta">' + msgrLink("Nhắn Messenger cho shop", "btn--light") + '<a class="btn btn--line-light" href="policy.html#dat-hang">Cách mua hàng</a></div></div>' +
+        '<p class="hero__lead">Nhắn Facebook số cm chân và đôi bạn đang đi vừa nhất — shop tư vấn theo form từng dòng, gửi ảnh chụp thật trước khi giao.</p>' +
+        '<div class="hero__cta">' + fbLink("Nhắn Facebook cho shop", "btn--light") + '<a class="btn btn--line-light" href="policy.html#dat-hang">Cách mua hàng</a></div></div>' +
         '<div class="hero__art"><img class="hero__mark" src="images/brand/slife-full-white.svg" alt="S&amp;LIFE Since 2021" width="340" height="507"></div>' +
         "</div></div>"
       );
       var h = hero(heroEl, slides);
       // Banner ảnh shop tự tải lên: images/banners/banner-1.jpg … thêm vào cuối hero
-      findSeries("images/banners/banner-", 1, 6, ["jpg", "webp"]).then(function (urls) {
+      (SITE_IMAGES ? Promise.resolve(listedImages("banners", /^banner-\d+\.(jpe?g|png|webp)$/i).slice(0, 6)) : findSeries("images/banners/banner-", 1, 6, ["jpg", "webp"])).then(function (urls) {
         urls.forEach(function (u, i) {
           h.add('<div class="hero__slide hero__slide--img"><img src="' + esc(u) + '" alt="Banner S&amp;LIFE ' + (i + 1) + '" loading="lazy"><div class="container hero__in"><div><div class="hero__cta"><a class="btn btn--light" href="shop.html">Xem hàng sẵn</a></div></div></div></div>');
         });
@@ -970,7 +993,7 @@
       consult.innerHTML = '<div class="consult__text"><h2>Chưa chắc size?</h2>' +
         "<p>Mỗi dòng giày có form khác nhau: Mexico 66 hẹp và ngắn, Samba thân hẹp, 204L thoải mái. Trên từng mẫu đã có lưu ý form và bảng size; cần chắc hơn, nhắn shop.</p>" +
         '<ol class="consult__steps"><li><b>Đo chân</b>Đứng trên tờ A4, đo từ gót tới ngón dài nhất (cm).</li><li><b>Nhắn shop</b>Gửi số cm và tên đôi bạn đang đi vừa nhất.</li><li><b>Chốt size</b>Shop tư vấn size theo form của mẫu bạn chọn.</li></ol>' +
-        '<div class="consult__cta">' + msgrLink("Hỏi size qua Messenger", "btn--grad") + '<a class="btn btn--ghost" href="size-guide.html">Hướng dẫn chọn size</a></div></div>' +
+        '<div class="consult__cta">' + fbLink("Hỏi size qua Facebook", "btn--grad") + '<a class="btn btn--ghost" href="size-guide.html">Hướng dẫn chọn size</a></div></div>' +
         '<div class="consult__notes"><h3>Lưu ý form thường gặp</h3><ul>' +
         FIT_NOTES.slice(0, 6).map(function (f) { return "<li><b>" + esc(f.line) + "</b><span>" + esc(f.advice) + "</span></li>"; }).join("") + "</ul></div>";
     }
@@ -1000,7 +1023,7 @@
     // Ảnh khách thật: images/khach-hang/1.jpg, 2.jpg…
     var moments = $("[data-moments]");
     if (moments) {
-      findSeries("images/khach-hang/", 1, 24, ["jpg", "webp"]).then(function (urls) {
+      (SITE_IMAGES ? Promise.resolve(listedImages("khach-hang", /^\d+\.(jpe?g|png|webp)$/i).slice(0, 24)) : findSeries("images/khach-hang/", 1, 24, ["jpg", "webp"])).then(function (urls) {
         if (!urls.length) return;
         moments.hidden = false;
         $(".moments", moments).innerHTML = urls.map(function (u) {
@@ -1017,15 +1040,15 @@
     var follow = $("[data-follow]");
     if (follow) {
       var links = [
-        [SHOP.messenger, I.ms, "Messenger", "Tư vấn và chốt đơn"],
-        SHOP.facebookOwner ? [SHOP.facebookOwner, I.fb, "Facebook", SHOP.facebookName || "Chủ shop"] : null,
+        [SHOP.facebookChat, I.fbc, "Facebook", "Tư vấn và chốt đơn"],
+        SHOP.facebookOwner && SHOP.facebookOwner !== SHOP.facebookChat ? [SHOP.facebookOwner, I.fb, "Facebook", SHOP.facebookName || "Chủ shop"] : null,
         SHOP.instagram ? [SHOP.instagram, I.ig, "Instagram", handle(SHOP.instagram)] : null,
         SHOP.tiktok ? [SHOP.tiktok, I.tt, "TikTok", handle(SHOP.tiktok)] : null,
       ].filter(Boolean);
       follow.innerHTML = '<div class="container follow__in"><div><h2>Theo dõi S&amp;LIFE</h2>' +
         "<p>Hàng mới về, ảnh thật từng đôi và mẹo chọn size — shop đăng trên các kênh dưới đây.</p></div>" +
         '<div class="follow__links">' + links.map(function (l) {
-          return '<a href="' + esc(l[0]) + '" target="_blank" rel="noopener"' + (l[2] === "Messenger" ? " data-msgr" : "") + ">" + l[1] + "<span><b>" + l[2] + "</b><small>" + esc(l[3]) + "</small></span></a>";
+          return '<a href="' + esc(l[0]) + '" target="_blank" rel="noopener"' + (l[0] === SHOP.facebookChat ? " data-fb" : "") + ">" + l[1] + "<span><b>" + l[2] + "</b><small>" + esc(l[3]) + "</small></span></a>";
         }).join("") + "</div></div>";
     }
     bindRails(document);
@@ -1080,7 +1103,8 @@
       var tries = line ? ["images/banners/" + slug(brand) + "-" + slug(line), "images/banners/" + slug(brand)] : ["images/banners/" + slug(brand)];
       (function next(i) {
         if (i >= tries.length) return;
-        findImage(tries[i], ["jpg", "webp"]).then(function (u) {
+        var name = tries[i].replace("images/banners/", "");
+        (SITE_IMAGES ? Promise.resolve(listedImages("banners", new RegExp("^" + name + "\\.(jpe?g|png|webp)$", "i"))[0] || null) : findImage(tries[i], ["jpg", "webp"])).then(function (u) {
           if (!u) return next(i + 1);
           bannerEl.innerHTML = '<img src="' + esc(u) + '" alt="' + esc(title) + '">';
           bannerEl.hidden = false;
@@ -1264,10 +1288,10 @@
         gridEl.innerHTML = '<div class="empty"><h2>Chưa có mẫu yêu thích</h2><p class="muted">Bấm biểu tượng trái tim trên mẫu giày để lưu lại, xem lại sau ở đây (lưu trên trình duyệt này).</p><div class="empty__actions"><a class="btn btn--grad" href="shop.html">Xem hàng sẵn</a></div></div>';
       } else {
         gridEl.innerHTML = '<div class="empty"><h2>Chưa có mẫu phù hợp</h2>' +
-          '<p class="muted">' + (chips.length ? "Thử bỏ bớt bộ lọc bên dưới." : "Thử gõ mã in trên tem hộp, hoặc tên ngắn hơn (VD: 204L, Samba).") + " Website chỉ hiện hàng đang có sẵn — cần mẫu khác, nhắn Messenger để shop tư vấn.</p>" +
+          '<p class="muted">' + (chips.length ? "Thử bỏ bớt bộ lọc bên dưới." : "Thử gõ mã in trên tem hộp, hoặc tên ngắn hơn (VD: 204L, Samba).") + " Website chỉ hiện hàng đang có sẵn — cần mẫu khác, nhắn Facebook để shop tư vấn.</p>" +
           (chips.length ? '<div class="empty__chips chips">' + chips.map(chipHtml).join("") + "</div>" : "") +
           '<div class="empty__actions">' + (chips.length ? '<button type="button" class="btn btn--ghost" data-clear>Xoá tất cả bộ lọc</button>' : "") +
-          msgrLink("Nhắn Messenger cho shop") + "</div></div>" +
+          fbLink("Nhắn Facebook cho shop") + "</div></div>" +
           '<div style="grid-column:1/-1">' + rail("Gợi ý cho bạn", IN_STOCK.slice().sort(rank).slice(0, 10)) + "</div>";
         bindRails(gridEl);
       }
@@ -1368,31 +1392,66 @@
 
   /* ---------- Trang sản phẩm ---------- */
   // Bảng size tham khảo theo hãng (data/shop.js SIZE_CHARTS); tô đậm size mẫu đang có
+  // Bảng size theo hãng (data/shop.js): mở sẵn bảng hợp với mẫu (code nữ → Nữ, GS/Kid → Trẻ em), tô size shop đang có
+  var MEASURE_STEPS = "<li>Mang loại tất bạn thường mang khi đi đôi giày này.</li>" +
+    "<li>Đứng thẳng trên mặt phẳng, gót chân chạm tường; nhờ người khác đo giúp nếu cần.</li>" +
+    "<li>Đo từ điểm sau cùng của gót chân tới đầu ngón chân dài nhất (cm).</li>" +
+    "<li>Đo cả hai chân, lấy số của bàn chân dài hơn.</li>" +
+    "<li>Số đo nằm giữa hai cỡ: muốn ôm chân thì chọn nhỏ hơn một cỡ, muốn rộng rãi thì chọn lớn hơn một cỡ.</li>";
+  var chartSeq = 0;
+  function sizeVal(s) {
+    var m = String(s).replace(",", ".").match(/^(\d+(?:\.\d+)?)(?:\s+(\d)\/(\d))?$/);
+    return m ? +m[1] + (m[2] ? m[2] / m[3] : 0) : NaN;
+  }
   function sizeChartHtml(p) {
     var chart = SIZE_CHARTS[p.brand];
-    if (!chart) {
-      return '<p class="chart__none">Bảng size ' + esc(p.brand) + " shop đang cập nhật. Nhắn Messenger số cm chân và đôi bạn đang đi vừa nhất, shop tư vấn size cho mẫu này.</p>";
+    if (!chart || !chart.tables) {
+      return '<p class="chart__none">Bảng size ' + esc(p.brand) + " shop đang cập nhật. Nhắn Facebook số cm chân và đôi bạn đang đi vừa nhất, shop tư vấn size cho mẫu này.</p>";
     }
-    var own = p.sizes.map(function (s) { return s.s; });
-    return '<div class="table-wrap chart__table"><table><thead><tr><th scope="col">EU</th><th scope="col">US</th><th scope="col">UK</th><th scope="col">Chân (cm)</th></tr></thead><tbody>' +
-      chart.map(function (r) {
-        var has = own.indexOf(r[2]) >= 0;
-        return "<tr" + (has ? ' class="is-own"' : "") + "><td>" + esc(r[2]) + (has ? ' <span class="chart__tag">còn</span>' : "") + "</td><td>" + esc(r[0]) + "</td><td>" + esc(r[1]) + "</td><td>" + esc(r[3]) + "</td></tr>";
-      }).join("") + "</tbody></table></div>" +
-      '<p class="chart__note">Bảng size nam / unisex theo hãng, để tham khảo. Mỗi dòng giày có form khác nhau — shop tư vấn lại theo số cm chân của bạn.</p>';
+    var own = (p.sizes || []).map(function (s) { return sizeVal(s.s); }).filter(isFinite);
+    // Bảng mở sẵn: ưu tiên bảng hợp giới tính (code nữ → Nữ, GS/Kid → Trẻ em) nhưng phải chứa size shop đang có
+    var want = p.gender === "nu" ? "women" : p.gender === "gs" || p.gender === "kid" ? "kids" : "";
+    function hits(tb) { return tb.rows.some(function (r) { var eu = sizeVal(r[0]); return own.some(function (x) { return Math.abs(x - eu) < 0.2; }); }); }
+    var order = chart.tables.map(function (tb, i) { return i; }).sort(function (a, b) { return (want && chart.tables[b][want] ? 1 : 0) - (want && chart.tables[a][want] ? 1 : 0) || a - b; });
+    var pick = order.filter(function (i) { return hits(chart.tables[i]); })[0];
+    if (pick === undefined) pick = order[0];
+    var id = "chart" + (++chartSeq);
+    var tabs = chart.tables.length > 1 ? '<div class="chart__tabs" role="tablist" aria-label="Chọn bảng size">' + chart.tables.map(function (tb, i) {
+      return '<button type="button" role="tab" id="' + id + "-t" + i + '" aria-controls="' + id + "-p" + i + '" aria-selected="' + (i === pick) + '" data-chart-tab="' + i + '">' + esc(tb.name) + "</button>";
+    }).join("") + "</div>" : "";
+    var panels = chart.tables.map(function (tb, i) {
+      return '<div class="table-wrap chart__table" id="' + id + "-p" + i + '" data-chart-panel="' + i + '"' + (chart.tables.length > 1 ? ' role="tabpanel" aria-labelledby="' + id + "-t" + i + '"' : "") + (i === pick ? "" : " hidden") + ">" +
+        "<table><thead><tr>" + tb.cols.map(function (c) { return '<th scope="col">' + esc(c) + "</th>"; }).join("") + "</tr></thead><tbody>" +
+        tb.rows.map(function (r) {
+          var eu = sizeVal(r[0]);
+          var has = isFinite(eu) && own.some(function (x) { return Math.abs(x - eu) < 0.2; });
+          return "<tr" + (has ? ' class="is-own"' : "") + ">" + r.map(function (c, j) {
+            return "<td>" + esc(c) + (j === 0 && has ? ' <span class="chart__tag">còn</span>' : "") + "</td>";
+          }).join("") + "</tr>";
+        }).join("") + "</tbody></table></div>";
+    }).join("");
+    return '<div class="chart__body" data-chart>' + tabs + panels +
+      '<p class="chart__note">Theo bảng size chính thức của ' + esc(p.brand === "Jordan" ? "Nike / Jordan" : p.brand) + " (" + esc(chart.source) + "), để tham khảo. " +
+      "Mỗi dòng giày có form khác nhau — shop xác nhận lại size theo số cm chân của bạn.</p></div>";
   }
+  document.addEventListener("click", function (e) {
+    var tab = e.target.closest("[data-chart-tab]");
+    if (!tab) return;
+    var box = tab.closest("[data-chart]"), i = tab.dataset.chartTab;
+    $all("[data-chart-tab]", box).forEach(function (b) { b.setAttribute("aria-selected", b.dataset.chartTab === i); });
+    $all("[data-chart-panel]", box).forEach(function (pn) { pn.hidden = pn.dataset.chartPanel !== i; });
+  });
   function sizeGuideModal(p) {
     var fit = fitNote(p);
     modal(
       "<h3>Hướng dẫn chọn size</h3>" +
       (fit ? '<div class="fit">' + I.info + "<div><b>Form " + esc(fit.line) + ":</b> " + esc(fit.advice) + "</div></div>" : "") +
-      '<p style="margin:0 0 8px"><b>Đo chiều dài bàn chân</b></p><ol style="margin:0 0 14px;padding-left:20px;color:var(--ink-2);font-size:14.5px">' +
-      "<li>Đứng thẳng trên tờ giấy A4, gót sát tường.</li><li>Đánh dấu đầu ngón chân dài nhất, đo từ mép giấy đến vạch (cm).</li><li>Đo vào cuối ngày, đo cả hai chân, lấy số lớn hơn.</li></ol>" +
+      '<p style="margin:0 0 8px"><b>Cách đo chiều dài bàn chân</b></p><ol style="margin:0 0 14px;padding-left:20px;color:var(--ink-2);font-size:14.5px">' + MEASURE_STEPS + "</ol>" +
       '<p style="margin:0 0 8px"><b>Bảng size ' + esc(p.brand) + "</b></p>" + sizeChartHtml(p) +
       '<p class="muted" style="font-size:14px;margin:12px 0 0">Còn phân vân giữa hai size: nhắn shop số cm chân kèm tên đôi giày đang đi vừa nhất.</p>' +
-      '<div class="modal__actions"><a class="btn btn--ghost" href="size-guide.html">Xem đầy đủ</a><button type="button" class="btn btn--msgr" data-ask-size>' + I.ms + "Hỏi size qua Messenger</button></div>",
+      '<div class="modal__actions"><a class="btn btn--ghost" href="size-guide.html">Xem đầy đủ</a>' + fbLink("Hỏi size qua Facebook", "", " data-fb-copy") + "</div>",
       "modal__box--wide"
-    ).el.addEventListener("click", function (e) { if (e.target.closest("[data-ask-size]")) askMessenger(p, null); });
+    );
   }
   function lightbox(shots, start, alt) {
     var cur = start;
@@ -1443,6 +1502,7 @@
     if (meta) meta.content = name + " chính hãng tại " + SHOP.name + ". " + (p.inStock ? "Size còn: " + p.sizes.map(function (s) { return s.s; }).join(", ") + ". " : "") + "Tư vấn size theo form, đổi size " + SHOP.returnDays + " ngày.";
     var fit = fitNote(p);
     var selected = p.sizes.length === 1 ? p.sizes[0].s : null;
+    fbContext = function (size) { return consultMsg(p, size || selected); }; // nút Facebook: chép sẵn mẫu + size đang chọn
     track("view_item", { id: p.id, code: p.code, brand: p.brand, price: p.minPrice * 1000 });
     var sizeText = p.sizes.map(function (s) { return s.s; }).join(", ");
     var hasLines = (LINES[p.brand] || []).length > 0;
@@ -1503,24 +1563,26 @@
             var extra = own.p && own.p !== p.price ? money(own.p).replace(".000₫", "k") : own.n ? "Lưu ý" : "";
             return '<button type="button" data-size="' + esc(s) + '" aria-pressed="false" title="' + esc(own.n || "") + '">' + esc(s) + (extra ? "<small>" + esc(extra) + "</small>" : "") + "</button>";
           }).join("") + "</div>" +
-          '<p class="pd__hint" data-size-note>' + (range.length > p.sizes.length ? "Size mờ đã hết tại shop — cần size khác, nhắn Messenger để shop tư vấn." : "Chỉ hiện size đang còn tại shop.") + "</p>" +
+          '<p class="pd__hint" data-size-note>' + (range.length > p.sizes.length ? "Size mờ đã hết tại shop — cần size khác, nhắn Facebook để shop tư vấn." : "Chỉ hiện size đang còn tại shop.") + "</p>" +
           // Tư vấn form và bảng size: đặt TRƯỚC nút mua
           '<div class="fitbox">' +
           (fit ? '<div class="fit">' + I.info + "<div><b>Lưu ý form " + esc(fit.line) + ":</b> " + esc(fit.advice) + "</div></div>" : "") +
-          '<details class="chart"><summary>' + I.ruler + "Bảng size " + esc(p.brand) + " (EU · US · UK · cm)" + I.down.replace("<svg", '<svg class="chev"') + "</summary>" + sizeChartHtml(p) + "</details></div>" +
-          '<div class="pd__buy" data-buy-block><button type="button" class="btn btn--grad" data-add>' + I.bagPlus + 'Thêm vào giỏ</button><button type="button" class="btn" data-buy-now>Gửi yêu cầu mua</button></div>' +
-          '<div class="pd__buy2"><button type="button" class="btn btn--ghost" data-ask>' + I.ms + "Tư vấn size qua Messenger</button>" + wishBtn(p) + "</div>"
-        : '<div class="pd__out"><b>Tạm hết size</b><p>Mẫu này vừa hết size tại shop. Nhắn Messenger để shop tư vấn mẫu tương tự đang có sẵn.</p></div>' +
+          '<details class="chart"><summary>' + I.ruler + "Bảng size " + esc(p.brand) + I.down.replace("<svg", '<svg class="chev"') + "</summary>" + sizeChartHtml(p) + "</details></div>" +
+          '<div class="pd__buy" data-buy-block><button type="button" class="btn btn--grad" data-add>' + I.bagPlus + "Thêm vào giỏ</button>" +
+          fbLink("Tư vấn qua Facebook", "", " data-fb-copy") + "</div>" +
+          (WISH ? '<div class="pd__buy2">' + wishBtn(p) + "</div>" : "") +
+          '<p class="pd__fbnote">Bấm <b>Tư vấn qua Facebook</b>: thông tin mẫu và size bạn chọn được chép sẵn, mở Facebook shop rồi dán vào tin nhắn.</p>'
+        : '<div class="pd__out"><b>Tạm hết size</b><p>Mẫu này vừa hết size tại shop. Nhắn Facebook để shop tư vấn mẫu tương tự đang có sẵn.</p></div>' +
           (fit ? '<div class="fit">' + I.info + "<div><b>Lưu ý form " + esc(fit.line) + ":</b> " + esc(fit.advice) + "</div></div>" : "") +
-          '<div class="pd__buy2" data-buy-block><button type="button" class="btn btn--grad" data-ask>' + I.ms + "Nhắn Messenger cho shop</button>" + wishBtn(p) + "</div>") +
-      '<p class="pd__call">Shop xác nhận size, phí ship và tiền cọc qua Messenger. Website không thu tiền.</p>' +
+          '<div class="pd__buy2" data-buy-block>' + fbLink("Nhắn Facebook cho shop", "btn--grad", " data-fb-copy") + wishBtn(p) + "</div>") +
+      '<p class="pd__call">Shop xác nhận size, phí ship và tiền cọc qua Facebook. Website không thu tiền.</p>' +
       '<div class="acc">' +
       "<details open><summary>" + I.shield + "Cam kết của S&amp;LIFE" + I.down.replace("<svg", '<svg class="chev"') + '</summary><div class="acc__body"><ul>' +
       (SHOP.perks || []).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div></details>" +
       "<details><summary>" + I.truck + "Giao hàng &amp; đặt cọc" + I.down.replace("<svg", '<svg class="chev"') + '</summary><div class="acc__body"><ul>' +
       "<li>Giao qua SPX Express hoặc Viettel Post. Phí ship do đơn vị vận chuyển tính, shop báo khi xác nhận đơn.</li>" +
       "<li>Hà Nội và TP.HCM có thể giao trong ngày.</li>" +
-      "<li>Sau khi xác nhận còn size, shop gửi số tài khoản và mức cọc qua Messenger.</li>" +
+      "<li>Sau khi xác nhận còn size, shop gửi số tài khoản và mức cọc qua Facebook.</li>" +
       "<li>Đồng kiểm tuỳ đơn vị vận chuyển — shop xác nhận riêng khi chốt đơn.</li>" +
       '</ul><p style="margin:8px 0 0"><a class="link" href="policy.html#ship">Chi tiết giao hàng</a></p></div></details>' +
       "<details><summary>" + I.swap + "Đổi size &amp; đổi trả" + I.down.replace("<svg", '<svg class="chev"') + '</summary><div class="acc__body"><ul>' +
@@ -1538,7 +1600,7 @@
       '<section class="pd-sec"><div class="pd-desc"><div><h2>Mô tả sản phẩm</h2><div class="pd-desc__text">' +
       "<p><b>" + esc(name) + "</b> là hàng chính hãng" + (p.inStock ? " đang có sẵn" : "") + " tại " + esc(SHOP.name) + "." +
       (p.code ? " Mã sản phẩm <b>" + esc(p.code) + "</b> khớp với tem hộp — bạn tra mã này trên trang chủ của " + esc(p.brand) + " sẽ ra đúng mẫu, đúng màu." : "") + "</p>" +
-      (p.inStock ? "<p>Size còn tại shop: <b>" + esc(sizeText) + "</b>. Tồn kho thay đổi trong ngày; shop xác nhận lại size khi bạn gửi yêu cầu.</p>" : "<p>Mẫu này tạm hết size tại shop. Nhắn Messenger để shop tư vấn mẫu tương tự đang có sẵn.</p>") +
+      (p.inStock ? "<p>Size còn tại shop: <b>" + esc(sizeText) + "</b>. Tồn kho thay đổi trong ngày; shop xác nhận lại size khi bạn gửi yêu cầu.</p>" : "<p>Mẫu này tạm hết size tại shop. Nhắn Facebook để shop tư vấn mẫu tương tự đang có sẵn.</p>") +
       (fit ? "<p>Về form: " + esc(fit.advice) + " Còn phân vân, nhắn shop số cm chân kèm tên đôi giày đang đi vừa nhất để được tư vấn.</p>" : "") +
       "<p><b>Bảo quản:</b> tránh ngâm nước, không giặt máy, không dùng chất tẩy mạnh, không phơi trực tiếp dưới nắng gắt.</p>" +
       "<p>Shop gửi ảnh chụp thật đôi giày trước khi giao.</p>" +
@@ -1546,8 +1608,8 @@
       '<div class="about-shop"><img src="images/brand/icon-192.png" alt="" width="64" height="64" loading="lazy"><div><b>Về ' + esc(SHOP.name) + "</b>" +
       "<p>Giày chính hãng, hàng sẵn, bán online từ 2021. Shop tư vấn size theo form từng dòng và nói rõ nguồn hàng, tình trạng từng đôi trước khi chốt.</p>" +
       '<div class="about-shop__links">' +
-      '<a href="' + esc(SHOP.messenger) + '" target="_blank" rel="noopener" aria-label="Messenger" data-msgr>' + I.ms + "</a>" +
-      (SHOP.facebookOwner ? '<a href="' + esc(SHOP.facebookOwner) + '" target="_blank" rel="noopener" aria-label="Facebook">' + I.fb + "</a>" : "") +
+      '<a href="' + esc(SHOP.facebookChat) + '" target="_blank" rel="noopener" aria-label="Facebook" data-fb>' + I.fbc + "</a>" +
+      (SHOP.facebookOwner && SHOP.facebookOwner !== SHOP.facebookChat ? '<a href="' + esc(SHOP.facebookOwner) + '" target="_blank" rel="noopener" aria-label="Facebook">' + I.fb + "</a>" : "") +
       (SHOP.instagram ? '<a href="' + esc(SHOP.instagram) + '" target="_blank" rel="noopener" aria-label="Instagram">' + I.ig + "</a>" : "") +
       (SHOP.tiktok ? '<a href="' + esc(SHOP.tiktok) + '" target="_blank" rel="noopener" aria-label="TikTok">' + I.tt + "</a>" : "") +
       "</div></div></div></div>" +
@@ -1596,7 +1658,7 @@
     }
     if (!known) {
       mainBox.classList.add("is-empty");
-      mainBox.insertAdjacentHTML("beforeend", '<a class="btn btn--msgr btn--sm gallery__ph-cta" href="' + esc(SHOP.messenger) + '" target="_blank" rel="noopener" data-msgr>' + I.camera + "Nhắn Messenger xin ảnh thật</a>");
+      mainBox.insertAdjacentHTML("beforeend", '<a class="btn btn--fb btn--sm gallery__ph-cta" href="' + esc(SHOP.facebookChat) + '" target="_blank" rel="noopener" data-fb data-fb-copy>' + I.camera + "Nhắn Facebook xin ảnh thật</a>");
     }
     loadShots(p, addShot);
     thumbs.addEventListener("click", function (e) {
@@ -1655,23 +1717,19 @@
       var b = e.target.closest("[data-size]");
       if (b) { selected = b.dataset.size; markSize(); }
       var off = e.target.closest("[data-off]");
-      if (off && noteEl) { noteEl.innerHTML = "Size " + esc(off.dataset.off) + ' đã hết tại shop. <a class="link" href="#" data-ask-off="' + esc(off.dataset.off) + '">Nhắn Messenger để shop tư vấn</a>'; noteEl.classList.add("is-warn"); }
-      var ao = e.target.closest("[data-ask-off]");
-      if (ao) { e.preventDefault(); askMessenger(p, ao.dataset.askOff); }
+      if (off && noteEl) { noteEl.innerHTML = "Size " + esc(off.dataset.off) + ' đã hết tại shop. <a class="link" href="' + esc(SHOP.facebookChat) + '" target="_blank" rel="noopener" data-fb data-fb-copy data-fb-size="' + esc(off.dataset.off) + '">Nhắn Facebook để shop tư vấn</a>'; noteEl.classList.add("is-warn"); }
       if (e.target.closest("[data-guide]")) sizeGuideModal(p);
       if (e.target.closest("[data-copy-code]")) copyText(p.code).then(function () { toast("Đã sao chép mã " + p.code); });
       if (e.target.closest("[data-copy-link]")) copyText(linkUrl).then(function () { toast("Đã sao chép link sản phẩm"); });
       if (e.target.closest("[data-native-share]")) navigator.share({ title: name, url: linkUrl }).catch(function () {});
       if (e.target.closest("[data-add]")) { if (add()) openMini(p.id + "|" + selected); }
-      if (e.target.closest("[data-buy-now]")) { if (add()) location.href = "dat-hang.html"; }
-      if (e.target.closest("[data-ask]")) askMessenger(p, selected);
     });
 
     // Thanh mua dính đáy màn hình trên điện thoại
     var bar = document.createElement("div");
     bar.className = "buybar";
     bar.innerHTML = '<div class="buybar__info"><b data-bar-price></b><small data-bar-sub></small></div>' +
-      (p.inStock ? '<button type="button" class="btn btn--grad" data-bar-add>' + I.bagPlus + "Thêm vào giỏ</button>" : '<button type="button" class="btn btn--grad" data-bar-ask>' + I.ms + "Nhắn shop</button>");
+      (p.inStock ? '<button type="button" class="btn btn--grad" data-bar-add>' + I.bagPlus + "Thêm vào giỏ</button>" : fbLink("Nhắn shop", "btn--grad", " data-fb-copy"));
     document.body.appendChild(bar);
     function updateBar() {
       var s = p.sizes.filter(function (x) { return x.s === selected; })[0];
@@ -1680,7 +1738,6 @@
     }
     bar.addEventListener("click", function (e) {
       if (e.target.closest("[data-bar-add]")) { if (add()) openMini(p.id + "|" + selected); }
-      if (e.target.closest("[data-bar-ask]")) askMessenger(p, null);
     });
     var block = $("[data-buy-block]", root), footer = $(".ft"), ticking = false;
     // Chỉ hiện khi nút mua đã cuộn qua phía trên, ẩn khi tới footer
@@ -1756,7 +1813,7 @@
   }
 
   /* ---------- Gửi yêu cầu cho shop (thay cho đặt hàng / thanh toán) ----------
-     Không có máy chủ, không thu tiền. Web soạn sẵn tin nhắn → khách sao chép và gửi qua Messenger.
+     Không có máy chủ, không thu tiền. Web soạn sẵn tin nhắn → khách sao chép và gửi qua Facebook.
      Giỏ KHÔNG tự xoá: chỉ xoá khi khách bấm "Tôi đã gửi cho shop". */
   function reqCode() {
     var d = new Date();
@@ -1801,7 +1858,7 @@
     var root = $("[data-checkout]");
     var cart = getCart();
     if (!cart.length) {
-      root.innerHTML = '<div class="empty" style="margin:30px 0;grid-column:1/-1"><h2>Giỏ hàng đang trống</h2><p class="muted">Chọn mẫu và size trước, rồi quay lại gửi yêu cầu cho shop.</p><div class="empty__actions"><a class="btn btn--grad" href="shop.html">Xem hàng sẵn</a>' + msgrLink("Nhắn Messenger cho shop", "btn--ghost") + "</div></div>";
+      root.innerHTML = '<div class="empty" style="margin:30px 0;grid-column:1/-1"><h2>Giỏ hàng đang trống</h2><p class="muted">Chọn mẫu và size trước, rồi quay lại gửi yêu cầu cho shop.</p><div class="empty__actions"><a class="btn btn--grad" href="shop.html">Xem hàng sẵn</a>' + fbLink("Nhắn Facebook cho shop", "btn--ghost") + "</div></div>";
       return;
     }
     var form = $("[data-req-form]"), msgEl = $("[data-req-msg]"), linkEl = $("[data-req-link]"), statusEl = $("[data-req-status]");
@@ -1856,9 +1913,9 @@
         items: req.items.map(function (it) { var p = BY_ID[it.id]; return { code: p.code || p.id, name: p.name, size: it.size, price: (itemPrice(p, it.size) || 0) * 1000 }; }),
       }).then(function () {
         pending.logged = true; storage("slife_req", pending);
-        status("Đã ghi yêu cầu " + req.code + " vào sổ của shop. Đây chưa phải đơn đã xác nhận — shop xác nhận trong Messenger.", "ok");
+        status("Đã ghi yêu cầu " + req.code + " vào sổ của shop. Đây chưa phải đơn đã xác nhận — shop xác nhận trong tin nhắn Facebook.", "ok");
       }, function () {
-        status("Chưa ghi được vào sổ yêu cầu (mạng chậm hoặc lỗi). Không sao: bạn vẫn gửi tin nhắn qua Messenger bình thường, giỏ hàng vẫn được giữ.", "warn");
+        status("Chưa ghi được vào sổ yêu cầu (mạng chậm hoặc lỗi). Không sao: bạn vẫn gửi tin nhắn qua Facebook bình thường, giỏ hàng vẫn được giữ.", "warn");
       });
     }
 
@@ -1869,7 +1926,7 @@
           '<br><small class="muted">Size ' + esc(it.size) + "</small></div><b>" + money(itemPrice(p, it.size)) + "</b></div>";
       }).join("") +
       '<div class="summary__row summary__total"><span>Tạm tính</span><span>' + money(cartTotal(cart)) + "</span></div>" +
-      '<p class="muted" style="font-size:13.5px;margin:8px 0 0">Phí ship và tiền cọc: shop báo qua Messenger sau khi xác nhận size. Mua thêm đôi hoặc thêm size, bạn trao đổi trong tin nhắn.</p>' +
+      '<p class="muted" style="font-size:13.5px;margin:8px 0 0">Phí ship và tiền cọc: shop báo qua Facebook sau khi xác nhận size. Mua thêm đôi hoặc thêm size, bạn trao đổi trong tin nhắn.</p>' +
       '<a class="link" href="cart.html" style="display:inline-block;margin-top:10px">Sửa giỏ hàng</a>';
 
     form.addEventListener("input", refresh);
@@ -1877,29 +1934,30 @@
     form.addEventListener("submit", function (e) { e.preventDefault(); });
     $("[data-req-copy]").addEventListener("click", function () {
       refresh();
-      copyText(msgEl.textContent).then(function () { toast("Đã sao chép — mở Messenger rồi dán vào khung chat"); });
+      copyText(msgEl.textContent).then(function () { toast("Đã sao chép — mở Facebook shop rồi dán vào tin nhắn"); });
       $("[data-req-copy]").classList.add("is-done");
       track("copy_message", { source: "gui_yeu_cau", code: pending.code, items: cart.length });
       logOnce();
     });
-    $("[data-req-open]").href = SHOP.messenger;
+    $("[data-req-open]").href = SHOP.facebookChat;
+    $("[data-req-open]").insertAdjacentHTML("afterbegin", I.fbc);
     $("[data-req-open]").addEventListener("click", function () {
       refresh();
       copyText(msgEl.textContent);
-      track("open_messenger", { source: "gui_yeu_cau", code: pending.code });
+      toast("Đã chép tin nhắn — dán vào khung chat Facebook của shop");
       logOnce();
     });
     $("[data-req-sent]").addEventListener("click", function () {
-      if (!confirm("Bạn đã dán và gửi tin nhắn cho shop trên Messenger chưa? Bấm OK để xoá giỏ hàng.")) return;
+      if (!confirm("Bạn đã dán và gửi tin nhắn cho shop trên Facebook chưa? Bấm OK để xoá giỏ hàng.")) return;
       var link = linkEl.href, code = pending.code;
       track("request_sent", { code: code, items: cart.length });
       setCart([]); storage("slife_note", ""); storage("slife_req", null);
-      root.innerHTML = '<div class="req-done"><h2>Cảm ơn bạn</h2><p>Shop sẽ trả lời trong Messenger để xác nhận size, phí ship và tiền cọc cho yêu cầu <b>' + esc(code) + "</b>.</p>" +
+      root.innerHTML = '<div class="req-done"><h2>Cảm ơn bạn</h2><p>Shop sẽ trả lời trong tin nhắn Facebook để xác nhận size, phí ship và tiền cọc cho yêu cầu <b>' + esc(code) + "</b>.</p>" +
         '<p class="muted">Đây là yêu cầu mua, chưa phải đơn đã xác nhận. Lưu link tóm tắt nếu cần xem lại: <a class="link" href="' + esc(link) + '">xem tóm tắt yêu cầu</a>.</p>' +
-        '<div class="empty__actions">' + msgrLink("Mở lại Messenger") + '<a class="btn btn--ghost" href="shop.html">Xem thêm giày</a></div></div>';
+        '<div class="empty__actions">' + fbLink("Mở lại Facebook") + '<a class="btn btn--ghost" href="shop.html">Xem thêm giày</a></div></div>';
     });
-    if (navigator.onLine === false) status("Thiết bị đang mất mạng. Giỏ hàng vẫn được giữ — khi có mạng, bấm Mở Messenger để gửi.", "warn");
-    window.addEventListener("offline", function () { status("Mất kết nối mạng. Giỏ hàng vẫn được giữ — khi có mạng, bấm Mở Messenger để gửi.", "warn"); });
+    if (navigator.onLine === false) status("Thiết bị đang mất mạng. Giỏ hàng vẫn được giữ — khi có mạng, bấm Mở Facebook để gửi.", "warn");
+    window.addEventListener("offline", function () { status("Mất kết nối mạng. Giỏ hàng vẫn được giữ — khi có mạng, bấm Mở Facebook để gửi.", "warn"); });
     refresh();
     track("begin_request", { items: cart.length, total: cartTotal(cart) * 1000 });
   }
@@ -1910,10 +1968,10 @@
     try { data = b64decode(params().get("r") || ""); } catch (e) { data = null; }
     var items = data && Array.isArray(data.i) ? data.i.map(function (x) { return { p: findProduct(x[0]), size: String(x[1] || "") }; }).filter(function (x) { return x.p; }) : [];
     if (!items.length) {
-      root.innerHTML = '<div class="empty" style="margin:30px 0"><h2>Không đọc được yêu cầu</h2><p class="muted">Link có thể bị cắt ngắn khi sao chép. Nhắn Messenger cho shop để được hỗ trợ.</p><div class="empty__actions">' + msgrLink("Nhắn Messenger cho shop") + '<a class="btn btn--ghost" href="shop.html">Xem hàng sẵn</a></div></div>';
+      root.innerHTML = '<div class="empty" style="margin:30px 0"><h2>Không đọc được yêu cầu</h2><p class="muted">Link có thể bị cắt ngắn khi sao chép. Nhắn Facebook cho shop để được hỗ trợ.</p><div class="empty__actions">' + fbLink("Nhắn Facebook cho shop") + '<a class="btn btn--ghost" href="shop.html">Xem hàng sẵn</a></div></div>';
       return;
     }
-    root.innerHTML = '<div class="req-view"><p class="req-view__note">' + I.info + "Đây là tóm tắt yêu cầu mua, <b>không phải trạng thái đơn</b>. Shop xác nhận size, phí ship và tiền cọc trong Messenger.</p>" +
+    root.innerHTML = '<div class="req-view"><p class="req-view__note">' + I.info + "Đây là tóm tắt yêu cầu mua, <b>không phải trạng thái đơn</b>. Shop xác nhận size, phí ship và tiền cọc trong tin nhắn Facebook.</p>" +
       "<h1>Yêu cầu " + esc(data.c || "") + "</h1>" +
       items.map(function (x) {
         var p = x.p, still = p.sizes.some(function (s) { return s.s === x.size; });
@@ -1927,7 +1985,7 @@
       (data.p ? "<dt>Nhận hàng tại</dt><dd>" + esc(data.p) + "</dd>" : "") +
       (data.f ? "<dt>Chân dài</dt><dd>" + esc(data.f) + " cm</dd>" : "") +
       (data.t ? "<dt>Ghi chú</dt><dd>" + esc(data.t) + "</dd>" : "") + "</dl>" +
-      '<div class="empty__actions" style="justify-content:flex-start">' + msgrLink("Nhắn Messenger cho shop") + '<button type="button" class="btn btn--ghost" data-req-restore>Thêm các mẫu này vào giỏ</button></div></div>';
+      '<div class="empty__actions" style="justify-content:flex-start">' + fbLink("Nhắn Facebook cho shop") + '<button type="button" class="btn btn--ghost" data-req-restore>Thêm các mẫu này vào giỏ</button></div></div>';
     $("[data-req-restore]", root).addEventListener("click", function () {
       items.forEach(function (x) { if (x.p.sizes.some(function (s) { return s.s === x.size; })) addToCart(x.p.id, x.size, 1); });
       openMini();
@@ -1936,6 +1994,8 @@
 
   /* ---------- Trang hướng dẫn size: lưu ý form + bảng size từ data/shop.js ---------- */
   function initGuide() {
+    var steps = $("[data-measure-steps]");
+    if (steps) steps.innerHTML = MEASURE_STEPS;
     var rows = $("[data-fit-rows]");
     if (rows) rows.innerHTML = FIT_NOTES.map(function (f) { return "<tr><td>" + esc(f.line) + "</td><td>" + esc(f.advice) + "</td></tr>"; }).join("");
     var box = $("[data-size-charts]");

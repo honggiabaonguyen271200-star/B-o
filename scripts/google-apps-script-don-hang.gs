@@ -2,7 +2,7 @@
  * Sổ yêu cầu mua từ website S&LIFE Sneaker → Google Sheet của chủ shop.
  * Cách cài: xem HUONG-DAN-DON-HANG.md ở thư mục gốc của website.
  *
- * - Đây là SỔ YÊU CẦU, không phải hệ thống xác nhận đơn: giá/tồn/tiền cọc vẫn do chủ shop xác nhận trong Messenger.
+ * - Đây là SỔ YÊU CẦU, không phải hệ thống xác nhận đơn: giá/tồn/tiền cọc vẫn do chủ shop xác nhận trong tin nhắn Facebook.
  * - Chống ghi trùng: mỗi yêu cầu có một mã (VD SL261001-AB12). Mã đã có trong sổ thì không ghi thêm dòng mới.
  * - Website gọi bằng GET (JSONP) để biết chắc đã ghi hay chưa; POST vẫn nhận nếu cần.
  * - Không lưu số điện thoại, địa chỉ chi tiết hay thông tin thanh toán (website không thu các thông tin này).

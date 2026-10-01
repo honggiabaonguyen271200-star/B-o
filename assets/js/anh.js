@@ -131,7 +131,8 @@
     function worker() {
       var p = queue.shift();
       if (!p) return;
-      (shotsOf(p) ? Promise.resolve(shotsOf(p)[0]) : findImage(imgBase(p))).then(function (u) {
+      // Có danh sách ảnh (danh-sach.js, tự cập nhật khi mở xem-web.bat) thì tin danh sách, không dò từng file (không lỗi 404)
+      (shotsOf(p) ? Promise.resolve(shotsOf(p)[0]) : window.PRODUCT_IMAGES ? Promise.resolve(null) : findImage(imgBase(p))).then(function (u) {
         if (status[p.id] === undefined) {
           status[p.id] = !!u; if (u) found++;
           setStatus(p, u ? "Đã có ảnh (" + u.split("/").pop() + ")" : "Chưa có ảnh", !!u);

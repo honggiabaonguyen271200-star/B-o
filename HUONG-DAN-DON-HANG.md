@@ -4,14 +4,14 @@ Khách mua trên website theo cách:
 
 1. Chọn mẫu và size.
 2. Bấm **Gửi yêu cầu**. Website soạn sẵn tin nhắn: tên mẫu, mã, size, giá, kèm link tóm tắt.
-3. Khách **Sao chép** rồi **Mở Messenger**, dán và gửi cho bạn.
-4. Bạn xác nhận size, phí ship và tiền cọc ngay trong Messenger.
+3. Khách bấm **Chép tin nhắn và mở Facebook shop**, dán vào khung chat và gửi cho bạn.
+4. Bạn xác nhận size, phí ship và tiền cọc ngay trong tin nhắn Facebook.
 
 Website **không thu tiền**, không hiện số tài khoản. Giỏ hàng chỉ bị xoá khi khách bấm "Tôi đã gửi cho shop".
 
-Nếu muốn có thêm một **sổ ghi lại các yêu cầu** trên Google Sheet (để không sót khách), làm theo các bước dưới đây, mất khoảng 10 phút. Không làm thì website vẫn chạy đầy đủ qua Messenger.
+Nếu muốn có thêm một **sổ ghi lại các yêu cầu** trên Google Sheet (để không sót khách), làm theo các bước dưới đây, mất khoảng 10 phút. Không làm thì website vẫn chạy đầy đủ qua Facebook.
 
-> Sổ này chỉ là danh sách yêu cầu khách đã bấm gửi, **không phải đơn đã xác nhận**. Giá, tồn kho và tiền cọc vẫn do bạn xác nhận trong Messenger.
+> Sổ này chỉ là danh sách yêu cầu khách đã bấm gửi, **không phải đơn đã xác nhận**. Giá, tồn kho và tiền cọc vẫn do bạn xác nhận trong Facebook.
 
 ## Cài đặt
 

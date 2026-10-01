@@ -50,5 +50,5 @@ Danh sách việc cần làm để website "chuẩn chỉnh" — đúng luật, 
 
 ## 5. Khi nào nên chuyển sang nền tảng bán hàng (Haravan, Sapo…)?
 
-Website hiện tại chạy miễn phí trên GitHub Pages, đơn chốt qua Messenger — phù hợp khi đơn còn vừa phải và tồn kho quản lý bằng Google Sheet.
+Website hiện tại chạy miễn phí trên GitHub Pages, đơn chốt qua Facebook — phù hợp khi đơn còn vừa phải và tồn kho quản lý bằng Google Sheet.
 Nên cân nhắc nền tảng trả phí (N&N Shoes Shop đang dùng Haravan) khi cần: thanh toán online tự động, trừ tồn kho tự động, kết nối đơn vị vận chuyển, nhiều nhân viên cùng quản lý đơn.

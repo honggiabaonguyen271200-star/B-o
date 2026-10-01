@@ -1,55 +1,63 @@
 # HANDOFF — Thiết kế mới S&LIFE Sneaker (nhánh `thiet-ke-moi`)
 
-Cập nhật đêm 30/09/2026 · **Mốc 2b** (việc không cần chủ shop quyết), nối tiếp **Mốc 2** (làm theo câu trả lời WEB: `docs/thiet-ke-moi/TRA-LOI-WEB.md`, `01-DIEM-CHOT-TU-TRA-LOI.md`).
+Cập nhật 01/10/2026 · **Mốc 3**: làm theo 8 góp ý của chủ shop (logo, nhãn hãng, menu, Facebook thay Messenger, bỏ "Gửi yêu cầu mua", bảng size, bỏ "Mới về", hết lỗi 404). Nối tiếp mốc 2b và mốc 2 (bên dưới).
 
 Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách đang xem vẫn là bản cũ. Chưa gộp, chưa mua dịch vụ, chưa tạo tài khoản nào, chưa ghi vào Google Sheet thật.
 
+> Từ mốc 3, kênh tư vấn là **Facebook** (`facebookChat` trong `data/shop.js`). Các chỗ ghi "Messenger" ở mục mốc 2 / 2b bên dưới là lịch sử, không còn đúng.
+
 ## Chủ shop cần duyệt
 
-**Thử trên điện thoại (việc đầu tiên):**
+**Thử trên điện thoại thật (Claude không có máy thật để thử):**
 
-1. Bấm icon Messenger ở đầu trang: có mở đúng hội thoại với tài khoản của bạn không? Nếu không, đổi `messenger` trong `data/shop.js` thành `https://www.facebook.com/honggiabaoslife/`.
-2. Chạy trọn hai hành trình: tìm mã → chọn size → Gửi yêu cầu → Sao chép → Mở Messenger → dán; và "Tư vấn size" trên trang sản phẩm.
+1. **Nút Facebook** (icon đầu trang, "Tư vấn qua Facebook" ở trang sản phẩm, "Chép tin nhắn và mở Facebook shop" ở trang Gửi yêu cầu):
+   - Android, mở web từ Zalo / TikTok / Cốc Cốc / Samsung Internet: phải bật **Chrome** và vào đúng trang `facebook.com/honggiabaoslife`;
+   - Android đang ở Chrome, hoặc trong app Facebook / Instagram: mở ngay tại đó;
+   - iPhone Safari: thường tự mở **app Facebook**;
+   - iPhone trong Zalo / TikTok: thử mở Chrome; máy không cài Chrome thì sau khoảng 1,5 giây tự mở Facebook như link thường.
+   - Ở trang sản phẩm, sau khi bấm, vào khung chat và **dán**: phải có tên mẫu, mã, size đã chọn, giá, link.
+2. **Logo đầu trang:** giờ là logo gốc ô vuông (đủ "S&LIFE" và "Since 2021"), cao 52px trên điện thoại, 62px trên máy tính. Ở cỡ này chữ "Since 2021" rất nhỏ nhưng không bị cắt. Muốn logo to hơn thì báo, header sẽ cao thêm.
 
-**Cần bạn trả lời / kiểm:**
+**Cần biết về Facebook trong Chrome (giới hạn của trình duyệt, không sửa được bằng code):**
 
-3. **Bảng size** (WEB-88: không được sai size):
-   - **Nike/Jordan** và **New Balance** đang theo bảng quy đổi phổ biến, ghi "để tham khảo" — cần bạn đối chiếu với bảng trên web hãng trước khi gộp.
-   - **Asics, Onitsuka Tiger, Adidas, Puma, Salomon, On:** máy làm việc của Claude **bị chặn truy cập web chính thức** của cả 6 hãng (thử ngày 30/09/2026: asics.com, onitsukatiger.com, adidas.com, adidas.com.vn, asics.com.vn, puma.com, salomon.com, on.com — đều bị chặn). Không đoán số, nên các hãng này vẫn hiện "shop đang cập nhật" và mời nhắn Messenger.
-   - Muốn thêm: gửi link hoặc ảnh chụp bảng size trên web hãng, Claude chép vào `SIZE_CHARTS` kèm link nguồn và ngày lấy, ghi "tham khảo — shop xác nhận".
-4. **Câu "Sai size do shop tư vấn: shop chịu phí đổi" đã bỏ:** WEB-69 chỉ chọn hai trường hợp (shop giao sai/lỗi → shop chịu; đổi theo nhu cầu → khách chịu). Muốn giữ lời hứa này thì báo để thêm lại.
-5. **"Hàng mới về"** (WEB-43) chưa làm.
-   - Thứ tự hiện tại: có ảnh thật trước → còn nhiều size trước → theo thứ tự trong bảng.
-   - Đề xuất: thêm cột tuỳ chọn **"Mới về"** (ghi ngày, VD `01/10/2026`) trong Google Sheet. Bạn đồng ý thì `build_products.py` đọc cột này để có mục "Hàng mới về".
-6. **Link chia sẻ mới `…/sp/<mã>.html`** (mốc 2b, mục 3) — **chưa kiểm bằng công cụ Facebook Sharing Debugger**:
-   - máy làm việc bị chặn Facebook;
-   - các trang này chỉ có trên web thật sau khi gộp.
-   Sau khi gộp, bạn làm:
-   - mở https://developers.facebook.com/tools/debug/ → dán một link, ví dụ `https://honggiabaonguyen271200-star.github.io/B-o/sp/u204lmmc.html` → **Scrape Again** → xem có ảnh giày, tên, giá không;
-   - rồi dán link đó vào Messenger cho chính mình.
-7. **Sitemap bỏ các trang hãng** (`shop.html?brand=…`): làm đúng yêu cầu "chỉ trang chính + mẫu còn hàng". Muốn Google thấy thêm trang hãng thì báo để thêm lại.
-8. **Lỗi 404 ảnh trong Console:** web vẫn tự dò ảnh `.webp`/`.jpg` cho mẫu chưa có trong `danh-sach.js`, để ảnh chép tay vẫn hiện. Mỗi mẫu chưa ảnh sinh 2 dòng lỗi đỏ trong Console, dù khách không thấy gì.
-   - Đề xuất: khi đã có `danh-sach.js` thì thôi dò; bù lại, mỗi lần thêm ảnh phải cập nhật danh sách (anh.html, `cap-nhat-hang.bat`, `nhap-anh-zip.bat` đều tự làm).
-   - Đồng ý thì báo.
+3. Website **không ép được mọi trình duyệt** mở Chrome:
+   - iPhone chỉ mở được Chrome khi máy có cài Chrome;
+   - một số app (Zalo, TikTok) có thể chặn việc mở app khác. Lúc đó web tự mở Facebook ngay trong app.
+   - Khách đăng nhập Facebook ở đâu (app Facebook, Chrome) thì vào đó là không phải đăng nhập lại; web ưu tiên đúng các chỗ đó.
+   - Tắt hẳn việc chuyển sang Chrome: đặt `openInChrome: false` trong `data/shop.js`.
+
+**Bảng size — cần bạn xem lại 4 điểm:**
+
+4. **Salomon:** ảnh bạn gửi là bảng của trang **giày trượt tuyết** (S/PRO DELTA Ski Boots), số đo theo khoảng (VD chân 26–26,9 cm → EU 41 – 42 2/3).
+   - Claude chép đúng như ảnh và bỏ hai cột chỉ dành cho boot trượt tuyết (dài đế, độ rộng).
+   - Nên thay bằng bảng size **giày** (footwear) của Salomon nếu có.
+   - Vì là khoảng nên web không tô "còn" cho Salomon.
+5. **Nike trẻ em:** ảnh chỉ có bảng "Younger kids" từ 8C tới 12C (EU 25–29,5). Bảng GS (trẻ em lớn, EU 35,5–40) **chưa có ảnh**. Mẫu GS của Nike/Jordan đang mở bảng Nam.
+6. **Adidas trẻ em lớn (8–16 tuổi):** ảnh chỉ thấy tới EU 40 và đo bằng inch (không có cm). Web ghi đúng như ảnh.
+7. **Nike** và **On**: ảnh không có thanh địa chỉ (Nike) hoặc là bảng trong trang một mẫu giày (On); web ghi nguồn là "nike.com" / "on.com". Các hãng khác ghi đúng đường link trong ảnh.
+
+**Câu trả lời trước vẫn giữ:**
+
+8. Đã bỏ câu "Sai size do shop tư vấn: shop chịu phí đổi" (theo WEB-69). Muốn giữ thì báo.
+9. **Sitemap bỏ các trang hãng.** Muốn Google thấy thêm trang hãng thì báo.
 
 **Giả định đã chọn (không phản đối thì giữ):**
 
-9. Size đã hết vẫn hiện mờ trong dải size của hãng (bấm vào thì mời nhắn Messenger), để khách biết size mình có hay không. Không có chữ "order".
-10. Mỗi size 1 đôi trong giỏ; mua nhiều đôi thì trao đổi trong tin nhắn (WEB-47).
-11. Giữ lọc "Dành cho" (code nữ/GS, thu gọn) vì menu "Theo nhu cầu" dùng nó; bỏ lọc màu.
-12. Trang gửi yêu cầu chỉ có các ô không bắt buộc (tên gọi, cm chân, tỉnh, ghi chú). Số điện thoại và địa chỉ trao đổi trong Messenger.
-13. Trang chủ mở sẵn tab New Balance ở "Mẫu theo hãng" (hãng nhiều ảnh thật nhất).
-14. Mô tả trong link chia sẻ chỉ ghi giá, **không ghi size còn**: Facebook lưu bản xem trước nhiều ngày, size ghi sẵn dễ sai khi hàng đã bán.
-15. `xem-web.bat` giờ tự tạo lại `sp/`, `sitemap.xml`, ảnh xem trước mỗi lần mở, nên Source Control có thể báo `sitemap.xml` đổi ngày. Cứ Commit + Sync bình thường.
+10. **Trang sản phẩm chỉ còn hai nút: Thêm vào giỏ + Tư vấn qua Facebook.** Mua một đôi: bấm "Tư vấn qua Facebook" (thông tin mẫu + size đã chép sẵn). Mua nhiều đôi: thêm vào giỏ → **Gửi yêu cầu cho shop** (trang này vẫn giữ, giờ chỉ còn **một nút** "Chép tin nhắn và mở Facebook shop").
+11. Bỏ nhãn hãng nhỏ trên **mọi** thẻ sản phẩm (trước đây chỉ hiện khi tên mẫu không bắt đầu bằng tên hãng, VD "Air Jordan 4"). Tên hãng vẫn có ở trang sản phẩm.
+12. Menu "Thương hiệu": chữ dòng giày 14 → 16px, tên hãng 20 → 22px.
+13. **Ảnh:** web chỉ hiện ảnh có trong danh sách (`images/products/danh-sach.js`, `images/anh-khac.js`) nên không còn lỗi 404. Hai danh sách **tự cập nhật mỗi lần bấm đúp `xem-web.bat`**, dùng anh.html hoặc kéo thả vào `cap-nhat-hang.bat` / `nhap-anh-zip.bat`. Chép ảnh tay mà chưa mở `xem-web.bat` thì ảnh **chưa hiện** — nhớ mở rồi Commit cả file danh sách.
+14. Size đã hết vẫn hiện mờ trong dải size của hãng (bấm vào thì mời nhắn Facebook). Mỗi size 1 đôi trong giỏ. Giữ lọc "Dành cho" (code nữ/GS). Mô tả link chia sẻ chỉ ghi giá, không ghi size.
 
 **Tuỳ chọn:** cài sổ yêu cầu theo `HUONG-DAN-DON-HANG.md`; tạo Google Analytics 4 và dán `ga4Id` vào `shop.js`.
 
 **Trước khi gộp (Claude làm khi bạn duyệt):**
 
 - lấy commit ảnh mới trên nhánh chính (merge, không ghi đè ảnh);
-- chạy `python scripts/image_manifest.py` rồi `python scripts/static_pages.py`;
+- chạy `python scripts/static_pages.py` (cập nhật danh sách ảnh, trang chia sẻ, sitemap);
 - chạy lại bộ kiểm tra;
-- rồi mới gộp vào `claude/shoe-shop-website-3dln52`.
+- rồi mới gộp vào `claude/shoe-shop-website-3dln52`;
+- sau khi gộp: kiểm link chia sẻ bằng https://developers.facebook.com/tools/debug/ (mốc 2b — **chưa kiểm**).
 
 ## Xem thử
 
@@ -57,11 +65,61 @@ Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách
   - Máy làm việc của Claude bị chặn truy cập raw.githack, nên chưa tự mở kiểm được link này.
   - Nếu link không chạy: trong Antigravity chuyển sang nhánh `thiet-ke-moi` rồi chạy `xem-web.bat`.
   - Xem xong nhớ chuyển lại nhánh chính trước khi tải ảnh mới.
+- **Ảnh mốc 3** (logo, menu Thương hiệu, nút Facebook, điện thoại, bảng size): `docs/thiet-ke-moi/so-sanh-moc-3/`.
 - **Ảnh trước/sau mốc 2** (web đang chạy ↔ bản mới): `docs/thiet-ke-moi/so-sanh-moc-2/` — trang chủ, danh mục, sản phẩm, gửi yêu cầu; mỗi trang ở 390px và 1440px.
 - **Ảnh so sánh font:** `docs/thiet-ke-moi/font/so-sanh-font.png` (mở thử: `so-sanh-font.html`).
 - **Ảnh mốc 1** vẫn ở `docs/thiet-ke-moi/so-sanh/`.
 
+## Mốc 3 — đã làm (01/10)
+
+1. **Logo nguyên vẹn:**
+   - Header dùng đúng logo gốc bạn gửi (ô vuông gradient, mark + S&LIFE + Since 2021), thu nhỏ thành `images/brand/slife-logo-square-192.webp` (5 KB).
+   - Không vẽ lại, không cắt chữ.
+2. **Bỏ nhãn hãng trên thẻ sản phẩm** ở mọi trang (danh mục, trang chủ, gợi ý).
+   - Đã rà các chỗ khác: gợi ý tìm kiếm, giỏ, trang sản phẩm đều hiện thống nhất, không có kiểu "mẫu có mẫu không".
+3. **Menu "Thương hiệu" chữ to hơn một chút:** dòng giày 16px, tên hãng 22px, số mẫu 13px.
+4. **Facebook thay Messenger ở mọi nơi:** header, menu điện thoại, trang chủ, trang sản phẩm, giỏ, gửi yêu cầu, liên hệ, giới thiệu, chính sách, bảo mật, FAQ, footer.
+   - Link: `facebookChat: "https://www.facebook.com/honggiabaoslife/"`.
+   - Mở bằng Chrome theo quy tắc ở mục cần duyệt số 1–3.
+   - Trang Liên hệ bỏ dòng "Facebook cá nhân" (trùng nút chính).
+5. **Bỏ nút "Gửi yêu cầu mua"** ở trang sản phẩm. Thay chỗ đó là "Tư vấn qua Facebook": bấm là mở thẳng Facebook, **không qua hộp thoại**, thông tin mẫu + size đã chép sẵn.
+   - Trang Gửi yêu cầu (từ giỏ) gộp "Sao chép" + "Mở" thành **một nút**.
+6. **Bảng size 8 hãng** (New Balance, Asics, Onitsuka Tiger, Adidas, Nike/Jordan, Puma, Salomon, On), chép từ 27 ảnh bạn gửi:
+   - Mỗi hãng có bảng **Nam / Nữ / Trẻ em** nếu ảnh có. Bấm để đổi bảng.
+   - Mẫu code nữ mở sẵn bảng Nữ. Bảng mở sẵn luôn là bảng chứa size shop đang có, size đó được tô "còn".
+   - Dưới bảng ghi nguồn (trang của hãng).
+   - **Cách chọn size** chung cho mọi hãng (theo ảnh Onitsuka bạn gửi) ở trang Hướng dẫn size và hộp "Hướng dẫn chọn size".
+   - Adidas EU dạng "36 2/3" được hiểu là size "36,5" trong bảng hàng của shop.
+   - Không đoán số nào; chỗ ảnh thiếu ghi ở mục cần duyệt số 4–7.
+7. **Bỏ đề xuất cột "Mới về".**
+8. **Hết lỗi 404:**
+   - Web không dò tên file ảnh nữa mà đọc danh sách ảnh.
+   - Banner và ảnh khách có danh sách riêng `images/anh-khac.js`; `scripts/static_pages.py` tạo hai danh sách và chạy mỗi lần mở `xem-web.bat`.
+   - Trang nội bộ anh.html cũng không dò nữa.
+
+**Đã kiểm sau mốc 3:**
+
+- **15 trang** (kể cả anh.html và link `sp/`) ở 390px và 1440px: **0 lỗi 404, Console sạch**.
+- **45/45 kiểm tra hành trình đạt.** Các kiểm tra mới: logo gốc; không còn nhãn hãng; không còn nút "Gửi yêu cầu mua"; nút Facebook mở đúng `facebook.com/honggiabaoslife` và đã chép mã, size, giá, link.
+- axe-core 0 lỗi trên 9 trang.
+- Không tràn ngang ở 360 / 390 / 768 / 1024px, kể cả khi mở bảng Nike 6 cột ở 360px.
+- **Nút Facebook theo từng loại máy** (giả lập trình duyệt bằng chuỗi nhận dạng, không phải máy thật):
+
+  | Loại máy | Kết quả |
+  |---|---|
+  | Android Chrome, app Facebook, iPhone Safari, iPhone Chrome, máy tính | mở tab Facebook |
+  | Android Zalo / Cốc Cốc | gọi Chrome (`intent://…package=com.android.chrome`) |
+  | iPhone Zalo | gọi `googlechromes://` |
+
+  Máy thử không có app Chrome, nên các trường hợp gọi Chrome tự quay về Facebook sau 1,6 giây — đúng như thiết kế.
+- Bảng size mở sẵn đúng bảng:
+  - Nike code nữ → Nữ;
+  - On (size 36,5–39) → Nữ;
+  - Jordan GS → Nam (vì bảng trẻ nhỏ không có size đó).
+
 ## Mốc 2b — đã làm (đêm 30/09)
+
+> Mục "Hàng mới về" / cột "Mới về" đã bỏ theo yêu cầu chủ shop (mốc 3).
 
 1. **Ô "Dòng giày nổi bật" chưa có ảnh:**
    - Trước: hai lớp chữ chồng nhau ở 360/390px.

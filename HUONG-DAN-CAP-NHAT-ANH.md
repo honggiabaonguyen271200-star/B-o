@@ -35,7 +35,7 @@ Không cần đổi tên file bằng tay.
    Mẫu đã có ảnh thì ảnh mới được thêm tiếp vào số còn trống.
 5. Xong một đợt → Commit + Sync trong Antigravity.
 
-Ảnh được tự thu nhỏ (cạnh dài 1200px) và đổi sang WebP. Trang cũng tự ghi lại `images/products/danh-sach.js` (danh sách ảnh để web xếp mẫu có ảnh thật lên trước) — nhớ Commit cả file này. Lần sau mở `xem-web.bat`, web tự tạo ảnh xem trước cho link chia sẻ (thư mục `sp/`) — Commit luôn cả thư mục đó. Ảnh iPhone dạng HEIC: gửi qua Zalo/Messenger cho chính mình rồi tải về (thành JPG), hoặc cài iPhone: **Cài đặt → Camera → Định dạng → Tương thích nhất**.
+Ảnh được tự thu nhỏ (cạnh dài 1200px) và đổi sang WebP. Trang cũng tự ghi lại `images/products/danh-sach.js` (danh sách ảnh để web xếp mẫu có ảnh thật lên trước) — nhớ Commit cả file này. Web **chỉ hiện ảnh có trong danh sách này** (để không có lỗi tải ảnh). Chép ảnh tay vào `images/products/` cũng được: bấm đúp `xem-web.bat` một lần, danh sách và ảnh xem trước cho link chia sẻ (thư mục `sp/`) tự cập nhật — Commit luôn các file đó. Ảnh iPhone dạng HEIC: gửi qua Zalo/Messenger cho chính mình rồi tải về (thành JPG), hoặc cài iPhone: **Cài đặt → Camera → Định dạng → Tương thích nhất**.
 
 ### Dùng Canva: 1 thiết kế = 1 đôi giày, kéo thẳng file zip
 
