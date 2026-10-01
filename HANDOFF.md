@@ -1,12 +1,19 @@
 # HANDOFF — Thiết kế mới S&LIFE Sneaker (nhánh `thiet-ke-moi`)
 
-Cập nhật 01/10/2026 · **Mốc 4**: logo hãng + hệ màu mới (xem mục "Mốc 4"). **Mốc 3**: làm theo 8 góp ý của chủ shop (logo, nhãn hãng, menu, Facebook thay Messenger, bỏ "Gửi yêu cầu mua", bảng size, bỏ "Mới về", hết lỗi 404). Nối tiếp mốc 2b và mốc 2 (bên dưới).
+Cập nhật 01/10/2026 · **Mốc 5**: sặc sỡ hơn bằng màu shop (xem mục "Mốc 5"). **Mốc 4**: logo hãng + hệ màu mới (xem mục "Mốc 4"). **Mốc 3**: làm theo 8 góp ý của chủ shop (logo, nhãn hãng, menu, Facebook thay Messenger, bỏ "Gửi yêu cầu mua", bảng size, bỏ "Mới về", hết lỗi 404). Nối tiếp mốc 2b và mốc 2 (bên dưới).
 
 Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách đang xem vẫn là bản cũ. Chưa gộp, chưa mua dịch vụ, chưa tạo tài khoản nào, chưa ghi vào Google Sheet thật.
 
 > Từ mốc 3, kênh tư vấn là **Facebook** (`facebookChat` trong `data/shop.js`). Các chỗ ghi "Messenger" ở mục mốc 2 / 2b bên dưới là lịch sử, không còn đúng.
 
 ## Chủ shop cần duyệt
+
+**Mốc 5 — sặc sỡ hơn (ảnh: `docs/thiet-ke-moi/so-sanh-moc-5/`):**
+
+- **Higgsfield đã kết nối nhưng tài khoản đang ở gói miễn phí, 0 credit, không còn lượt miễn phí**, nên chưa tạo được ảnh.
+  - Muốn có ảnh nền / banner do Higgsfield tạo thì cần nạp credit trên Higgsfield. Claude không tự mua.
+  - Ảnh tạo ra chỉ dùng làm **nền, hoạ tiết màu**, không thay ảnh giày thật.
+- Bạn xem các khối màu mới và cho biết: vừa mắt chưa, hay muốn nhạt bớt / đậm thêm chỗ nào.
 
 **Mốc 4 — giao diện mới (xem ảnh trong `docs/thiet-ke-moi/so-sanh-moc-4/`):**
 
@@ -81,6 +88,20 @@ Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách
 - **Ảnh trước/sau mốc 2** (web đang chạy ↔ bản mới): `docs/thiet-ke-moi/so-sanh-moc-2/` — trang chủ, danh mục, sản phẩm, gửi yêu cầu; mỗi trang ở 390px và 1440px.
 - **Ảnh so sánh font:** `docs/thiet-ke-moi/font/so-sanh-font.png` (mở thử: `so-sanh-font.html`).
 - **Ảnh mốc 1** vẫn ở `docs/thiet-ke-moi/so-sanh/`.
+
+## Mốc 5 — đã làm (01/10): sặc sỡ hơn bằng màu shop
+
+Chủ shop thấy mốc 4 chưa thể hiện rõ màu shop. Màu của logo giờ thành **các mảng màu đặc**, mỗi khối một màu. Vẫn không phủ gradient lên chữ hay nút.
+
+- **Thanh chữ đầu trang:** ba khối liền cobalt / tím / đỏ trên máy tính; nền tím trên điện thoại.
+- **Màu tím `#771CAE`** cho nút chính ("Thêm vào giỏ", "Tìm"), size đang chọn, ô lọc và tab đang chọn, vạch dưới menu.
+- **Cam kết:** dải nền xanh nhạt; bốn biểu tượng nền đặc cobalt / tím / đỏ mận / đỏ.
+- **Theo thương hiệu:** rê chuột thì ô nền tím nhạt, logo tím; ô "Tất cả hàng sẵn" nền cobalt.
+- **Theo nhu cầu:** sáu ô màu đặc cobalt, tím, đỏ mận, đỏ, chàm, mực, chữ trắng.
+- **Dòng giày nổi bật (ô chưa ảnh):** nền nhạt và chữ theo từng màu shop.
+- **"Chưa chắc size?":** khối tím đặc, chữ trắng, nút Facebook nền trắng.
+- **"Theo dõi S&LIFE":** nền mực có ánh đèn ba màu như banner đầu.
+- **Đã kiểm:** 47/47 hành trình đạt, 0 lỗi 404, Console sạch, axe 0 lỗi (đã chỉnh 2 chỗ chữ phụ cho đủ tương phản).
 
 ## Mốc 4 — đã làm (01/10): logo hãng, hệ màu có chủ đích
 

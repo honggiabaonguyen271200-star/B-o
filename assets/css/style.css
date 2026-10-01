@@ -1224,3 +1224,83 @@ body[data-page="home"] .ft { margin-top: 0; }
 /* Trang hãng: logo hãng cạnh tiêu đề, chữ mực */
 .coll__brandlogo { display: block; width: 92px; height: 44px; margin-bottom: 10px; background: var(--ink); -webkit-mask: left center / contain no-repeat; mask: left center / contain no-repeat; }
 .coll__title .grad-text { color: var(--ink); }
+
+/* =========================================================
+   Mốc 5 (01/10): sặc sỡ hơn — màu shop thành từng mảng màu đặc, không phủ gradient lên chữ/nút
+   Cobalt #004AAD · Tím #771CAE · Đỏ mận #AD2571 · Đỏ #DB3137 — mỗi khối một màu, nền nhạt cùng tông
+   ========================================================= */
+:root {
+  --cobalt-50: #E9F0FB; --violet-50: #F3EAFB; --berry-50: #FBEAF2; --red-50: #FDECEC;
+  --violet-700: #5E1590;
+}
+/* Thanh chữ đầu trang: cobalt → tím → đỏ thành ba khối liền (đọc rõ, có màu shop ngay từ đầu) */
+.announce { background: linear-gradient(90deg, var(--c-cobalt) 0 33.4%, var(--c-violet) 33.4% 66.7%, var(--c-red) 66.7%); color: #fff; }
+@media (max-width: 899px) { .announce { background: var(--c-violet); } }
+
+/* Nút chính: tím của shop */
+.btn--grad { background: var(--c-violet); }
+.btn--grad:hover { background: var(--violet-700); }
+.chip.is-active { border-color: var(--c-violet); background: var(--c-violet); }
+.pager button.is-current { background: var(--c-violet); }
+.card__quick:hover { background: var(--c-violet); }
+.nav__link::after { background: var(--c-violet); height: 3px; }
+.search__go { background: var(--c-violet); }
+.search__go:hover { background: var(--violet-700); }
+
+/* Cam kết: dải nền xanh nhạt, biểu tượng nền đặc mỗi cái một màu */
+.perks { position: relative; }
+.perks::before { content: ""; position: absolute; z-index: -1; top: 18px; bottom: -14px; left: 50%; width: 100vw; transform: translateX(-50%); background: var(--cobalt-50); }
+.perk__ic { color: #fff !important; }
+.perk:nth-child(1) .perk__ic { background: var(--c-cobalt); }
+.perk:nth-child(2) .perk__ic { background: var(--c-violet); }
+.perk:nth-child(3) .perk__ic { background: var(--c-berry); }
+.perk:nth-child(4) .perk__ic { background: var(--c-red); }
+
+/* Tường logo hãng: rê chuột nền tím nhạt, logo tím */
+.brand-tile:hover, .brand-tile:focus-visible { border-color: var(--c-violet); background: var(--violet-50); }
+.brand-tile--all { background: var(--c-cobalt); border-color: var(--c-cobalt); }
+.brand-tile--all:hover, .brand-tile--all:focus-visible { background: var(--c-violet); border-color: var(--c-violet); }
+
+/* Theo nhu cầu: mỗi ô một màu đặc */
+.needs .need { border: 0; color: #fff; min-height: 96px; justify-content: flex-end; }
+.needs .need span { color: rgba(255, 255, 255, .85); }
+.needs .need:hover b { color: #fff; }
+.needs .need:nth-child(6n+1) { background: var(--c-cobalt); }
+.needs .need:nth-child(6n+2) { background: var(--c-violet); }
+.needs .need:nth-child(6n+3) { background: var(--c-berry); }
+.needs .need:nth-child(6n+4) { background: var(--c-red); }
+.needs .need:nth-child(6n+5) { background: var(--c-indigo); }
+.needs .need:nth-child(6n) { background: var(--ink); }
+.needs .need:hover { filter: brightness(1.08); }
+
+/* Dòng giày nổi bật (ô chưa có ảnh): nền nhạt theo từng màu shop */
+.line-card--text:nth-child(4n+2) { background: var(--cobalt-50); }
+.line-card--text:nth-child(4n+2) .line-card__word span { color: var(--c-cobalt); }
+.line-card--text:nth-child(4n+3) { background: var(--violet-50); }
+.line-card--text:nth-child(4n+3) .line-card__word span { color: var(--c-violet); }
+.line-card--text:nth-child(4n) { background: var(--berry-50); }
+.line-card--text:nth-child(4n) .line-card__word span { color: var(--c-berry); }
+.line-card--text:nth-child(4n+1) { background: var(--red-50); }
+.line-card--text:nth-child(4n+1) .line-card__word span { color: var(--c-red); }
+
+/* Chưa chắc size: khối tím đặc, chữ trắng */
+.consult { background: var(--c-violet); color: #fff; }
+.consult h2, .consult__steps b { color: #fff; }
+.consult p, .consult__steps li { color: rgba(255, 255, 255, .88); }
+.consult__steps li::before { background: #fff; color: var(--c-violet); border: 0; }
+.consult__notes { color: var(--ink); }
+.consult .btn--ghost { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .7); }
+.consult .btn--ghost:hover { background: #fff; color: var(--c-violet); border-color: #fff; }
+.consult .btn--fb { background: #fff; color: #0866FF; border-color: #fff; }
+
+/* Theo dõi S&LIFE + footer: nền mực có ánh đèn như banner đầu */
+.follow {
+  background:
+    radial-gradient(40% 80% at 90% 0%, rgba(0, 74, 173, .7), rgba(0, 74, 173, 0) 70%),
+    radial-gradient(35% 70% at 100% 100%, rgba(219, 49, 55, .5), rgba(219, 49, 55, 0) 70%),
+    radial-gradient(30% 60% at 70% 60%, rgba(119, 28, 174, .55), rgba(119, 28, 174, 0) 70%),
+    var(--ink);
+}
+/* Đủ tương phản: chữ phụ trên nền đỏ dùng trắng đặc; số mẫu ở ô nền nhạt dùng chữ mực */
+.needs .need:nth-child(6n+4) span { color: #fff; }
+.line-card--text .line-card__plain em, .line-card--text .line-card__plain small { color: var(--ink-2); }

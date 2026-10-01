@@ -47,6 +47,7 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 
 ## Giao diện
 
+- **Mốc 5 (chủ shop muốn sặc sỡ hơn):** màu shop thành từng mảng màu đặc — thanh đầu trang 3 khối cobalt/tím/đỏ, nút chính và thứ đang chọn màu tím, ô "Theo nhu cầu" mỗi ô một màu, khối "Chưa chắc size?" nền tím, dải cam kết nền xanh nhạt. Vẫn không phủ gradient lên chữ/nút. Khối "Mốc 5" ở cuối `style.css` ghi đè mốc 4.
 - Màu theo logo, dùng có chủ đích (mốc 4): **gradient chỉ ở logo và "ánh đèn" banner đầu** (nền mực + ba vệt sáng cobalt/tím/đỏ). Mực `#15112B`: chữ, nút chính. Tím `#771CAE`: thứ đang chọn (size, lọc). Cobalt `#004AAD`: link, rê chuột. Đỏ `#DB3137`: chỉ để gây chú ý (số giỏ). Nền trắng/`--mist` `#F4F2FA`. Không phủ gradient lên nút, thanh, ô. Biến màu ở đầu `assets/css/style.css`, khối "Mốc 4" ở cuối file. Font: **Bricolage Grotesque** (một họ chữ; tiêu đề in hoa ở `font-stretch: 75%`). Không dùng Inter/Roboto/Poppins/Be Vietnam Pro.
 - Mẫu chưa có ảnh hiện ô trung tính "Ảnh thật đang cập nhật" — không vẽ/giả ảnh sản phẩm.
 - Thiết kế mới đang làm trên nhánh `thiet-ke-moi` (xem `HANDOFF.md`, `docs/thiet-ke-moi/`).
