@@ -38,6 +38,9 @@ window.SHOP = {
 
   // Bật/tắt tính năng. wishlist: nút tim "Yêu thích" (để giai đoạn sau).
   features: { wishlist: false },
+  // Mẫu hiện trong chùm ảnh banner đầu trang chủ: ghi mã sản phẩm, mẫu đầu tiên nằm giữa (tối đa 5), VD: ["U204LMMC", "553560-132"].
+  // Để trống [] thì web tự chọn: giữa là mẫu có ảnh thật đẹp nhất, xung quanh là mẫu tiêu biểu của 4 hãng khác.
+  heroPicks: [],
 
   // --- Thông tin pháp lý: điền khi đã rà soát xong, ô nào để trống sẽ tự ẩn trên website ---
   legalName: "",           // Tên hộ kinh doanh / công ty

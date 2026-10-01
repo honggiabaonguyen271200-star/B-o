@@ -1,12 +1,19 @@
 # HANDOFF — Thiết kế mới S&LIFE Sneaker (nhánh `thiet-ke-moi`)
 
-Cập nhật 01/10/2026 · **Mốc 6**: chữ chạy, chùm ảnh giày, chuyển cảnh, bỏ tím đặc, hiệu ứng cuộn (xem mục "Mốc 6"). **Mốc 5**: sặc sỡ hơn bằng màu shop (xem mục "Mốc 5"). **Mốc 4**: logo hãng + hệ màu mới (xem mục "Mốc 4"). **Mốc 3**: làm theo 8 góp ý của chủ shop (logo, nhãn hãng, menu, Facebook thay Messenger, bỏ "Gửi yêu cầu mua", bảng size, bỏ "Mới về", hết lỗi 404). Nối tiếp mốc 2b và mốc 2 (bên dưới).
+Cập nhật 01/10/2026 · **Mốc 7**: banner tự chuyển + nhiều hãng + 2 kiểu banner mới, logo liền nền trắng, nút Tìm mới, dải logo chạy (xem mục "Mốc 7"). **Mốc 6**: chữ chạy, chùm ảnh giày, chuyển cảnh, bỏ tím đặc, hiệu ứng cuộn (xem mục "Mốc 6"). **Mốc 5**: sặc sỡ hơn bằng màu shop (xem mục "Mốc 5"). **Mốc 4**: logo hãng + hệ màu mới (xem mục "Mốc 4"). **Mốc 3**: làm theo 8 góp ý của chủ shop (logo, nhãn hãng, menu, Facebook thay Messenger, bỏ "Gửi yêu cầu mua", bảng size, bỏ "Mới về", hết lỗi 404). Nối tiếp mốc 2b và mốc 2 (bên dưới).
 
 Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách đang xem vẫn là bản cũ. Chưa gộp, chưa mua dịch vụ, chưa tạo tài khoản nào, chưa ghi vào Google Sheet thật.
 
 > Từ mốc 3, kênh tư vấn là **Facebook** (`facebookChat` trong `data/shop.js`). Các chỗ ghi "Messenger" ở mục mốc 2 / 2b bên dưới là lịch sử, không còn đúng.
 
 ## Chủ shop cần duyệt
+
+**Mốc 7 — xem ảnh trong `docs/thiet-ke-moi/so-sanh-moc-7/`:**
+
+- Banner giờ có **5 slide, tự chuyển mỗi 6 giây**. Bạn xem 2 kiểu mới (tường logo các hãng, Top 5 dòng giày) có ưng không.
+- Mẫu Jordan, Nike, Adidas, Onitsuka… **chưa có ảnh thật** nên hiện thành **thẻ chữ màu** (logo hãng, tên dòng, giá). Không dùng ảnh giày do máy vẽ. Tải ảnh lên (anh.html) là thẻ tự đổi thành ảnh thật.
+- Muốn tự chọn mẫu trong chùm banner: ghi mã vào `heroPicks` trong `data/shop.js`, VD `["U204LMMC", "553560-132"]`. Mẫu đầu tiên nằm giữa.
+- Logo đầu trang giờ **không còn ô vuông màu**, đứng thẳng trên nền trắng, vẫn đủ "S&LIFE · Since 2021".
 
 **Mốc 5 — sặc sỡ hơn (ảnh: `docs/thiet-ke-moi/so-sanh-moc-5/`):**
 
@@ -88,6 +95,33 @@ Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách
 - **Ảnh trước/sau mốc 2** (web đang chạy ↔ bản mới): `docs/thiet-ke-moi/so-sanh-moc-2/` — trang chủ, danh mục, sản phẩm, gửi yêu cầu; mỗi trang ở 390px và 1440px.
 - **Ảnh so sánh font:** `docs/thiet-ke-moi/font/so-sanh-font.png` (mở thử: `so-sanh-font.html`).
 - **Ảnh mốc 1** vẫn ở `docs/thiet-ke-moi/so-sanh/`.
+
+## Mốc 7 (01/10) — theo góp ý chủ shop
+
+Ảnh: `docs/thiet-ke-moi/so-sanh-moc-7/` (01 banner nhiều hãng · 02 tường logo · 03 Top 5 dòng · 04 logo và nút Tìm · 05 dải logo chạy · 06 điện thoại 5 slide).
+
+- **4 chuyển động tự chạy chủ shop chọn** (bỏ kiểu giày bay lơ lửng):
+  - **#2** Ánh đèn sân khấu sau banner trôi chậm liên tục; chỉ chạy ở slide đang xem.
+  - **#3** Dải logo các hãng chạy liên tục ngay dưới banner. Bấm logo ra trang hãng; rê chuột thì dừng.
+  - **#4** Banner tự chuyển mỗi 6 giây, mở theo vòng tròn từ hình của slide sau. Vạch trên chấm chạy theo thời gian.
+    - Tự dừng khi rê chuột, chạm, dùng bàn phím trong banner, cuộn banner khuất, hoặc chuyển tab.
+    - Có nút tạm dừng / chạy tiếp cạnh mũi tên.
+  - **#5** Nút "Xem … mẫu có sẵn" có viền ba màu shop chạy vòng quanh, ánh sáng mờ theo sau.
+  - Máy bật "giảm chuyển động": tắt hết, banner đứng yên.
+- **Nút "Tìm":** nền ba màu shop chảy liên tục như thanh chữ đầu trang; rê chuột có vệt sáng lướt qua. Ô tìm khi bấm vào có viền ba màu.
+- **Logo đầu trang:** dùng logo gốc nền trong suốt (`images/brand/slife-full-gradient.svg`), đủ chữ "Since 2021", liền với nền trắng.
+- **Banner 5 slide:**
+  1. "Only Authentic" + chùm 5 mẫu của 5 hãng.
+     - Giữa: mẫu có ảnh thật đẹp nhất. Xung quanh: mẫu tiêu biểu (dòng nhiều mẫu nhất) của Jordan, Nike, Adidas, Onitsuka Tiger.
+     - Mẫu chưa có ảnh hiện thẻ chữ màu (logo hãng, tên dòng, giá).
+     - Chọn tay bằng `heroPicks` trong `data/shop.js`.
+  2. **Mới — tường logo các hãng:** nền sáng chấm bi, mỗi hãng một ô màu, ô lớn cho hãng nhiều mẫu nhất, ghi số mẫu.
+  3. **Mới — Top 5 dòng giày:** nền cobalt có vòng tròn đỏ, bảng xếp hạng chữ lớn, mỗi hãng một dòng.
+     - Xếp theo số mẫu đang sẵn size, tự tính từ bảng hàng.
+     - Không ghi "bán chạy" vì không có số liệu bán.
+  4. Dòng có ảnh thật (hiện là New Balance 204L).
+  5. Hỏi size trước khi mua.
+- **Kiểm tra:** 47/47 hành trình, axe 0 lỗi (9 trang), 0 lỗi 404, Console sạch. Tự chuyển, dừng khi rê chuột, nút tạm dừng, dừng khi khuất màn hình và chế độ giảm chuyển động đều đã thử.
 
 ## Mốc 6 — đã làm (01/10): theo góp ý trên ảnh khoanh đỏ
 
