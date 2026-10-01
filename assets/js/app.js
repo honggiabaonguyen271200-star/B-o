@@ -651,13 +651,16 @@
   function needsList() {
     function count(f) { return IN_STOCK.filter(f).length; }
     var tennis = count(function (p) { return p.line === "Giày tennis"; });
+    function price(a, b) { return count(function (p) { return p.minPrice >= a && (!b || p.minPrice <= b); }); }
     return [
-      { label: "Giày nữ", sub: "Mẫu code nữ", href: "shop.html?gender=nu", n: count(function (p) { return p.gender === "nu"; }) },
-      { label: "Size GS / Kid", sub: "Size trẻ em lớn, hợp chân nhỏ", href: "shop.html?gender=gs,kid", n: count(function (p) { return p.gender === "gs" || p.gender === "kid"; }) },
-      { label: "Giày tennis", sub: "Asics, Nike", href: lineUrl(null, "Giày tennis"), n: tennis },
-      { label: "Dưới 2 triệu", sub: "Giá tốt để bắt đầu", href: "shop.html?max=1999", n: count(function (p) { return p.minPrice < 2000; }) },
-      { label: "2 – 3 triệu", sub: "Tầm giá phổ biến", href: "shop.html?min=2000&max=2999", n: count(function (p) { return p.minPrice >= 2000 && p.minPrice < 3000; }) },
-      { label: "Còn nhiều size", sub: "Dễ chọn size nhất", href: "shop.html?sort=sizes", n: IN_STOCK.length },
+      { tone: "cobalt", label: "Giày nam", sub: "Mẫu nam và unisex", href: "shop.html?gender=nam,unisex", n: count(function (p) { return p.gender === "nam" || p.gender === "unisex"; }) },
+      { tone: "berry", label: "Giày nữ", sub: "Mẫu code nữ", href: "shop.html?gender=nu", n: count(function (p) { return p.gender === "nu"; }) },
+      { tone: "red", label: "Giày tennis", sub: "Asics, Nike", href: lineUrl(null, "Giày tennis"), n: tennis },
+      { tone: "t-cobalt", label: "Dưới 2 triệu", sub: "Giá tốt để bắt đầu", href: "shop.html?max=1999", n: price(0, 1999) },
+      { tone: "t-red", label: "2 – 2,5 triệu", sub: "Tầm giá dễ mua", href: "shop.html?min=2000&max=2499", n: price(2000, 2499) },
+      { tone: "t-berry", label: "2,5 – 3 triệu", sub: "Tầm giá phổ biến", href: "shop.html?min=2500&max=2999", n: price(2500, 2999) },
+      { tone: "t-ink", label: "3 – 4 triệu", sub: "Dòng cao cấp hơn", href: "shop.html?min=3000&max=3999", n: price(3000, 3999) },
+      { tone: "ink", label: "Từ 4 triệu", sub: "Mẫu hiếm, bản đặc biệt", href: "shop.html?min=4000", n: price(4000, 0) },
     ].filter(function (x) { return x.n > 0; });
   }
   function renderChrome() {
@@ -672,8 +675,11 @@
       function navLink(href, text) { return '<div class="nav__item"><a class="nav__link" href="' + href + '"' + (file === href ? ' aria-current="page"' : "") + ">" + text + "</a></div>"; }
       headerEl.outerHTML =
         '<a class="skip" href="#main">Bỏ qua, tới nội dung chính</a>' +
-        (msgs.length ? '<div class="announce"><div class="container announce__in">' +
-          msgs.map(function (m, i) { return "<span" + (i ? ' class="announce__more"' : "") + ">" + esc(m) + "</span>"; }).join('<i aria-hidden="true">·</i>') +
+        // Dòng chữ chạy liên tục trên nền màu chảy (chủ shop chọn); máy bật "giảm chuyển động" thì đứng yên
+        (msgs.length ? '<div class="announce" role="region" aria-label="Thông tin shop"><div class="announce__in">' +
+          '<div class="announce__track">' + [0, 1].map(function (k) {
+            return '<div class="announce__set"' + (k ? ' aria-hidden="true"' : "") + ">" + msgs.map(function (m) { return "<span>" + esc(m) + '</span><i aria-hidden="true">✦</i>'; }).join("") + "</div>";
+          }).join("") + "</div>" +
           "</div></div>" : "") +
         '<header class="hd"><div class="container hd__row">' +
         '<button type="button" class="icon-btn hd__menu" data-menu-open aria-label="Mở menu" aria-controls="menu" aria-expanded="false">' + I.menu + "</button>" +
@@ -891,26 +897,40 @@
       $all(".hero__nav", root).forEach(function (n) { n.hidden = list.length < 2; });
       go(cur);
     }
-    function go(i) {
+    // Chuyển slide: slide mới mở ra theo vòng tròn từ chỗ khách bấm/vuốt (slide cũ nằm dưới cho tới khi mở xong)
+    function go(i, at) {
       var list = all();
       if (!list.length) return;
-      cur = (i + list.length) % list.length;
-      track.style.transform = "translateX(" + (-100 * cur) + "%)";
-      list.forEach(function (s, j) { s.setAttribute("aria-hidden", j !== cur); s.inert = j !== cur; });
+      var next = (i + list.length) % list.length, changed = next !== cur, prev = list[cur];
+      cur = next;
+      var slide = list[cur];
+      if (at) { slide.style.setProperty("--ox", at[0] + "px"); slide.style.setProperty("--oy", at[1] + "px"); }
+      list.forEach(function (s, j) {
+        s.classList.toggle("is-active", j === cur);
+        s.classList.toggle("is-prev", changed && s === prev);
+        s.setAttribute("aria-hidden", j !== cur); s.inert = j !== cur;
+      });
+      if (changed && !REDUCED) {
+        slide.classList.remove("is-reveal"); void slide.offsetWidth; slide.classList.add("is-reveal");
+        clearTimeout(go.t);
+        go.t = setTimeout(function () { $all(".is-prev", track).forEach(function (s) { s.classList.remove("is-prev"); }); }, 1000);
+      } else if (prev) prev.classList.remove("is-prev");
       $all("[data-dot]", dots).forEach(function (d, j) { d.classList.toggle("is-active", j === cur); d.setAttribute("aria-current", j === cur); });
     }
     track.innerHTML = slides.join("");
     root.addEventListener("click", function (e) {
       var d = e.target.closest("[data-dot]"), n = e.target.closest("[data-hero-go]");
-      if (d) go(+d.dataset.dot);
-      if (n) go(cur + (+n.dataset.heroGo));
+      var r = root.getBoundingClientRect(), at = [e.clientX - r.left, e.clientY - r.top];
+      if (d) go(+d.dataset.dot, at);
+      if (n) go(cur + (+n.dataset.heroGo), at);
     });
     var x0 = null, y0 = null;
     track.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
     track.addEventListener("touchend", function (e) {
       if (x0 === null) return;
       var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
-      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) go(cur + (dx < 0 ? 1 : -1));
+      var r = root.getBoundingClientRect();
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) go(cur + (dx < 0 ? 1 : -1), [e.changedTouches[0].clientX - r.left, e.changedTouches[0].clientY - r.top]);
       x0 = null;
     });
     paint();
@@ -931,10 +951,13 @@
         '<h2 class="hero__title"><span>Only</span><span>Authentic</span></h2>' +
         '<p class="hero__lead">Giày chính hãng, có sẵn size. Mỗi đôi có mã sản phẩm khớp tem hộp — tra trên trang chủ của hãng ra đúng mẫu, đúng màu.</p>' +
         '<div class="hero__cta"><a class="btn btn--light" href="shop.html">Xem ' + IN_STOCK.length + ' mẫu có sẵn</a><a class="btn btn--line-light" href="size-guide.html">Hướng dẫn chọn size</a></div></div>' +
-        '<div class="hero__art">' +
-        (star ? '<a class="hero__shoe" href="' + productUrl(star) + '">' + media(star, { eager: true }) +
-          '<span class="hero__tag"><span><b>' + esc(star.name) + "</b><br>" + esc(star.code || "") + "</span><b>" + money(star.minPrice) + "</b></span></a>" : "") +
-        "</div></div></div>",
+        // Chùm ảnh giày thật: mẫu nổi bật ở giữa, 4 mẫu có ảnh khác xoè hai bên
+        '<div class="hero__art"><div class="hero__fan">' +
+        (photos.length ? photos.slice(0, 5) : [star]).filter(Boolean).map(function (p, i) {
+          return '<a class="hero__card hero__card--' + i + '" href="' + productUrl(p) + '" aria-label="' + esc(p.name) + '">' + media(p, { eager: i === 0 }) +
+            (i === 0 ? '<span class="hero__tag"><span><b>' + esc(p.name) + "</b><br>" + esc(p.code || "") + "</span><b>" + money(p.minPrice) + "</b></span>" : "") + "</a>";
+        }).join("") +
+        "</div></div></div></div>",
       ];
       // Dòng giày có nhiều ảnh thật nhất
       var byLine = {};
@@ -999,7 +1022,7 @@
         '<a class="brand-tile brand-tile--all" href="shop.html"><span class="brand-tile__word" aria-hidden="true">' + IN_STOCK.length + '</span><span class="brand-tile__meta"><b>Tất cả hàng sẵn</b><small>Mọi hãng</small></span></a>';
     }
     var needsEl = $("[data-needs]");
-    if (needsEl) needsEl.innerHTML = needsList().map(function (x) { return '<a class="need" href="' + x.href + '"><b>' + esc(x.label) + "</b><span>" + esc(x.sub) + " · " + x.n + " mẫu</span></a>"; }).join("");
+    if (needsEl) needsEl.innerHTML = needsList().map(function (x) { return '<a class="need need--' + x.tone + '" href="' + x.href + '"><b>' + esc(x.label) + "</b><span>" + esc(x.sub) + " · " + x.n + " mẫu</span></a>"; }).join("");
 
     // Dòng giày nổi bật: ô lớn
     var linesEl = $("[data-lines]");
@@ -2067,6 +2090,36 @@
   // Dùng chung cho công cụ ảnh nội bộ (assets/js/anh.js, chỉ tải ở anh.html)
   window.SLIFE = { "$": $, "$all": $all, BY_ID: BY_ID, IMG_EXT: IMG_EXT, MAX_SHOTS: MAX_SHOTS, PRODUCTS: PRODUCTS, copyText: copyText, esc: esc, findImage: findImage, fullName: fullName, imgBase: imgBase, media: media, norm: norm, productUrl: productUrl, shotsOf: shotsOf, toast: toast };
 
+  /* ---------- Hiệu ứng khi cuộn (chủ shop chọn): nền ba đốm màu shop trôi theo trang, khối nội dung hiện dần ----------
+     Máy bật "giảm chuyển động" hoặc trình duyệt cũ: bỏ qua, nội dung hiện bình thường. */
+  function scrollEffects() {
+    if (REDUCED || !("IntersectionObserver" in window)) return;
+    var ticking = false;
+    function onScroll() {
+      ticking = false;
+      var max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+      document.documentElement.style.setProperty("--sy", (scrollY / max).toFixed(4));
+    }
+    window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+    onScroll();
+    document.body.classList.add("has-aura");
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("is-in"); io.unobserve(en.target); } });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    function watch() {
+      $all(".sec__head, .brand-tile, .needs .need, .line-card, .perk, .grid .card, .consult, .faq details, .follow__in").forEach(function (el) {
+        if (el.classList.contains("rv")) return;
+        var sib = el.parentNode ? Array.prototype.indexOf.call(el.parentNode.children, el) : 0;
+        el.style.setProperty("--i", Math.min(sib, 8));
+        el.classList.add("rv");
+        io.observe(el);
+      });
+    }
+    watch();
+    // Thẻ sản phẩm vẽ thêm khi lọc / sang trang: theo dõi tiếp
+    new MutationObserver(function () { clearTimeout(watch.t); watch.t = setTimeout(watch, 60); }).observe(document.body, { childList: true, subtree: true });
+  }
+
   /* ---------- Khởi động ---------- */
   document.addEventListener("DOMContentLoaded", function () {
     loadAnalytics();
@@ -2080,5 +2133,6 @@
     if (page === "checkout") initCheckout();
     if (page === "request") initRequest();
     if (page === "guide") initGuide();
+    scrollEffects();
   });
 })();

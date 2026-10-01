@@ -1,6 +1,6 @@
 # HANDOFF — Thiết kế mới S&LIFE Sneaker (nhánh `thiet-ke-moi`)
 
-Cập nhật 01/10/2026 · **Mốc 5**: sặc sỡ hơn bằng màu shop (xem mục "Mốc 5"). **Mốc 4**: logo hãng + hệ màu mới (xem mục "Mốc 4"). **Mốc 3**: làm theo 8 góp ý của chủ shop (logo, nhãn hãng, menu, Facebook thay Messenger, bỏ "Gửi yêu cầu mua", bảng size, bỏ "Mới về", hết lỗi 404). Nối tiếp mốc 2b và mốc 2 (bên dưới).
+Cập nhật 01/10/2026 · **Mốc 6**: chữ chạy, chùm ảnh giày, chuyển cảnh, bỏ tím đặc, hiệu ứng cuộn (xem mục "Mốc 6"). **Mốc 5**: sặc sỡ hơn bằng màu shop (xem mục "Mốc 5"). **Mốc 4**: logo hãng + hệ màu mới (xem mục "Mốc 4"). **Mốc 3**: làm theo 8 góp ý của chủ shop (logo, nhãn hãng, menu, Facebook thay Messenger, bỏ "Gửi yêu cầu mua", bảng size, bỏ "Mới về", hết lỗi 404). Nối tiếp mốc 2b và mốc 2 (bên dưới).
 
 Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách đang xem vẫn là bản cũ. Chưa gộp, chưa mua dịch vụ, chưa tạo tài khoản nào, chưa ghi vào Google Sheet thật.
 
@@ -88,6 +88,33 @@ Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách
 - **Ảnh trước/sau mốc 2** (web đang chạy ↔ bản mới): `docs/thiet-ke-moi/so-sanh-moc-2/` — trang chủ, danh mục, sản phẩm, gửi yêu cầu; mỗi trang ở 390px và 1440px.
 - **Ảnh so sánh font:** `docs/thiet-ke-moi/font/so-sanh-font.png` (mở thử: `so-sanh-font.html`).
 - **Ảnh mốc 1** vẫn ở `docs/thiet-ke-moi/so-sanh/`.
+
+## Mốc 6 — đã làm (01/10): theo góp ý trên ảnh khoanh đỏ
+
+1. **Thanh chữ đầu trang:** chữ chạy liên tục, nền là dải màu cobalt → tím → đỏ chảy liên tục; rê chuột vào thì chữ dừng để đọc.
+2. **Banner đầu:**
+   - **chùm 5 ảnh giày thật** (mẫu có ảnh, nhiều size nhất ở giữa), rê chuột thì ảnh nổi lên;
+   - **chuyển slide:** slide mới **mở ra theo vòng tròn từ đúng chỗ khách bấm hoặc vuốt**, chữ trồi lên sau; mỗi slide một màu đèn riêng (slide 1 ba màu, slide 2 đỏ / đỏ mận, slide 3 cobalt);
+   - không tự chuyển.
+3. **Theo nhu cầu:**
+   - bỏ "Size GS / Kid" và "Còn nhiều size";
+   - thêm **Giày nam** (nam + unisex);
+   - mức giá: Dưới 2 triệu, 2–2,5 triệu, 2,5–3 triệu, 3–4 triệu, Từ 4 triệu;
+   - 3 ô loại giày màu đặc, 5 ô giá nền nhạt chữ màu.
+4. **"Chưa chắc size?":** bỏ nền tím; nền mực có ánh đèn xanh / đỏ.
+5. **Nút "Tìm"** và nút chính: màu mực, rê chuột thành cobalt.
+6. **Bỏ mọi mảng tím đặc.** Tím chỉ còn trong logo, ánh đèn và dải màu chảy; size đang chọn và tab đang chọn chuyển sang cobalt.
+7. **Khi cuộn trang:**
+   - nền trắng có ba đốm màu shop (xanh, đỏ, tím rất nhạt) **trôi chậm theo trang**;
+   - các khối (logo hãng, ô nhu cầu, dòng giày, thẻ sản phẩm, câu hỏi) **trồi lên lần lượt**;
+   - vạch ba màu dưới tiêu đề **kéo dài ra**.
+8. **Rê chuột vào ô mẫu:** thẻ sản phẩm, ô hãng, ô nhu cầu, ô dòng giày **nổi lên nhẹ** kèm bóng.
+
+- Máy khách bật "giảm chuyển động" (cài đặt trợ năng): toàn bộ chuyển động trên tắt, nội dung hiện bình thường.
+- **Đã kiểm:**
+  - 47/47 hành trình đạt; axe 0 lỗi; 0 lỗi 404; Console sạch;
+  - chế độ giảm chuyển động hoạt động đúng;
+  - ảnh: `docs/thiet-ke-moi/so-sanh-moc-6/`.
 
 ## Mốc 5 — đã làm (01/10): sặc sỡ hơn bằng màu shop
 
