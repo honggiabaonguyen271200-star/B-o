@@ -683,7 +683,7 @@
           "</div></div>" : "") +
         '<header class="hd"><div class="container hd__row">' +
         '<button type="button" class="icon-btn hd__menu" data-menu-open aria-label="Mở menu" aria-controls="menu" aria-expanded="false">' + I.menu + "</button>" +
-        '<a class="logo" href="index.html" aria-label="' + esc(SHOP.name) + ' — Trang chủ"><img class="logo__img" src="images/brand/slife-logo-square-192.webp" alt="S&amp;LIFE Since 2021" width="52" height="52"></a>' +
+        '<a class="logo" href="index.html" aria-label="' + esc(SHOP.name) + ' — Trang chủ"><img class="logo__img" src="images/brand/slife-full-gradient.svg" alt="S&amp;LIFE Since 2021" width="42" height="62"></a>' +
         '<form class="search" action="shop.html" role="search" data-search>' + '<svg class="search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>' +
         '<input type="search" name="q" value="' + esc(q) + '" placeholder="Tìm tên, mã hoặc biệt danh, VD: 204L, AF1" aria-label="Tìm giày theo tên, mã hoặc biệt danh" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-pop">' +
         '<button type="submit" class="search__go">Tìm</button><div class="search__pop" id="search-pop" role="listbox" aria-label="Gợi ý tìm kiếm" hidden></div></form>' +
@@ -887,9 +887,13 @@
   }
 
   /* ---------- Trang chủ ---------- */
-  // Hero: không tự chuyển (tránh chuyển động), khách bấm chấm / mũi tên hoặc vuốt
+  // Hero: tự chuyển mỗi 6 giây (slide mới mở vòng tròn từ hình của nó). Dừng khi rê chuột, chạm, dùng bàn phím trong banner,
+  // banner khuất màn hình, hoặc khách bấm nút tạm dừng. Máy bật "giảm chuyển động": không tự chuyển.
+  // Khách vẫn bấm chấm / mũi tên hoặc vuốt để chuyển; slide mới mở theo vòng tròn từ chỗ bấm.
+  var HERO_DELAY = 6000;
   function hero(root, slides) {
     var track = $("[data-hero-track]", root), dots = $("[data-hero-dots]", root), cur = 0;
+    var auto = !REDUCED, stopped = false, hold = {}, timer = 0, left = HERO_DELAY, t0 = 0;
     function all() { return $all(".hero__slide", track); }
     function paint() {
       var list = all();
@@ -897,7 +901,26 @@
       $all(".hero__nav", root).forEach(function (n) { n.hidden = list.length < 2; });
       go(cur);
     }
-    // Chuyển slide: slide mới mở ra theo vòng tròn từ chỗ khách bấm/vuốt (slide cũ nằm dưới cho tới khi mở xong)
+    // Đồng hồ tự chuyển: nhớ thời gian còn lại khi tạm dừng để vạch chạy trên chấm và slide khớp nhau
+    function tick() {
+      clearTimeout(timer);
+      if (t0) { left = Math.max(0, left - (Date.now() - t0)); t0 = 0; }
+      var off = !auto || stopped || all().length < 2 || Object.keys(hold).some(function (k) { return hold[k]; });
+      root.classList.toggle("is-paused", off);
+      track.setAttribute("aria-live", auto && !stopped ? "off" : "polite");
+      if (off) return;
+      t0 = Date.now();
+      timer = setTimeout(function () { t0 = 0; go(cur + 1, autoAt()); }, left);
+    }
+    function setHold(k, v) { if (!!hold[k] !== v) { hold[k] = v; tick(); } }
+    // Tự chuyển: vòng tròn mở ra từ giữa hình của slide kế tiếp
+    function autoAt() {
+      var list = all(), s = list[(cur + 1) % list.length], a = s && $(".hero__art", s), r = root.getBoundingClientRect();
+      if (!a || !a.offsetHeight) return [r.width * 0.8, r.height * 0.45];
+      var b = a.getBoundingClientRect();
+      return [b.left - r.left + b.width / 2, b.top - r.top + b.height / 2];
+    }
+    // Chuyển slide: slide mới mở ra theo vòng tròn (slide cũ nằm dưới cho tới khi mở xong)
     function go(i, at) {
       var list = all();
       if (!list.length) return;
@@ -910,17 +933,39 @@
         s.classList.toggle("is-prev", changed && s === prev);
         s.setAttribute("aria-hidden", j !== cur); s.inert = j !== cur;
       });
+      root.classList.toggle("is-light", slide.classList.contains("hero__slide--light"));
       if (changed && !REDUCED) {
         slide.classList.remove("is-reveal"); void slide.offsetWidth; slide.classList.add("is-reveal");
         clearTimeout(go.t);
         go.t = setTimeout(function () { $all(".is-prev", track).forEach(function (s) { s.classList.remove("is-prev"); }); }, 1000);
       } else if (prev) prev.classList.remove("is-prev");
       $all("[data-dot]", dots).forEach(function (d, j) { d.classList.toggle("is-active", j === cur); d.setAttribute("aria-current", j === cur); });
+      t0 = 0; left = HERO_DELAY; tick();
     }
     track.innerHTML = slides.join("");
+    if (auto) {
+      root.style.setProperty("--hero-delay", HERO_DELAY + "ms");
+      $(".hero__nav", root).insertAdjacentHTML("afterbegin", '<button type="button" class="hero__btn hero__play" data-hero-play aria-label="Tạm dừng banner tự chuyển">' +
+        svg('<path d="M9 6v12M15 6v12"/>', { w: 2.4 }).replace("<svg ", '<svg class="hero__ic-pause" ') + svg('<path d="M8 5.5v13l10-6.5z" fill="currentColor"/>', { w: 1.6 }).replace("<svg ", '<svg class="hero__ic-play" ') + "</button>");
+      root.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") setHold("hover", true); });
+      root.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") setHold("hover", false); });
+      root.addEventListener("focusin", function (e) { var kb = true; try { kb = e.target.matches(":focus-visible"); } catch (x) {} if (kb) setHold("focus", true); });
+      root.addEventListener("focusout", function (e) { if (!root.contains(e.relatedTarget)) setHold("focus", false); });
+      root.addEventListener("touchstart", function () { setHold("touch", true); }, { passive: true });
+      root.addEventListener("touchend", function () { setHold("touch", false); });
+      root.addEventListener("touchcancel", function () { setHold("touch", false); });
+      document.addEventListener("visibilitychange", function () { setHold("tab", document.hidden); });
+      if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { setHold("view", es[0].intersectionRatio < 0.35); }, { threshold: [0, 0.35] }).observe(root);
+    }
     root.addEventListener("click", function (e) {
-      var d = e.target.closest("[data-dot]"), n = e.target.closest("[data-hero-go]");
+      var d = e.target.closest("[data-dot]"), n = e.target.closest("[data-hero-go]"), pb = e.target.closest("[data-hero-play]");
       var r = root.getBoundingClientRect(), at = [e.clientX - r.left, e.clientY - r.top];
+      if (pb) {
+        stopped = !stopped;
+        root.classList.toggle("is-stopped", stopped);
+        pb.setAttribute("aria-label", stopped ? "Cho banner tự chuyển tiếp" : "Tạm dừng banner tự chuyển");
+        tick();
+      }
       if (d) go(+d.dataset.dot, at);
       if (n) go(cur + (+n.dataset.heroGo), at);
     });
@@ -937,28 +982,84 @@
     return { add: function (html) { track.insertAdjacentHTML("beforeend", html); paint(); } };
   }
 
+  // Chữ lớn của một dòng: bỏ tên hãng lặp lại, VD "Jordan 1 Low" -> "1 Low", "Giày tennis" giữ nguyên
+  function lineWord(brand, line) { return line.replace(new RegExp("^" + brand + "\\s+", "i"), ""); }
+  // Mỗi hãng: dòng có tên riêng (không tính "Giày tennis", "các dòng khác") có nhiều mẫu sẵn nhất; xếp hãng nhiều mẫu trước
+  function topLines(brands) {
+    return brands.map(function (b) {
+      var l = lineList(b.name).filter(function (x) { return x.name !== OTHER_LINE && !/^Giày /.test(x.name); })
+        .sort(function (a, c) { return c.count - a.count; })[0];
+      if (!l) return null;
+      var list = IN_STOCK.filter(function (p) { return p.brand === b.name && p.line === l.name; });
+      return { brand: b.name, line: l.name, count: l.count, best: bestOf(list),
+        from: Math.min.apply(null, list.map(function (p) { return p.minPrice || 1e9; })) };
+    }).filter(Boolean).sort(function (a, c) { return c.count - a.count; });
+  }
+  // Mẫu cho chùm banner đầu: chủ shop tự chọn bằng SHOP.heroPicks (mã sản phẩm) trong data/shop.js;
+  // để trống thì giữa là mẫu có ảnh thật đẹp nhất, xung quanh là mẫu tiêu biểu của 4 hãng khác.
+  function heroPicks(photos, tops) {
+    var own = (SHOP.heroPicks || []).map(findProduct).filter(function (p) { return p && p.inStock; });
+    if (own.length) return own.slice(0, 5);
+    var center = photos[0] || (tops[0] && tops[0].best);
+    if (!center) return [];
+    return [center].concat(tops.filter(function (t) { return t.brand !== center.brand; }).slice(0, 4).map(function (t) { return t.best; }));
+  }
+  function heroCard(p, i) {
+    var body;
+    if (hasPhoto(p)) {
+      body = media(p, { eager: i === 0 }) + (i === 0 ? '<span class="hero__tag"><b>' + esc(p.name) + "</b><b>" + money(p.minPrice) + "</b></span>" : "");
+    } else {
+      // Mẫu chưa có ảnh: thẻ chữ, không giả ảnh
+      var word = p.line !== OTHER_LINE ? lineWord(p.brand, p.line) : p.name.replace(new RegExp("^" + p.brand + "\\s+", "i"), "");
+      body = '<span class="hero__type">' + brandLogo(p.brand, "hero__type-logo", "hero__type-word") +
+        '<b class="' + (word.length > 7 ? "is-long" : "") + '">' + esc(word) + "</b>" +
+        "<small>" + esc(p.name) + "</small><em>" + money(p.minPrice) + "</em></span>";
+    }
+    return '<a class="hero__card hero__card--' + i + (hasPhoto(p) ? "" : " hero__card--type") + '" href="' + productUrl(p) + '" aria-label="' + esc(fullName(p)) + '">' + body + "</a>";
+  }
+
   function initHome() {
     var brands = brandList();
     var photos = IN_STOCK.filter(hasPhoto).sort(rank);
 
-    // Hero: ảnh giày thật đang có + câu đúng giọng S&LIFE
+    // Hero: 5 slide — chùm mẫu nổi bật nhiều hãng · tường logo các hãng · top dòng giày · dòng có nhiều ảnh thật · hỏi size
     var heroEl = $("[data-hero]");
     if (heroEl) {
-      var star = photos[0] || bestOf(IN_STOCK);
+      var tops = topLines(brands);
       var slides = [
         '<div class="hero__slide hero__slide--grad"><div class="container hero__in"><div>' +
         '<div class="hero__kicker"><img src="images/brand/slife-mark-white.svg" alt="" width="22" height="22">S&amp;LIFE Sneaker · Since 2021</div>' +
         '<h2 class="hero__title"><span>Only</span><span>Authentic</span></h2>' +
         '<p class="hero__lead">Giày chính hãng, có sẵn size. Mỗi đôi có mã sản phẩm khớp tem hộp — tra trên trang chủ của hãng ra đúng mẫu, đúng màu.</p>' +
-        '<div class="hero__cta"><a class="btn btn--light" href="shop.html">Xem ' + IN_STOCK.length + ' mẫu có sẵn</a><a class="btn btn--line-light" href="size-guide.html">Hướng dẫn chọn size</a></div></div>' +
-        // Chùm ảnh giày thật: mẫu nổi bật ở giữa, 4 mẫu có ảnh khác xoè hai bên
-        '<div class="hero__art"><div class="hero__fan">' +
-        (photos.length ? photos.slice(0, 5) : [star]).filter(Boolean).map(function (p, i) {
-          return '<a class="hero__card hero__card--' + i + '" href="' + productUrl(p) + '" aria-label="' + esc(p.name) + '">' + media(p, { eager: i === 0 }) +
-            (i === 0 ? '<span class="hero__tag"><span><b>' + esc(p.name) + "</b><br>" + esc(p.code || "") + "</span><b>" + money(p.minPrice) + "</b></span>" : "") + "</a>";
-        }).join("") +
-        "</div></div></div></div>",
+        '<div class="hero__cta"><a class="btn btn--light btn--run" href="shop.html"><span>Xem ' + IN_STOCK.length + ' mẫu có sẵn</span></a><a class="btn btn--line-light" href="size-guide.html">Hướng dẫn chọn size</a></div></div>' +
+        // Chùm mẫu nổi bật của nhiều hãng: mẫu có ảnh thật hiện ảnh, mẫu chưa có ảnh hiện thẻ chữ (logo hãng, tên dòng, giá) — không vẽ giày giả
+        '<div class="hero__art"><div class="hero__fan">' + heroPicks(photos, tops).map(heroCard).join("") + "</div></div></div></div>",
+
+        // Tường logo: mỗi hãng một ô màu, ô lớn cho hãng nhiều mẫu nhất
+        '<div class="hero__slide hero__slide--bento hero__slide--light"><div class="container hero__in"><div>' +
+        '<div class="hero__kicker">Chính hãng · ' + brands.length + ' thương hiệu</div>' +
+        '<h2 class="hero__title"><span>Chọn hãng</span><span>bạn thích</span></h2>' +
+        '<p class="hero__lead">' + IN_STOCK.length + " đôi sẵn size từ " + esc(brands.slice().sort(function (a, b) { return b.count - a.count; }).slice(0, 4).map(function (b) { return b.name; }).join(", ")) + "… Bấm logo để xem đúng hãng.</p>" +
+        '<div class="hero__cta"><a class="btn btn--grad" href="shop.html">Xem tất cả hàng sẵn</a></div></div>' +
+        '<div class="hero__art"><div class="bento">' + brands.slice().sort(function (a, b) { return b.count - a.count; }).map(function (b, i) {
+          return '<a class="bento__tile bento__tile--' + i + '" href="' + brandUrl(b.name) + '" aria-label="' + esc(b.name) + ", " + b.count + ' mẫu">' + brandLogo(b.name, "bento__logo", "bento__word") +
+            "<small>" + (i ? "" : '<span class="bento__name">' + esc(b.name) + " · </span>") + b.count + " mẫu</small></a>";
+        }).join("") + "</div></div></div></div>",
       ];
+      // Bảng xếp hạng: 5 dòng có nhiều mẫu sẵn nhất, mỗi hãng một dòng (đếm từ bảng hàng, không bịa "bán chạy")
+      if (tops.length >= 3) {
+        slides.push(
+          '<div class="hero__slide hero__slide--index"><div class="container hero__in"><div>' +
+          '<div class="hero__kicker">Xếp theo số mẫu đang sẵn size</div>' +
+          '<h2 class="hero__title"><span>Top ' + Math.min(5, tops.length) + "</span><span>dòng giày</span></h2>" +
+          '<p class="hero__lead">Mỗi hãng một dòng có nhiều mẫu nhất tại shop lúc này. Bấm để xem đủ màu, đủ size.</p>' +
+          '<div class="hero__cta"><a class="btn btn--light" href="shop.html">Xem hàng sẵn</a></div></div>' +
+          '<div class="hero__art"><ol class="lineup">' + tops.slice(0, 5).map(function (t, i) {
+            return '<li><a href="' + lineUrl(t.brand, t.line) + '"><span class="lineup__n">0' + (i + 1) + "</span>" + brandLogo(t.brand, "lineup__logo", "lineup__word") +
+              '<span class="lineup__name"><b>' + esc(lineWord(t.brand, t.line)) + "</b><small>" + t.count + " mẫu · từ " + money(t.from) + "</small></span>" + I.arrow + "</a></li>";
+          }).join("") + "</ol></div></div></div>"
+        );
+      }
       // Dòng giày có nhiều ảnh thật nhất
       var byLine = {};
       photos.forEach(function (p) { var k = p.brand + "|" + p.line; if (p.line !== OTHER_LINE) (byLine[k] = byLine[k] || []).push(p); });
@@ -971,7 +1072,7 @@
         var szs = Object.keys(sz).sort(function (a, b) { return sizeNum(a) - sizeNum(b); });
         slides.push(
           '<div class="hero__slide hero__slide--ink"><div class="container hero__in"><div>' +
-          '<div class="hero__kicker">Dòng giày đang có nhiều size</div>' +
+          '<div class="hero__kicker">Dòng giày có ảnh chụp thật</div>' +
           '<h2 class="hero__title"><span>' + esc(tb) + "</span><span>" + esc(tl) + "</span></h2>" +
           '<p class="hero__lead">' + inLine.length + " mẫu " + esc(lineTitle(tb, tl)) + " đang có sẵn tại shop" + (szs.length > 1 ? ", size từ " + esc(szs[0]) + " đến " + esc(szs[szs.length - 1]) : "") + ". Ảnh chụp thật từng đôi.</p>" +
           '<div class="hero__cta"><a class="btn btn--light" href="' + lineUrl(tb, tl) + '">Xem dòng ' + esc(tl) + '</a><a class="btn btn--line-light" href="' + brandUrl(tb) + '">Tất cả ' + esc(tb) + "</a></div></div>" +
@@ -980,7 +1081,7 @@
         );
       }
       slides.push(
-        '<div class="hero__slide hero__slide--ink"><div class="container hero__in"><div>' +
+        '<div class="hero__slide hero__slide--ink hero__slide--ask"><div class="container hero__in"><div>' +
         '<div class="hero__kicker">Tư vấn trước khi chốt</div>' +
         '<h2 class="hero__title"><span>Hỏi size</span><span>trước khi mua</span></h2>' +
         '<p class="hero__lead">Nhắn Facebook số cm chân và đôi bạn đang đi vừa nhất — shop tư vấn theo form từng dòng, gửi ảnh chụp thật trước khi giao.</p>' +
@@ -995,6 +1096,20 @@
           h.add('<div class="hero__slide hero__slide--img"><img src="' + esc(u) + '" alt="Banner S&amp;LIFE ' + (i + 1) + '" loading="lazy"><div class="container hero__in"><div><div class="hero__cta"><a class="btn btn--light" href="shop.html">Xem hàng sẵn</a></div></div></div></div>');
         });
       });
+    }
+
+    // Dải logo các hãng chạy liên tục dưới banner (rê chuột / dùng bàn phím thì dừng). Mỗi nửa dải lặp đủ dài để nối liền.
+    var runEl = $("[data-logo-run]");
+    if (runEl && brands.length) {
+      var runItem = function (b, hide) {
+        return '<a class="logo-run__item" href="' + brandUrl(b.name) + '"' + (hide ? ' tabindex="-1" aria-hidden="true"' : ' aria-label="' + esc(b.name) + ", " + b.count + ' mẫu"') + ">" +
+          brandLogo(b.name, "logo-run__logo", "logo-run__word") + "<small>" + b.count + "</small></a>";
+      };
+      var reps = Math.max(1, Math.ceil(16 / brands.length)), half = [];
+      for (var k = 0; k < reps; k++) brands.forEach(function (b) { half.push([b, k > 0]); });
+      runEl.innerHTML = '<div class="logo-run__track">' + [0, 1].map(function (copy) {
+        return '<div class="logo-run__set"' + (copy ? ' aria-hidden="true"' : "") + ">" + half.map(function (x) { return runItem(x[0], copy || x[1]); }).join("") + "</div>";
+      }).join("") + "</div>";
     }
 
     // Hàng sẵn, mua ngay — ngay sau hero

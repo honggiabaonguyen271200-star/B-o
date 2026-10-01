@@ -1400,14 +1400,6 @@ body[data-page="home"] .ft { margin-top: 0; }
 .hero__slide { grid-area: 1 / 1; visibility: hidden; z-index: 0; }
 .hero__slide.is-prev { visibility: visible; z-index: 1; }
 .hero__slide.is-active { visibility: visible; z-index: 2; }
-.hero__slide:nth-child(2) { background:
-    radial-gradient(40% 55% at 78% 30%, rgba(219, 49, 55, .85), rgba(219, 49, 55, 0) 72%),
-    radial-gradient(36% 50% at 88% 75%, rgba(173, 37, 113, .8), rgba(173, 37, 113, 0) 72%),
-    radial-gradient(30% 40% at 60% 90%, rgba(0, 74, 173, .6), rgba(0, 74, 173, 0) 72%), var(--ink); }
-.hero__slide:nth-child(3) { background:
-    radial-gradient(42% 60% at 80% 35%, rgba(0, 74, 173, .95), rgba(0, 74, 173, 0) 72%),
-    radial-gradient(30% 45% at 62% 85%, rgba(0, 74, 173, .55), rgba(0, 74, 173, 0) 72%),
-    radial-gradient(28% 40% at 92% 90%, rgba(219, 49, 55, .55), rgba(219, 49, 55, 0) 72%), var(--ink); }
 .hero__slide.is-reveal { animation: heroReveal 1s cubic-bezier(.66, 0, .2, 1) both; }
 .hero__slide.is-reveal .hero__in > * { animation: heroRise .85s .22s cubic-bezier(.2, .7, .2, 1) both; }
 .hero__slide.is-reveal .hero__in > :nth-child(2) { animation-delay: .34s; }
@@ -1454,4 +1446,217 @@ body.has-aura::after {
   .announce__set[aria-hidden] { display: none; }
   .announce__track { width: auto; justify-content: center; }
   .rv { opacity: 1; }
+}
+
+/* =========================================================
+   Mốc 7 (01/10): chủ shop chọn 4 chuyển động tự chạy (#2 ánh đèn trôi, #3 dải logo hãng chạy,
+   #4 banner tự chuyển 6 giây, #5 viền màu chạy quanh nút chính), nút "Tìm" màu chảy,
+   logo đầu trang nền trong suốt (liền với nền trắng), banner nhiều hãng + 2 kiểu banner mới.
+   Máy bật "giảm chuyển động": tắt hết, banner không tự chuyển.
+   ========================================================= */
+
+/* ---- Logo đầu trang: logo gốc đủ "S&LIFE · Since 2021", nền trong suốt nên liền với nền trắng ---- */
+.logo__img { width: auto; height: 56px; }
+@media (min-width: 1180px) { .logo__img { width: auto; height: 66px; } }
+
+/* ---- Nút "Tìm": dải màu shop chảy liên tục (như thanh chữ đầu trang), lướt sáng khi rê chuột ---- */
+.search__go { isolation: isolate; overflow: hidden; padding: 0 20px; background: #771CAE; letter-spacing: .01em;
+  box-shadow: 0 8px 18px -10px rgba(119, 28, 174, .9); transition: box-shadow .25s, transform .2s; }
+.search__go::before { content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: 0; width: 400%;
+  background: linear-gradient(90deg, #004AAD, #771CAE, #DB3137, #771CAE, #004AAD, #771CAE, #DB3137, #771CAE, #004AAD);
+  animation: annFlow 7s linear infinite; }
+.search__go::after { content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: -70%; width: 45%;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, .5), rgba(255, 255, 255, 0)); transform: skewX(-20deg); }
+.search__go:hover, .search__go:focus-visible { background: #771CAE; box-shadow: 0 10px 22px -8px rgba(219, 49, 55, .75); }
+.search__go:hover::after { animation: goShine .7s ease; }
+.search__go:active { transform: scale(.96); }
+@keyframes goShine { to { left: 130%; } }
+.search input:focus { border-color: transparent; background: linear-gradient(#fff, #fff) padding-box, linear-gradient(90deg, #004AAD, #771CAE, #DB3137) border-box;
+  box-shadow: 0 0 0 4px rgba(0, 74, 173, .08); }
+
+/* ---- #5 Nút chính trên banner: viền ba màu shop chạy vòng quanh, ánh sáng mờ theo sau ---- */
+@property --run { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.hero .btn--run { border: 2.5px solid transparent; color: var(--ink);
+  background: linear-gradient(#fff, #fff) padding-box, conic-gradient(from var(--run), #004AAD, #771CAE, #DB3137, #771CAE, #004AAD) border-box;
+  animation: runRing 3.2s linear infinite; }
+.hero .btn--run::after { content: ""; position: absolute; inset: -3px; z-index: -1; border-radius: inherit; pointer-events: none;
+  background: conic-gradient(from var(--run), #004AAD, #771CAE, #DB3137, #771CAE, #004AAD); filter: blur(12px); opacity: .75; animation: runRing 3.2s linear infinite; }
+.hero .btn--run:hover { color: #fff; border-color: transparent;
+  background: linear-gradient(var(--c-cobalt), var(--c-cobalt)) padding-box, conic-gradient(from var(--run), #004AAD, #771CAE, #DB3137, #771CAE, #004AAD) border-box; }
+@keyframes runRing { to { --run: 360deg; } }
+
+/* ---- #2 Ánh đèn sân khấu trôi chậm liên tục (lớp ánh sáng riêng, chỉ chạy ở slide đang xem) ---- */
+.hero__slide--grad, .hero__slide--ink { background: var(--ink); }
+.hero__slide--grad::before, .hero__slide--grad::after, .hero__slide--ink::before, .hero__slide--ink::after {
+  content: ""; position: absolute; inset: -14%; z-index: 0; pointer-events: none; will-change: transform; }
+.hero__slide--grad::before { background:
+    radial-gradient(34% 46% at 70% 32%, rgba(0, 74, 173, .95), rgba(0, 74, 173, 0) 72%),
+    radial-gradient(27% 36% at 62% 84%, rgba(219, 49, 55, .8), rgba(219, 49, 55, 0) 72%);
+  animation: glowA 13s ease-in-out infinite alternate; }
+.hero__slide--grad::after { background: radial-gradient(30% 42% at 82% 60%, rgba(119, 28, 174, .9), rgba(119, 28, 174, 0) 72%);
+  animation: glowB 9s ease-in-out infinite alternate; }
+.hero__slide--ink::before { background:
+    radial-gradient(36% 48% at 76% 32%, rgba(219, 49, 55, .8), rgba(219, 49, 55, 0) 72%),
+    radial-gradient(32% 44% at 84% 72%, rgba(173, 37, 113, .75), rgba(173, 37, 113, 0) 72%);
+  animation: glowA 12s ease-in-out infinite alternate; }
+.hero__slide--ink::after { background: radial-gradient(28% 38% at 60% 86%, rgba(0, 74, 173, .65), rgba(0, 74, 173, 0) 72%);
+  animation: glowB 10s ease-in-out infinite alternate; }
+.hero__slide--ask::before { background:
+    radial-gradient(38% 54% at 78% 36%, rgba(0, 74, 173, .95), rgba(0, 74, 173, 0) 72%),
+    radial-gradient(28% 40% at 62% 84%, rgba(0, 74, 173, .55), rgba(0, 74, 173, 0) 72%); }
+.hero__slide--ask::after { background: radial-gradient(26% 36% at 88% 84%, rgba(219, 49, 55, .6), rgba(219, 49, 55, 0) 72%); }
+.hero__slide:not(.is-active):not(.is-prev)::before, .hero__slide:not(.is-active):not(.is-prev)::after { animation-play-state: paused; }
+@keyframes glowA { 0% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(-7%, 5%, 0) scale(1.1); } 100% { transform: translate3d(5%, -6%, 0) scale(.95); } }
+@keyframes glowB { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(-12%, -9%, 0) scale(1.18); } }
+@media (max-width: 899px) {
+  .hero__slide--grad::before { background:
+      radial-gradient(60% 30% at 34% 18%, rgba(0, 74, 173, .95), rgba(0, 74, 173, 0) 75%),
+      radial-gradient(55% 22% at 54% 40%, rgba(219, 49, 55, .6), rgba(219, 49, 55, 0) 75%); }
+  .hero__slide--grad::after { background: radial-gradient(52% 26% at 72% 26%, rgba(119, 28, 174, .9), rgba(119, 28, 174, 0) 75%); }
+}
+
+/* ---- #4 Banner tự chuyển: vạch trên chấm chạy hết 6 giây thì sang slide; nút tạm dừng ---- */
+.hero__dots button.is-active { background: rgba(255, 255, 255, .35); }
+.hero__dots button::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: #fff; transform: scaleX(0); transform-origin: left; }
+.hero__dots button.is-active::after { transform: scaleX(1); }
+.hero[style*="--hero-delay"] .hero__dots button.is-active::after { transform: scaleX(0); animation: dotFill var(--hero-delay) linear forwards; }
+.hero.is-paused .hero__dots button.is-active::after { animation-play-state: paused; }
+.hero.is-stopped .hero__dots button.is-active::after { animation: none; transform: scaleX(1); }
+@keyframes dotFill { to { transform: scaleX(1); } }
+.hero__play .hero__ic-play, .hero.is-stopped .hero__play .hero__ic-pause { display: none; }
+.hero.is-stopped .hero__play .hero__ic-play { display: block; }
+.hero__ctrl { transition: color .3s; }
+.hero.is-light .hero__dots button { background: rgba(21, 17, 43, .16); }
+.hero.is-light .hero__dots button::after { background: var(--ink); }
+.hero.is-light .hero__btn { color: var(--ink); border-color: rgba(21, 17, 43, .3); background: rgba(255, 255, 255, .7); }
+.hero.is-light .hero__btn:hover { background: #fff; }
+
+/* ---- Slide 1: chùm mẫu nổi bật nhiều hãng. Mẫu chưa có ảnh: thẻ chữ màu shop (logo hãng, tên dòng, giá) ---- */
+.hero__card--type { background: var(--c-cobalt); color: #fff; }
+.hero__card--type.hero__card--2 { background: var(--c-red); }
+.hero__card--type.hero__card--3 { background: #fff; color: var(--ink); }
+.hero__card--type.hero__card--4 { background: var(--c-berry); }
+.hero__card--type.hero__card--0 { background: #fff; color: var(--ink); }
+.hero__type { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 11%; text-align: left; overflow: hidden; }
+.hero__type-logo { flex: none; width: 52%; height: 24%; margin-bottom: auto; background: currentColor;
+  -webkit-mask: left center / contain no-repeat; mask: left center / contain no-repeat; }
+.hero__type-word { flex: none; margin-bottom: auto; font-family: var(--font-display); font-stretch: 75%; font-weight: 800; font-size: 28px; letter-spacing: .04em; line-height: 1; }
+.hero__type b { font-family: var(--font-display); font-stretch: 75%; font-weight: 800; text-transform: uppercase; font-size: clamp(28px, 3.2vw, 44px); line-height: .9; }
+.hero__type b.is-long { font-size: clamp(22px, 2.3vw, 31px); }
+.hero__type small { font-size: 11.5px; line-height: 1.3; opacity: .9; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.hero__type em { font-style: normal; font-weight: 700; font-size: 13.5px; }
+.hero__card--type.hero__card--3 .hero__type em { color: var(--c-cobalt); }
+/* Xoè rộng hơn để thẻ chữ hai bên không bị ảnh giữa che; thẻ bên phải canh chữ sang phải */
+.hero__card--0 { width: 48%; left: 26%; top: 10%; }
+.hero__card--1, .hero__card--2 { width: 34%; }
+.hero__card--3, .hero__card--4 { width: 30%; }
+.hero__card--3 { left: 3%; }
+.hero__card--4 { right: 3%; }
+.hero__card--2 .hero__type, .hero__card--4 .hero__type { align-items: flex-end; text-align: right; }
+.hero__card--2 .hero__type-logo, .hero__card--4 .hero__type-logo { -webkit-mask-position: right center; mask-position: right center; }
+.hero__card:not(.hero__card--0) .hero__type small { display: none; } /* thẻ hai bên bị thẻ giữa che một phần: chỉ giữ logo, tên dòng, giá */
+.hero__card--3 .hero__type b, .hero__card--4 .hero__type b { font-size: clamp(24px, 2.6vw, 36px); }
+.hero__card--3 .hero__type b.is-long, .hero__card--4 .hero__type b.is-long { font-size: clamp(20px, 2vw, 27px); }
+.hero__card .hero__tag b:first-child { font-size: 13px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.hero__card .hero__tag b:last-child { flex: none; }
+@media (max-width: 899px) {
+  .hero__card--0 { width: 46%; left: 27%; top: 4%; }
+  .hero__card--1, .hero__card--2 { width: 35%; top: 16%; }
+  .hero__type { padding: 10%; gap: 3px; }
+  .hero__type b { font-size: 22px; }
+  .hero__type b.is-long { font-size: 17px; }
+  .hero__type small { display: none; }
+  .hero__type em { font-size: 12px; }
+}
+
+/* ---- Slide 2: tường logo các hãng (nền sáng, ô màu đặc) ---- */
+.hero__slide--bento { background: var(--mist); color: var(--ink); }
+.hero__slide--bento::before { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(rgba(21, 17, 43, .13) 1.1px, transparent 1.6px); background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(100deg, transparent 20%, #000 75%); mask-image: linear-gradient(100deg, transparent 20%, #000 75%); }
+.hero__slide--bento .hero__kicker { color: var(--c-cobalt); opacity: 1; }
+.hero__slide--bento .hero__title span:last-child { color: var(--c-cobalt); }
+.hero__slide--bento .hero__lead { color: var(--ink-2); opacity: 1; }
+.bento { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 12px; width: min(100%, 560px); aspect-ratio: 4 / 3; }
+.bento__tile { position: relative; display: flex; align-items: center; justify-content: center; border-radius: 18px; overflow: hidden;
+  background: #fff; color: var(--ink); box-shadow: 0 1px 0 rgba(21, 17, 43, .05), 0 14px 28px -18px rgba(21, 17, 43, .35);
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease); }
+.bento__tile--0 { grid-column: span 2; grid-row: span 2; background: var(--c-cobalt); color: #fff; }
+.bento__tile--1, .bento__tile--7 { background: var(--ink); color: #fff; }
+.bento__tile--2 { background: var(--c-red); color: #fff; }
+.bento__tile--4 { background: var(--c-berry); color: #fff; }
+.bento__tile--6 { background: var(--cobalt-50); color: var(--c-cobalt); }
+.bento__tile--8 { background: var(--red-50); color: #B2232A; }
+.bento__logo { display: block; width: 64%; height: 40%; background: currentColor; -webkit-mask: center / contain no-repeat; mask: center / contain no-repeat; }
+.bento__tile--0 .bento__logo { width: 62%; height: 34%; }
+.bento__word { font-family: var(--font-display); font-stretch: 75%; font-weight: 800; font-size: 26px; letter-spacing: .04em; line-height: 1; }
+.bento__tile small { position: absolute; left: 12px; bottom: 9px; font-size: 12px; font-weight: 600; }
+.bento__tile--0 small { left: 18px; bottom: 16px; font-size: 14px; }
+@media (hover: hover) and (pointer: fine) { .bento__tile:hover { transform: translateY(-5px); box-shadow: 0 20px 36px -16px rgba(21, 17, 43, .45); } }
+@media (max-width: 899px) {
+  .bento { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 70px; aspect-ratio: auto; gap: 8px; width: min(100%, 380px); }
+  .bento__tile--0 { grid-column: span 1; grid-row: span 1; }
+  .bento__tile--0 .bento__logo { width: 64%; height: 40%; }
+  .bento__tile:nth-child(n+7) { display: none; }
+  .bento__tile { border-radius: 14px; }
+  .bento__tile small, .bento__tile--0 small { left: 8px; bottom: 5px; font-size: 10.5px; }
+  .bento__word { font-size: 20px; }
+  .bento__name { display: none; }
+}
+
+/* ---- Slide 3: top dòng giày — mảng cobalt + vòng đỏ, bảng xếp hạng chữ lớn ---- */
+.hero__slide--index { background: radial-gradient(circle at 96% 4%, var(--c-red) 0 25vmax, rgba(219, 49, 55, 0) calc(25vmax + 1px)), var(--c-cobalt); }
+.hero__slide--index::before { content: ""; position: absolute; left: -9vmax; bottom: -9vmax; width: 26vmax; height: 26vmax; border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, .25); pointer-events: none; }
+.hero__slide--index .hero__kicker { color: #fff; opacity: .9; }
+.lineup { list-style: none; margin: 0; padding: 0; width: min(100%, 560px); border-top: 1px solid rgba(255, 255, 255, .4); }
+.lineup a { display: grid; grid-template-columns: 50px 90px minmax(0, 1fr) 22px; align-items: center; gap: 14px; padding: 14px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, .4); color: #fff; transition: background-color .2s, padding .25s var(--ease); }
+.lineup a:hover, .lineup a:focus-visible { background: rgba(21, 17, 43, .22); padding-left: 16px; }
+.lineup__n { font-family: var(--font-display); font-stretch: 75%; font-weight: 800; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+.lineup__logo { display: block; width: 90px; height: 32px; background: #fff; -webkit-mask: left center / contain no-repeat; mask: left center / contain no-repeat; }
+.lineup__word { font-family: var(--font-display); font-stretch: 75%; font-weight: 800; font-size: 24px; letter-spacing: .04em; line-height: 1; }
+.lineup__name b { display: block; font-family: var(--font-display); font-stretch: 75%; font-weight: 800; text-transform: uppercase; font-size: 30px; line-height: 1; }
+.lineup__name small { display: block; margin-top: 3px; font-size: 13px; }
+.lineup svg { width: 20px; height: 20px; transition: transform .25s var(--ease); }
+.lineup a:hover svg { transform: translateX(4px); }
+@media (max-width: 899px) {
+  .hero__slide--index { background: radial-gradient(circle at 100% 0, var(--c-red) 0 34vmax, rgba(219, 49, 55, 0) calc(34vmax + 1px)), var(--c-cobalt); }
+  .lineup { width: min(100%, 420px); }
+  .lineup a { grid-template-columns: 26px 58px minmax(0, 1fr) 16px; gap: 10px; padding: 8px 4px; }
+  .lineup__n { font-size: 20px; }
+  .lineup__logo { width: 58px; height: 22px; }
+  .lineup__word { font-size: 17px; }
+  .lineup__name b { font-size: 19px; }
+  .lineup__name small { font-size: 11.5px; margin-top: 1px; }
+  .lineup svg { width: 16px; height: 16px; }
+}
+
+/* ---- #3 Dải logo các hãng chạy liên tục dưới banner ---- */
+.logo-run { position: relative; overflow: hidden; background: #fff; border-bottom: 1px solid var(--line); }
+.logo-run::before, .logo-run::after { content: ""; position: absolute; top: 0; bottom: 0; z-index: 1; width: 70px; pointer-events: none; }
+.logo-run::before { left: 0; background: linear-gradient(90deg, #fff, rgba(255, 255, 255, 0)); }
+.logo-run::after { right: 0; background: linear-gradient(270deg, #fff, rgba(255, 255, 255, 0)); }
+.logo-run__track { display: flex; width: max-content; animation: annMarquee 48s linear infinite; }
+.logo-run:hover .logo-run__track, .logo-run:focus-within .logo-run__track { animation-play-state: paused; }
+.logo-run__set { display: flex; align-items: center; flex: none; }
+.logo-run__item { display: flex; align-items: flex-start; gap: 6px; padding: 20px 32px; color: var(--ink); transition: color .2s; }
+.logo-run__item:hover, .logo-run__item:focus-visible { color: var(--c-cobalt); }
+.logo-run__logo { display: block; width: 100px; height: 34px; background: currentColor; -webkit-mask: center / contain no-repeat; mask: center / contain no-repeat; }
+.logo-run__word { display: flex; align-items: center; height: 34px; font-family: var(--font-display); font-stretch: 75%; font-weight: 800; font-size: 30px; letter-spacing: .04em; line-height: 1; }
+.logo-run__item small { font-size: 11.5px; font-weight: 700; color: var(--muted); }
+@media (max-width: 899px) {
+  .logo-run__item { padding: 14px 20px; }
+  .logo-run__logo { width: 76px; height: 26px; }
+  .logo-run__word { height: 26px; font-size: 23px; }
+  .logo-run::before, .logo-run::after { width: 36px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search__go::before, .hero .btn--run, .hero .btn--run::after, .hero__slide::before, .hero__slide::after, .logo-run__track { animation: none !important; }
+  .search__go:hover::after { animation: none; }
+  .logo-run__track { width: auto; flex-wrap: wrap; justify-content: center; }
+  .logo-run__set { flex-wrap: wrap; justify-content: center; }
+  .logo-run [aria-hidden="true"] { display: none; }
+  .logo-run::before, .logo-run::after { display: none; }
 }
