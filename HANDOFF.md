@@ -1,6 +1,6 @@
 # HANDOFF — Thiết kế mới S&LIFE Sneaker (nhánh `thiet-ke-moi`)
 
-Cập nhật 01/10/2026 · **Mốc 7**: banner tự chuyển + nhiều hãng + 2 kiểu banner mới, logo liền nền trắng, nút Tìm mới, dải logo chạy (xem mục "Mốc 7"). **Mốc 6**: chữ chạy, chùm ảnh giày, chuyển cảnh, bỏ tím đặc, hiệu ứng cuộn (xem mục "Mốc 6"). **Mốc 5**: sặc sỡ hơn bằng màu shop (xem mục "Mốc 5"). **Mốc 4**: logo hãng + hệ màu mới (xem mục "Mốc 4"). **Mốc 3**: làm theo 8 góp ý của chủ shop (logo, nhãn hãng, menu, Facebook thay Messenger, bỏ "Gửi yêu cầu mua", bảng size, bỏ "Mới về", hết lỗi 404). Nối tiếp mốc 2b và mốc 2 (bên dưới).
+Cập nhật 02/10/2026 · **Mốc 8**: logo đầu trang nét dày + màu chảy, bỏ số ở dải logo, thêm logo Puma, "Hàng sẵn, mua ngay" đủ các hãng (xem mục "Mốc 8"). **Mốc 7**: banner tự chuyển + nhiều hãng + 2 kiểu banner mới, logo liền nền trắng, nút Tìm mới, dải logo chạy (xem mục "Mốc 7"). **Mốc 6**: chữ chạy, chùm ảnh giày, chuyển cảnh, bỏ tím đặc, hiệu ứng cuộn (xem mục "Mốc 6"). **Mốc 5**: sặc sỡ hơn bằng màu shop (xem mục "Mốc 5"). **Mốc 4**: logo hãng + hệ màu mới (xem mục "Mốc 4"). **Mốc 3**: làm theo 8 góp ý của chủ shop (logo, nhãn hãng, menu, Facebook thay Messenger, bỏ "Gửi yêu cầu mua", bảng size, bỏ "Mới về", hết lỗi 404). Nối tiếp mốc 2b và mốc 2 (bên dưới).
 
 Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách đang xem vẫn là bản cũ. Chưa gộp, chưa mua dịch vụ, chưa tạo tài khoản nào, chưa ghi vào Google Sheet thật.
 
@@ -95,6 +95,20 @@ Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách
 - **Ảnh trước/sau mốc 2** (web đang chạy ↔ bản mới): `docs/thiet-ke-moi/so-sanh-moc-2/` — trang chủ, danh mục, sản phẩm, gửi yêu cầu; mỗi trang ở 390px và 1440px.
 - **Ảnh so sánh font:** `docs/thiet-ke-moi/font/so-sanh-font.png` (mở thử: `so-sanh-font.html`).
 - **Ảnh mốc 1** vẫn ở `docs/thiet-ke-moi/so-sanh/`.
+
+## Mốc 8 (02/10) — theo góp ý chủ shop
+
+Ảnh: `docs/thiet-ke-moi/so-sanh-moc-8/`.
+
+- **Logo đầu trang:** nét dày hơn (nét chữ S dày nhất, chữ "S&LIFE" dày vừa, "Since 2021" giữ gần như cũ cho khỏi dính chữ), to hơn (máy tính cao 72px, điện thoại 60px).
+  - Màu ba màu shop **chảy liên tục** bên trong logo.
+  - Làm bằng mặt nạ `images/brand/slife-logo-mask.svg`. File này tạo từ logo gốc `slife-full-gradient.svg`, chỉ thêm viền cho dày.
+  - Máy bật "giảm chuyển động": logo đứng yên, màu chuyển xanh → tím → đỏ như cũ.
+- **Dải logo các hãng:** bỏ các con số cạnh logo.
+- **Logo Puma:** thêm `images/brands/puma.png` từ ảnh chủ shop gửi. Tường logo, dải logo, Top 5 dòng, menu đều hiện logo Puma.
+- **"Hàng sẵn, mua ngay":** lần lượt mỗi hãng một mẫu (hãng nhiều mẫu trước), mỗi lượt khác dòng giày. Không còn ưu tiên mẫu đã có ảnh.
+  - Mẫu chưa có ảnh hiện ô "Ảnh thật đang cập nhật". Tải ảnh lên là tự hiện ảnh.
+- **Kiểm tra:** 47/47 hành trình, axe 0 lỗi, 0 lỗi 404, Console sạch, chế độ giảm chuyển động đúng.
 
 ## Mốc 7 (01/10) — theo góp ý chủ shop
 

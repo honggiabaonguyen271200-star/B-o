@@ -75,7 +75,7 @@
   function productUrl(p) { return "product.html?id=" + encodeURIComponent(p.id); }
   function brandUrl(b) { return "shop.html?brand=" + slug(b); }
   // Logo hãng (images/brands/<hãng>.png, nền trong suốt, tô màu bằng CSS mask). Hãng chưa có logo: hiện tên in hoa.
-  var BRAND_LOGOS = ["new-balance", "asics", "onitsuka-tiger", "jordan", "nike", "adidas", "salomon", "on"];
+  var BRAND_LOGOS = ["new-balance", "asics", "onitsuka-tiger", "jordan", "nike", "adidas", "puma", "salomon", "on"];
   function brandLogo(name, cls, wordCls) {
     var s = slug(name);
     if (BRAND_LOGOS.indexOf(s) < 0) return wordCls ? '<span class="' + wordCls + '" aria-hidden="true">' + esc(name.toUpperCase()) + "</span>" : "";
@@ -683,7 +683,7 @@
           "</div></div>" : "") +
         '<header class="hd"><div class="container hd__row">' +
         '<button type="button" class="icon-btn hd__menu" data-menu-open aria-label="Mở menu" aria-controls="menu" aria-expanded="false">' + I.menu + "</button>" +
-        '<a class="logo" href="index.html" aria-label="' + esc(SHOP.name) + ' — Trang chủ"><img class="logo__img" src="images/brand/slife-full-gradient.svg" alt="S&amp;LIFE Since 2021" width="42" height="62"></a>' +
+        '<a class="logo" href="index.html" aria-label="' + esc(SHOP.name) + ' — Trang chủ"><span class="logo__img" role="img" aria-label="S&amp;LIFE Since 2021"></span></a>' +
         '<form class="search" action="shop.html" role="search" data-search>' + '<svg class="search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>' +
         '<input type="search" name="q" value="' + esc(q) + '" placeholder="Tìm tên, mã hoặc biệt danh, VD: 204L, AF1" aria-label="Tìm giày theo tên, mã hoặc biệt danh" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-pop">' +
         '<button type="submit" class="search__go">Tìm</button><div class="search__pop" id="search-pop" role="listbox" aria-label="Gợi ý tìm kiếm" hidden></div></form>' +
@@ -1018,6 +1018,22 @@
     return '<a class="hero__card hero__card--' + i + (hasPhoto(p) ? "" : " hero__card--type") + '" href="' + productUrl(p) + '" aria-label="' + esc(fullName(p)) + '">' + body + "</a>";
   }
 
+  // Trộn đều các hãng: lần lượt mỗi hãng một mẫu (hãng nhiều mẫu trước), trong hãng lấy mẫu nhiều size nhất,
+  // mỗi lượt khác dòng giày — không ưu tiên mẫu đã có ảnh (chủ shop sẽ bổ sung ảnh sau)
+  function mixBrands(brands, n) {
+    var queues = brands.slice().sort(function (a, b) { return b.count - a.count; }).map(function (b) {
+      var list = IN_STOCK.filter(function (p) { return p.brand === b.name; })
+        .sort(function (x, y) { return (y.sizes.length - x.sizes.length) || (x.order - y.order); });
+      var seen = {}, first = [], rest = []; // mẫu đầu tiên của mỗi dòng trước, để không lặp một dòng
+      list.forEach(function (p) { (seen[p.line] ? rest : first).push(p); seen[p.line] = 1; });
+      return first.concat(rest);
+    });
+    var out = [];
+    for (var r = 0; out.length < n && queues.some(function (q) { return q[r]; }); r++)
+      queues.forEach(function (q) { if (q[r] && out.length < n) out.push(q[r]); });
+    return out;
+  }
+
   function initHome() {
     var brands = brandList();
     var photos = IN_STOCK.filter(hasPhoto).sort(rank);
@@ -1103,7 +1119,7 @@
     if (runEl && brands.length) {
       var runItem = function (b, hide) {
         return '<a class="logo-run__item" href="' + brandUrl(b.name) + '"' + (hide ? ' tabindex="-1" aria-hidden="true"' : ' aria-label="' + esc(b.name) + ", " + b.count + ' mẫu"') + ">" +
-          brandLogo(b.name, "logo-run__logo", "logo-run__word") + "<small>" + b.count + "</small></a>";
+          brandLogo(b.name, "logo-run__logo", "logo-run__word") + "</a>";
       };
       var reps = Math.max(1, Math.ceil(16 / brands.length)), half = [];
       for (var k = 0; k < reps; k++) brands.forEach(function (b) { half.push([b, k > 0]); });
@@ -1115,7 +1131,7 @@
     // Hàng sẵn, mua ngay — ngay sau hero
     var picks = $("[data-picks]");
     if (picks) {
-      picks.innerHTML = rail("Hàng sẵn, mua ngay", IN_STOCK.slice().sort(rank).slice(0, 12), "shop.html", "Xem tất cả " + IN_STOCK.length + " mẫu có sẵn", "Còn size tại shop · mẫu có ảnh chụp thật được xếp trước");
+      picks.innerHTML = rail("Hàng sẵn, mua ngay", mixBrands(brands, 12), "shop.html", "Xem tất cả " + IN_STOCK.length + " mẫu có sẵn", "Còn size tại shop · mẫu tiêu biểu của từng hãng");
     }
 
     var perksEl = $("[data-perks]");

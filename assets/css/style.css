@@ -1644,7 +1644,6 @@ body.has-aura::after {
 .logo-run__item:hover, .logo-run__item:focus-visible { color: var(--c-cobalt); }
 .logo-run__logo { display: block; width: 100px; height: 34px; background: currentColor; -webkit-mask: center / contain no-repeat; mask: center / contain no-repeat; }
 .logo-run__word { display: flex; align-items: center; height: 34px; font-family: var(--font-display); font-stretch: 75%; font-weight: 800; font-size: 30px; letter-spacing: .04em; line-height: 1; }
-.logo-run__item small { font-size: 11.5px; font-weight: 700; color: var(--muted); }
 @media (max-width: 899px) {
   .logo-run__item { padding: 14px 20px; }
   .logo-run__logo { width: 76px; height: 26px; }
@@ -1659,4 +1658,21 @@ body.has-aura::after {
   .logo-run__set { flex-wrap: wrap; justify-content: center; }
   .logo-run [aria-hidden="true"] { display: none; }
   .logo-run::before, .logo-run::after { display: none; }
+}
+
+/* =========================================================
+   Mốc 8 (02/10): logo đầu trang nét dày hơn, to hơn, màu bên trong chảy liên tục;
+   dải logo hãng bỏ số; thêm logo Puma; "Hàng sẵn, mua ngay" trộn đủ các hãng.
+   ========================================================= */
+/* Logo: mặt nạ hình logo (images/brand/slife-logo-mask.svg, nét đã làm dày), bên trong là dải ba màu shop trôi chéo */
+.logo__img { position: relative; display: block; overflow: hidden; width: 41px; height: 60px; flex: none;
+  -webkit-mask: url(../../images/brand/slife-logo-mask.svg) center / contain no-repeat; mask: url(../../images/brand/slife-logo-mask.svg) center / contain no-repeat; }
+.logo__img::before { content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 300%;
+  background: linear-gradient(180deg, #004AAD, #771CAE, #DB3137, #771CAE, #004AAD, #771CAE, #DB3137, #771CAE, #004AAD);
+  animation: logoFlow 6s linear infinite; }
+@keyframes logoFlow { to { transform: translateY(-50%); } }
+@media (min-width: 1180px) { .logo__img { width: 49px; height: 72px; } }
+.logo-run__item { align-items: center; }
+@media (prefers-reduced-motion: reduce) {
+  .logo__img::before { animation: none; height: 100%; background: linear-gradient(160deg, #004AAD, #771CAE 50%, #DB3137); }
 }
