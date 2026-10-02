@@ -130,7 +130,7 @@ def share_page(p, base, img):
         '<link rel="icon" type="image/png" sizes="32x32" href="../images/brand/favicon-32.png">',
         # Chỉ chuyển bằng JavaScript: Facebook không chạy JS nên vẫn đọc được các thẻ og ở trên
         "<script>location.replace(%s + location.hash);</script>" % json.dumps("../product.html?id=" + pid),
-        "<style>body{margin:48px 16px;font:16px/1.5 system-ui,sans-serif;color:#16122B;text-align:center}a{color:#771CAE}</style>",
+        "<style>body{margin:48px 16px;font:16px/1.5 system-ui,sans-serif;color:#16122B;text-align:center}a{color:#004AAD}</style>",
     ]
     body = '<p>Đang mở trang sản phẩm…</p>\n<p><a href="../product.html?id=%s">%s</a></p>' % (e(pid), e(title))
     return ("<!doctype html>\n<!-- File tự sinh bởi scripts/static_pages.py — không sửa tay. -->\n"
@@ -152,7 +152,7 @@ def page_404(base):
   var m = location.pathname.match(/^(.*\\/)sp\\/([^\\/]+?)(?:\\.html)?\\/?$/);
   if (m) location.replace(m[1] + "product.html?id=" + m[2]);
 </script>
-<style>body{margin:64px 16px;font:16px/1.5 system-ui,sans-serif;color:#16122B;text-align:center}a{color:#771CAE}</style>
+<style>body{margin:64px 16px;font:16px/1.5 system-ui,sans-serif;color:#16122B;text-align:center}a{color:#004AAD}</style>
 </head>
 <body>
 <h1>Không tìm thấy trang</h1>

@@ -93,6 +93,9 @@ Ví dụ yêu cầu cho Agent:
 - *"Trang chủ: đưa khối Onitsuka Tiger lên trước New Balance."*
 - *"Thêm câu hỏi thường gặp vào trang Chính sách: …"*
 
+- *"Đổi mẫu trong chùm ảnh banner đầu trang thành U204LMMC, 553560-132, IG1024."* (sửa `heroPicks` trong `data/shop.js`)
+- *"Thêm logo hãng Vans: file ở D:\Downloads\vans.png."* (đặt `images/brands/vans.png`, thêm vào `BRAND_LOGOS`)
+
 Gửi kèm ảnh chụp màn hình khi muốn sửa một chỗ cụ thể (bấm dấu **+** trong khung Agent để đính ảnh).
 
 ### D8. Tên miền .vn, pháp lý, Google
@@ -122,3 +125,44 @@ Website chỉ hiện **hàng sẵn**, lấy từ bảng hàng Google Sheet. Khi 
 Hoặc nhắn Agent: *"Khách đã cọc mẫu U204LMMC size 40. Tôi đã sửa Google Sheet và tải file về `D:\Downloads\<tên file>.xlsx` — cập nhật hàng bằng scripts/build_products.py rồi push."*
 
 Không sửa tay `data/products.js`: lần cập nhật sau từ Sheet sẽ ghi đè mất.
+
+---
+
+## G. Chốt giao diện mới (mốc 1 → 9) cùng Antigravity
+
+Giao diện mới làm trên nhánh `thiet-ke-moi`, chủ shop đã duyệt ngày 02/10. Chi tiết từng mốc ở `HANDOFF.md`, quy tắc thiết kế ở `AGENTS.md` (Antigravity tự đọc).
+
+### G1. Kiểm tra lần cuối trên máy thật (khoảng 10 phút)
+
+Dán nguyên đoạn dưới vào khung **Agent**:
+
+```
+Đọc AGENTS.md và HANDOFF.md. Chuyển sang nhánh thiet-ke-moi (git fetch rồi git checkout thiet-ke-moi), pull bản mới nhất,
+chạy xem-web.bat. Mở http://localhost:8080 bằng Chrome và Edge, kiểm tra theo danh sách G2, chụp màn hình chỗ nào lỗi.
+Không sửa data/products.js. Không gộp vào nhánh claude/shoe-shop-website-3dln52 khi tôi chưa đồng ý.
+Báo tôi bằng tiếng Việt: mục nào đạt, mục nào lỗi.
+```
+
+### G2. Danh sách kiểm tra
+
+- [ ] Logo đầu trang: đủ "S&LIFE · Since 2021", màu chảy, không có ô vuông nền.
+- [ ] Banner 5 slide tự chuyển sau 6 giây; rê chuột vào thì dừng; nút ⏸ tạm dừng được.
+- [ ] Dải logo 9 hãng chạy dưới banner (có Puma), bấm logo ra đúng hãng.
+- [ ] "Hàng sẵn, mua ngay" có đủ các hãng.
+- [ ] Chữ: tiêu đề Barlow Condensed, chữ thường IBM Plex Sans, dấu tiếng Việt không chạm nhau.
+- [ ] Trang sản phẩm: chọn size → **Tư vấn qua Facebook** → điện thoại mở app Facebook; máy tính Edge hiện hộp "Sao chép link / Mở luôn".
+- [ ] Giỏ hàng → Gửi yêu cầu → tin nhắn đã chép sẵn đủ mã, size, giá.
+- [ ] Xem dạng điện thoại (F12 → Ctrl + Shift + M): không bị tràn ngang, chữ đọc rõ.
+
+### G3. Đưa lên web thật
+
+Chỉ làm khi G2 đạt hết **và chủ shop đồng ý**. Nhờ Claude hoặc dán vào Agent:
+
+```
+Gộp nhánh thiet-ke-moi vào nhánh claude/shoe-shop-website-3dln52 (merge, không rebase, không force push), push lên GitHub.
+Đợi 2 phút rồi mở https://honggiabaonguyen271200-star.github.io/B-o/ kiểm tra lại danh sách G2.
+```
+
+**Lỡ thấy lỗi sau khi lên web thật:** nhắn Agent *"Hoàn tác commit gộp thiet-ke-moi bằng git revert -m 1 rồi push."* — web quay về bản cũ, không mất gì.
+
+Sau khi gộp, quay về làm việc trên nhánh `claude/shoe-shop-website-3dln52` như mục A (nhớ **Pull**).

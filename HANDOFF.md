@@ -6,7 +6,11 @@ Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách
 
 > Từ mốc 3, kênh tư vấn là **Facebook** (`facebookChat` trong `data/shop.js`). Các chỗ ghi "Messenger" ở mục mốc 2 / 2b bên dưới là lịch sử, không còn đúng.
 
-## Chủ shop cần duyệt
+## Trạng thái: chủ shop đã duyệt toàn bộ (02/10)
+
+Chủ shop chốt tất cả mốc 1 → 9 ngày 02/10. Việc còn lại để lên web thật: kiểm tra lần cuối trên máy thật bằng Antigravity, rồi gộp `thiet-ke-moi` vào `claude/shoe-shop-website-3dln52`. Cả hai bước có hướng dẫn ở mục **G** của `HUONG-DAN-ANTIGRAVITY.md`. Nhánh web thật chưa có commit nào mới kể từ khi tách, nên gộp không bị xung đột.
+
+## Chủ shop cần duyệt (lịch sử, đã duyệt hết)
 
 **Mốc 7 — xem ảnh trong `docs/thiet-ke-moi/so-sanh-moc-7/`:**
 
