@@ -6,6 +6,7 @@ echo.
 echo  Đang mở website S^&LIFE tại http://localhost:8080
 echo  Giữ cửa sổ này mở trong lúc xem. Đóng cửa sổ để tắt.
 echo.
+%PY% scripts\static_pages.py 2>nul
 start "" http://localhost:8080
 %PY% -m http.server 8080
 if errorlevel 1 (

@@ -23,6 +23,8 @@ from xml.etree import ElementTree as ET
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_products as bp  # noqa: E402
+import image_manifest  # noqa: E402
+import static_pages  # noqa: E402
 
 MAX_SIDE = 1200
 QUALITY = 80
@@ -265,6 +267,8 @@ def main():
                 failed += 1
                 print("  ! Không lấy được ảnh cho %s: %s" % (name, err))
 
+    image_manifest.write()  # cập nhật danh sách ảnh cho website
+    static_pages.main()  # ảnh xem trước khi chia sẻ link, ảnh banner tải trước
     print("Tìm thấy ảnh cho %d mẫu giày trong bảng." % len(found))
     print("  Đã lưu: %d ảnh vào images/products/" % saved)
     if skipped:

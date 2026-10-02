@@ -11,14 +11,23 @@
   var IMG_DIR = "images/products/";
   var IMG_EXT = ["webp", "jpg", "png", "jpeg", "JPG"]; // công cụ của shop lưu WebP (nhẹ), vẫn nhận JPG/PNG
   var MAX_SHOTS = 12; // tối đa ảnh mỗi mẫu: MÃ, MÃ-2 … MÃ-12
+  var MAX_QTY = 1; // mỗi size 1 đôi; mua nhiều đôi trao đổi thêm trong tin nhắn
+  // Danh sách ảnh đang có (images/products/danh-sach.js, do công cụ nhập ảnh ghi). Thiếu thì tự dò như cũ.
+  var MANIFEST = window.PRODUCT_IMAGES || null;
+  // Khi đã có danh sách, mẫu ngoài danh sách chỉ dò 2 đuôi phổ biến để bớt tải lỗi
+  var EXTS = MANIFEST ? ["webp", "jpg"] : IMG_EXT;
+  var REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var WISH = !!(SHOP.features && SHOP.features.wishlist); // nút Yêu thích: tắt/bật trong data/shop.js
+  var ALIASES = SHOP.aliases || {};
+  var SIZE_CHARTS = window.SIZE_CHARTS || {};
 
   var GENDER_LABEL = { nam: "Nam", nu: "Nữ", gs: "GS", kid: "Kid", unisex: "Unisex" };
   var BRAND_ORDER = ["New Balance", "Asics", "Onitsuka Tiger", "Jordan", "Nike", "Adidas", "Puma", "Salomon", "On", "Vans", "Converse"];
-  var PRICE_RANGES = [
-    { id: "u2", label: "Dưới 2 triệu", min: 0, max: 1999 },
-    { id: "2-3", label: "2 – 3 triệu", min: 2000, max: 2999 },
-    { id: "3-4", label: "3 – 4 triệu", min: 3000, max: 3999 },
-    { id: "o4", label: "Từ 4 triệu", min: 4000, max: Infinity },
+  var PRICE_QUICK = [
+    { label: "Dưới 2 triệu", min: 0, max: 1999 },
+    { label: "2 – 3 triệu", min: 2000, max: 2999 },
+    { label: "3 – 4 triệu", min: 3000, max: 3999 },
+    { label: "Từ 4 triệu", min: 4000, max: 0 },
   ];
   // Bộ lọc màu: đoán từ tên màu trong tên giày
   var COLOR_FILTERS = [
@@ -49,9 +58,11 @@
   function norm(s) {
     return String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d");
   }
+  function compact(s) { return norm(s).replace(/[^a-z0-9]/g, ""); }
   function slug(s) { return norm(s).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
   // Giá trong dữ liệu tính theo nghìn đồng: 2600 -> 2.600.000₫
   function money(k) { return k == null ? "Liên hệ" : (k * 1000).toLocaleString("vi-VN") + "₫"; }
+  function million(k) { return (k / 1000).toLocaleString("vi-VN", { maximumFractionDigits: 1 }) + " tr"; }
   function sizeNum(s) { return parseFloat(String(s).replace(",", ".")) + (/y$/i.test(s) ? -0.01 : 0); }
   function params() { return new URLSearchParams(location.search); }
   function storage(key, value) {
@@ -63,8 +74,24 @@
   function fullName(p) { return "Giày " + p.name + (p.code ? " " + p.code : ""); }
   function productUrl(p) { return "product.html?id=" + encodeURIComponent(p.id); }
   function brandUrl(b) { return "shop.html?brand=" + slug(b); }
-  function lineUrl(b, l) { return "shop.html?brand=" + slug(b) + "&line=" + slug(l); }
+  // Logo hãng (images/brands/<hãng>.png, nền trong suốt, tô màu bằng CSS mask). Hãng chưa có logo: hiện tên in hoa.
+  var BRAND_LOGOS = ["new-balance", "asics", "onitsuka-tiger", "jordan", "nike", "adidas", "puma", "salomon", "on"];
+  function brandLogo(name, cls, wordCls) {
+    var s = slug(name);
+    if (BRAND_LOGOS.indexOf(s) < 0) return wordCls ? '<span class="' + wordCls + '" aria-hidden="true">' + esc(name.toUpperCase()) + "</span>" : "";
+    var u = "url(images/brands/" + s + ".png)"; // ghi thẳng vào thẻ để đường dẫn tính từ trang, không từ file CSS
+    return '<span class="' + cls + '" style="-webkit-mask-image:' + u + ";mask-image:" + u + '" role="img" aria-label="Logo ' + esc(name) + '"></span>';
+  }
+  function lineUrl(b, l) { return (b ? "shop.html?brand=" + slug(b) + "&line=" : "shop.html?line=") + slug(l); }
   function absUrl(path) { return new URL(path, SHOP.siteUrl || location.href).href; }
+  // Link gửi đi (Facebook): trang chia sẻ sp/<mã>.html có ảnh xem trước, tự mở trang sản phẩm
+  function shareUrl(p) { return absUrl(p.inStock ? "sp/" + encodeURIComponent(p.id) + ".html" : productUrl(p)); }
+  function initials(b) {
+    var w = b.split(/\s+/);
+    return w.length > 1 ? (w[0][0] + w[1][0]).toUpperCase() : b[0].toUpperCase();
+  }
+  function handle(url) { var m = String(url || "").match(/(?:instagram\.com|tiktok\.com)\/(@?[^/?#]+)/); return m ? (m[1][0] === "@" ? m[1] : "@" + m[1]) : ""; }
+  function debounce(fn, ms) { var t; return function () { var a = arguments, s = this; clearTimeout(t); t = setTimeout(function () { fn.apply(s, a); }, ms); }; }
 
   /* ---------- Data ---------- */
   function lineOf(p) {
@@ -83,10 +110,16 @@
       line: lineOf(p),
       colors: COLOR_FILTERS.filter(function (c) { return c.re.test(n); }).map(function (c) { return c.id; }),
       search: norm([p.name, p.code, p.brand, GENDER_LABEL[p.gender]].join(" ")),
+      compact: compact([p.brand, p.name, p.code].join(" ")),
     });
   });
-  var BY_ID = {};
-  PRODUCTS.forEach(function (p) { BY_ID[p.id] = p; });
+  var BY_ID = {}, BY_CODE = {};
+  PRODUCTS.forEach(function (p) { BY_ID[p.id] = p; if (p.code) BY_CODE[compact(p.code)] = p; });
+  // ?id= nhận cả chữ hoa/thường và cả mã sản phẩm
+  function findProduct(id) {
+    if (!id) return null;
+    return BY_ID[id] || BY_ID[String(id).toLowerCase()] || BY_CODE[compact(id)] || null;
+  }
   var IN_STOCK = PRODUCTS.filter(function (p) { return p.inStock; });
 
   function brandList() {
@@ -106,30 +139,72 @@
       .map(function (l) { return { name: l, count: counts[l] }; });
   }
   function lineTitle(brand, line) {
+    if (!brand) return line;
     if (line === OTHER_LINE) return brand + " — các dòng khác";
     if (/^Giày /.test(line)) return line + " " + brand;
     return line.indexOf(brand.split(" ")[0]) === 0 ? line : brand + " " + line;
   }
-  function bestOf(list) {
-    return list.slice().sort(function (a, b) { return (b.image ? 1 : 0) - (a.image ? 1 : 0) || b.sizes.length - a.sizes.length; })[0];
-  }
+  // Mẫu đẹp nhất để làm ảnh đại diện: có ảnh thật, còn nhiều size
+  function rank(a, b) { return (hasPhoto(b) - hasPhoto(a)) || (b.sizes.length - a.sizes.length) || (a.order - b.order); }
+  function bestOf(list) { return list.slice().sort(rank)[0]; }
   function fromSlug(list, s) { return list.filter(function (x) { return slug(x.name) === s; })[0]; }
   function fitNote(p) {
     for (var i = 0; i < FIT_NOTES.length; i++) if (FIT_NOTES[i].match.test(p.name)) return FIT_NOTES[i];
     return null;
   }
+  // Tìm theo tên, hãng, mã (mã viết liền/có gạch đều được) và biệt danh trong data/shop.js (aliases)
+  function matcher(q) {
+    var nq = norm(q).trim(), alts = [];
+    Object.keys(ALIASES).forEach(function (k) {
+      var nk = norm(k);
+      if (nq === nk || (" " + nq + " ").indexOf(" " + nk + " ") >= 0) {
+        ALIASES[k].forEach(function (a) { alts.push(baseMatcher((" " + nq + " ").replace(" " + nk + " ", " " + a + " "))); });
+      }
+    });
+    var base = baseMatcher(q);
+    if (!alts.length) return base;
+    return function (p) { return base(p) || alts.some(function (m) { return m(p); }); };
+  }
+  function baseMatcher(q) {
+    var words = norm(q).split(/\s+/).filter(Boolean), cq = compact(q);
+    return function (p) {
+      if (!words.length) return true;
+      if (cq.length >= 4 && p.compact.indexOf(cq) >= 0) return true;
+      for (var i = 0; i < words.length; i++) {
+        if (p.search.indexOf(words[i]) < 0 && p.compact.indexOf(compact(words[i])) < 0) return false;
+      }
+      return true;
+    };
+  }
+  function searchProducts(q) {
+    var m = matcher(q), cq = compact(q);
+    return IN_STOCK.filter(m).sort(function (a, b) {
+      var ca = a.code && compact(a.code).indexOf(cq) === 0 ? 1 : 0, cb = b.code && compact(b.code).indexOf(cq) === 0 ? 1 : 0;
+      return (b.inStock - a.inStock) || (cb - ca) || rank(a, b);
+    });
+  }
 
   /* ---------- Ảnh ----------
-     Ảnh sản phẩm: images/products/<MÃ>.jpg, ảnh phụ <MÃ>-2.jpg… Website tự dò, không cần chạy lệnh.
-     Banner trang chủ: images/banners/banner-1.jpg … banner-5.jpg
+     Ảnh sản phẩm: images/products/<MÃ>.webp, ảnh phụ <MÃ>-2.webp… Có danh sách images/products/danh-sach.js thì
+     chỉ hiện ảnh trong danh sách (không dò tên file nên không có lỗi 404); danh sách tự cập nhật khi mở xem-web.bat,
+     dùng anh.html hoặc các công cụ nhập ảnh. Thiếu danh sách thì dò như cũ.
+     Banner, ảnh khách: danh sách images/anh-khac.js (tự sinh), thiếu thì dò như cũ.
+     Banner trang chủ: images/banners/banner-1.jpg … (thêm vào hero)
      Banner hãng: images/banners/<tên-hãng>.jpg (VD new-balance.jpg, onitsuka-tiger.jpg)
      Ảnh khách hàng: images/khach-hang/1.jpg … 24.jpg */
-  function imgBase(p) { return IMG_DIR + (p.code || p.id); }
+  function stemOf(p) { return p.code || p.id; }
+  function imgBase(p) { return IMG_DIR + stemOf(p); }
+  function shotsOf(p) {
+    var list = MANIFEST && MANIFEST[stemOf(p)];
+    return list && list.length ? list.map(function (f) { return IMG_DIR + f; }) : null;
+  }
+  function hasPhoto(p) { return shotsOf(p) ? 1 : 0; }
+  window.__slifeOk = function (img) { img.classList.add("ok"); if (img.parentNode) img.parentNode.classList.add("has-photo"); };
   window.__slifeImg = function (img) {
     var i = +img.dataset.i + 1;
-    if (i >= IMG_EXT.length) { img.remove(); return; }
+    if (i >= EXTS.length) { img.remove(); return; }
     img.dataset.i = i;
-    img.src = img.dataset.base + "." + IMG_EXT[i];
+    img.src = img.dataset.base + "." + EXTS[i];
   };
   function probe(url) {
     return new Promise(function (resolve) {
@@ -139,129 +214,145 @@
       im.src = url;
     });
   }
-  function findImage(base) {
+  function findImage(base, exts) {
     var i = 0;
+    exts = exts || IMG_EXT;
     function next() {
-      if (i >= IMG_EXT.length) return Promise.resolve(null);
-      return probe(base + "." + IMG_EXT[i++]).then(function (u) { return u || next(); });
+      if (i >= exts.length) return Promise.resolve(null);
+      return probe(base + "." + exts[i++]).then(function (u) { return u || next(); });
     }
     return next();
   }
+  // Banner / ảnh khách trong images/anh-khac.js: trả về đường dẫn các file khớp mẫu tên, theo số thứ tự
+  var SITE_IMAGES = window.SITE_IMAGES || null;
+  function listedImages(folder, re) {
+    return (SITE_IMAGES[folder] || []).filter(function (f) { return re.test(f); })
+      .sort(function (a, b) { return (parseInt(a.replace(/\D+/g, ""), 10) || 0) - (parseInt(b.replace(/\D+/g, ""), 10) || 0); })
+      .map(function (f) { return "images/" + folder + "/" + f; });
+  }
   // Dò ảnh đánh số base1, base2… cho đến khi thiếu
-  function findSeries(base, from, max) {
+  function findSeries(base, from, max, exts) {
     var found = [], n = from;
     return new Promise(function (resolve) {
       (function next() {
         if (n > max) return resolve(found);
-        findImage(base + n++).then(function (u) { if (u) { found.push(u); next(); } else resolve(found); });
+        findImage(base + n++, exts).then(function (u) { if (u) { found.push(u); next(); } else resolve(found); });
       })();
     });
   }
-
-  var COLORS = [
-    [/black|phantom|stealth|noir|den\b/, "#1f1f1f"],
-    [/navy|indigo|midnight|obsidian|peacoat|dark teal|eclipse/, "#26324f"],
-    [/red|cardinal|scarlet|bordeaux|maroon|chicago|siren/, "#b3261e"],
-    [/pink|rose|mauve|ballet|dragon fruit|lily|taffy/, "#e3a3b2"],
-    [/purple|plum|grape|lilac|concord/, "#6f4c8f"],
-    [/olive|khaki|sage|grass|malachite|green|spruce|mint|teal|cactus|pine/, "#5d7a4c"],
-    [/yellow|sulfur|volt|ochre|curry|gold/, "#e0b43a"],
-    [/orange|rust|ginger|peach/, "#df7a3a"],
-    [/blue|denim|royal|sky|chambray|paisley/, "#4071b3"],
-    [/brown|mocha|chocolate|oak|pecan|desert|relic|coffee|pumpernickel|espresso|hemp/, "#7a5236"],
-    [/silver|metallic|chrome|aluminum/, "#c3c6ca"],
-    [/grey|gray|cloud|smoke|lunar|castlerock|graphite|cement|rain|magnet|harbor|oyster|shadow|titanium/, "#9d9e9a"],
-    [/beige|cream|sail|linen|turtledove|birch|sea salt|oatmeal|ivory|sand|tan|coconut|arid|stone|timberwolf|mushroom|cannoli|clay|greige|oat/, "#e2d7c1"],
-    [/white/, "#f3f2ee"],
-  ];
-  function colorway(name) {
-    var n = norm(name), found = [];
-    COLORS.forEach(function (c) { var m = n.match(c[0]); if (m) found.push({ at: m.index, color: c[1] }); });
-    found.sort(function (a, b) { return a.at - b.at; });
-    var main = found[0] ? found[0].color : "#d9d5cc";
-    var second = found[1] ? found[1].color : (main === "#f3f2ee" ? "#1f1f1f" : "#f3f2ee");
-    return { main: main, second: second, gum: /gum/.test(n) };
-  }
-  // Hình minh hoạ hiện khi chưa có ảnh thật
-  function placeholder(p) {
-    var c = colorway(p.name);
-    var dark = c.main === "#1f1f1f" || c.main === "#26324f";
-    var line = dark ? "#555" : "rgba(0,0,0,.2)";
-    var sole = c.gum ? "#c28a4e" : (c.main === "#f3f2ee" ? "#e6e2d8" : "#f6f5f1");
-    return (
-      '<svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-      '<rect width="400" height="400" fill="#f4f4f2"/>' +
-      '<ellipse cx="204" cy="296" rx="160" ry="9" fill="rgba(0,0,0,.07)"/>' +
-      '<path d="M234 136 C236 118 248 108 262 110 L276 130 Z" fill="' + c.second + '" stroke="' + line + '" stroke-width="2"/>' +
-      '<path d="M60 258 C54 236 64 222 92 214 L150 200 C172 194 188 182 200 168 L236 134 C248 126 262 124 274 130 C290 138 306 142 322 140 C336 138 346 144 350 156 L356 258 Z" fill="' + c.main + '" stroke="' + line + '" stroke-width="2" stroke-linejoin="round"/>' +
-      '<path d="M60 258 C54 236 64 222 92 214 L118 208 C112 226 112 244 118 258 Z" fill="' + c.second + '" opacity=".55"/>' +
-      '<path d="M326 140 C338 139 346 145 350 156 L356 258 L322 258 C326 220 328 180 326 140 Z" fill="' + c.second + '" opacity=".9"/>' +
-      '<path d="M122 244 C180 226 246 216 312 222" stroke="' + c.second + '" stroke-width="11" fill="none" stroke-linecap="round"/>' +
-      '<g stroke="' + (dark ? "#888" : "rgba(0,0,0,.35)") + '" stroke-width="3" stroke-linecap="round">' +
-      '<line x1="200" y1="176" x2="214" y2="190"/><line x1="212" y1="164" x2="226" y2="178"/><line x1="224" y1="152" x2="238" y2="166"/><line x1="236" y1="141" x2="250" y2="155"/></g>' +
-      '<path d="M50 254 H360 C366 254 368 262 366 270 C362 282 350 288 338 288 H72 C58 288 46 278 46 266 C46 258 48 254 50 254 Z" fill="' + sole + '" stroke="rgba(0,0,0,.14)" stroke-width="2"/>' +
-      '<text x="200" y="352" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-size="13" letter-spacing="3" fill="#b5b5b5">' + esc(p.brand.toUpperCase()) + "</text>" +
-      "</svg>"
-    );
-  }
-  // Ảnh thật (nếu có) đè lên hình minh hoạ; không có thì giữ hình minh hoạ
-  function media(p, eager) {
+  // Bộ ảnh của một mẫu: MÃ, MÃ-2 … MÃ-12. Có danh sách thì dùng ngay, không thì dò dần.
+  function loadShots(p, onShot) {
+    var known = shotsOf(p);
+    if (known) { known.forEach(onShot); return; }
+    if (MANIFEST) return; // có danh sách mà không có mẫu này: chưa có ảnh
     var base = imgBase(p);
-    var src = p.image || base + "." + IMG_EXT[0];
-    return '<div class="media">' + placeholder(p) +
-      '<img alt="' + esc(fullName(p)) + '" src="' + esc(src) + '" data-base="' + esc(base) + '" data-i="' + (p.image ? -1 : 0) + '"' +
-      (eager ? "" : ' loading="lazy"') + ' onload="this.classList.add(\'ok\')" onerror="__slifeImg(this)"></div>';
+    findImage(base, EXTS).then(function (first) {
+      if (!first) return;
+      onShot(first);
+      var n = 2;
+      (function next() {
+        if (n > MAX_SHOTS) return;
+        findImage(base + "-" + n++, EXTS).then(function (u) { if (u) { onShot(u); next(); } });
+      })();
+    });
+  }
+  // Ảnh thật nếu có; chưa có thì ô trung tính "Ảnh thật đang cập nhật" (không vẽ giày giả)
+  function media(p, o) {
+    o = o || {};
+    var shots = shotsOf(p), base = imgBase(p);
+    var probeImg = !shots && !MANIFEST; // có danh sách mà mẫu chưa có ảnh: chỉ hiện ô "Ảnh thật đang cập nhật"
+    return '<div class="media">' +
+      '<div class="media__ph" aria-hidden="true"><img src="images/brand/slife-mark-gradient.svg" alt="" width="60" height="61"><span>Ảnh thật đang cập nhật</span></div>' +
+      // Ảnh banner đầu trang (đã tải trước) hiện ngay, không mờ dần — ảnh hiện sớm hơn
+      (shots || probeImg ? '<img class="media__img' + (o.eager && shots ? " ok" : "") + '" alt="' + esc(fullName(p)) + '" src="' + esc(shots ? shots[0] : base + "." + EXTS[0]) + '" data-base="' + esc(base) + '" data-i="' + (shots ? -1 : 0) + '"' +
+      (o.eager ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async" onload="__slifeOk(this)" onerror="__slifeImg(this)">' : "") +
+      (o.alt && shots && shots[1] ? '<img class="media__alt" alt="" data-src="' + esc(shots[1]) + '" onload="this.classList.add(\'ok\')">' : "") +
+      "</div>";
   }
 
   /* ---------- Icons ---------- */
+  function svg(d, o) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + ((o && o.w) || 1.7) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + "</svg>"; }
   var I = {
-    bag: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M3 4h2l2.2 11h11.3L20.5 7H6.3"/><circle cx="9" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>',
-    search: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
-    menu: '<svg viewBox="0 0 28 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 5h22M3 12h22M3 19h22"/></svg>',
-    close: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
-    chev: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
-    down: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>',
-    up: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>',
-    left: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
-    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#fff"/></svg>',
-    phone: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8a15.1 15.1 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11.4 11.4 0 003.6.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1l-2.2 2.23z"/></svg>',
-    ms: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.4 2 2 6.1 2 11.7c0 2.9 1.2 5.5 3.2 7.2V22l3-1.6c1.2.3 2.5.5 3.8.5 5.6 0 10-4.1 10-9.7S17.6 2 12 2zm1 12.9l-2.6-2.7-4.9 2.7 5.4-5.7 2.6 2.7 4.8-2.7-5.3 5.7z"/></svg>',
-    fb: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5H16l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.5V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8v3h2.6V21z"/></svg>',
-    ig: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg>',
-    tt: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.3 2.3 1.7 3.8 4 4v3.1c-1.4.1-2.7-.3-4-1.1v6.1c0 4-3.5 6.3-6.9 5.4-4.3-1.2-5-6.9-1.3-9 1-.6 2.2-.8 3.4-.7v3.2c-.4-.1-.8-.1-1.2 0-1.5.3-2.3 1.9-1.6 3.2.9 1.6 3.6 1.4 3.9-.8V3z"/></svg>',
-    link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></svg>',
-    shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>',
-    box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M3 7l9-4 9 4v10l-9 4-9-4V7z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg>',
-    swap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg>',
-    truck: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 6h12v10H2zM14 10h4l4 4v2h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>',
-    gift: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M5 12v9h14v-9M12 8v13M12 8c-2-4-6-4-6-1.5S9 8 12 8zM12 8c2-4 6-4 6-1.5S15 8 12 8z"/></svg>',
+    bag: svg('<path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6a3 3 0 016 0v2"/>'),
+    bagPlus: svg('<path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6a3 3 0 016 0v2M12 11.5v5M9.5 14h5"/>'),
+    heart: svg('<path d="M12 20s-7.5-4.6-9.2-9.2C1.6 7.4 3.9 4 7.3 4c2 0 3.4 1.1 4.7 2.8C13.3 5.1 14.7 4 16.7 4c3.4 0 5.7 3.4 4.5 6.8C19.5 15.4 12 20 12 20z"/>'),
+    search: svg('<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>'),
+    menu: svg('<path d="M4 7h16M4 12h16M4 17h10"/>', { w: 1.9 }),
+    close: svg('<path d="M6 6l12 12M18 6L6 18"/>', { w: 1.9 }),
+    chev: svg('<path d="M9 6l6 6-6 6"/>', { w: 2 }),
+    down: svg('<path d="M6 9l6 6 6-6"/>', { w: 2 }),
+    left: svg('<path d="M15 6l-6 6 6 6"/>', { w: 2 }),
+    right: svg('<path d="M9 6l6 6-6 6"/>', { w: 2 }),
+    arrow: svg('<path d="M5 12h14M13 6l6 6-6 6"/>', { w: 1.9 }),
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#fff"/></svg>',
+    chat: svg('<path d="M20 12c0 4.4-3.6 8-8 8-1.4 0-2.7-.3-3.8-1L4 20l1-3.9C4.4 14.9 4 13.5 4 12c0-4.4 3.6-8 8-8s8 3.6 8 8z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/>', { w: 2 }),
+    phone: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11.4 11.4 0 003.6.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1l-2.2 2.23z"/></svg>',
+    ms: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.4 2 2 6.1 2 11.7c0 2.9 1.2 5.5 3.2 7.2V22l3-1.6c1.2.3 2.5.5 3.8.5 5.6 0 10-4.1 10-9.7S17.6 2 12 2zm1 12.9l-2.6-2.7-4.9 2.7 5.4-5.7 2.6 2.7 4.8-2.7-5.3 5.7z"/></svg>',
+    fb: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5H16l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.5V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8v3h2.6V21z"/></svg>',
+    fbc: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-1.56 19.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0012 2z"/></svg>',
+    ig: svg('<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/>', { w: 1.8 }),
+    tt: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.3 2.3 1.7 3.8 4 4v3.1c-1.4.1-2.7-.3-4-1.1v6.1c0 4-3.5 6.3-6.9 5.4-4.3-1.2-5-6.9-1.3-9 1-.6 2.2-.8 3.4-.7v3.2c-.4-.1-.8-.1-1.2 0-1.5.3-2.3 1.9-1.6 3.2.9 1.6 3.6 1.4 3.9-.8V3z"/></svg>',
+    link: svg('<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>', { w: 1.8 }),
+    share: svg('<circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/>'),
+    copy: svg('<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2"/>'),
+    zoom: svg('<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5M11 8v6M8 11h6"/>', { w: 1.9 }),
+    ruler: svg('<path d="M3 16.5L16.5 3 21 7.5 7.5 21z"/><path d="M7 12.5l1.5 1.5M9.5 10l2 2M12 7.5l1.5 1.5M14.5 5l2 2"/>'),
+    info: svg('<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>', { w: 1.9 }),
+    pause: svg('<path d="M9 6v12M15 6v12"/>', { w: 2.2 }),
+    play: svg('<path d="M8 5.5v13l10-6.5z" fill="currentColor"/>', { w: 1.5 }),
+    shield: svg('<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>'),
+    box: svg('<path d="M3 7l9-4 9 4v10l-9 4-9-4V7z"/><path d="M3 7l9 4 9-4M12 11v10"/>'),
+    swap: svg('<path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/>'),
+    truck: svg('<path d="M2 6h12v10H2zM14 10h4l4 4v2h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>'),
+    camera: svg('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),
   };
 
-  /* ---------- Giỏ hàng & sản phẩm đã xem ---------- */
+  /* ---------- Giỏ hàng, yêu thích, đã xem ---------- */
   var CART_KEY = "slife_cart_v1";
   var memCart = [];
   function getCart() {
     var c = storage(CART_KEY);
-    return (Array.isArray(c) ? c : memCart).filter(function (it) { return BY_ID[it.id]; });
+    return (Array.isArray(c) ? c : memCart).filter(function (it) { return BY_ID[it.id]; })
+      .map(function (it) { return { id: it.id, size: it.size, qty: Math.max(1, Math.min(MAX_QTY, +it.qty || 1)) }; });
   }
-  function setCart(list) { memCart = list; storage(CART_KEY, list); updateCartBadge(); }
-  function addToCart(id, size) {
+  function setCart(list) { memCart = list; storage(CART_KEY, list); updateBadges(); }
+  function addToCart(id, size, qty) {
     var list = getCart();
-    var exists = list.some(function (it) { return it.id === id && it.size === size; });
-    if (!exists) list.push({ id: id, size: size });
+    var it = list.filter(function (x) { return x.id === id && x.size === size; })[0];
+    if (it) it.qty = Math.min(MAX_QTY, it.qty + (qty || 1));
+    else list.push({ id: id, size: size, qty: qty || 1 });
     setCart(list);
-    return !exists;
+    var b = $all("[data-cart-count]");
+    b.forEach(function (el) { el.classList.remove("is-pop"); void el.offsetWidth; el.classList.add("is-pop"); });
   }
   function itemPrice(p, size) {
     var s = p.sizes.filter(function (x) { return x.s === size; })[0];
     return (s && s.p) || p.price;
   }
+  function cartCount(cart) { return cart.reduce(function (t, it) { return t + it.qty; }, 0); }
   function cartTotal(cart) {
-    return cart.reduce(function (t, it) { return t + (itemPrice(BY_ID[it.id], it.size) || 0); }, 0);
+    return cart.reduce(function (t, it) { return t + (itemPrice(BY_ID[it.id], it.size) || 0) * it.qty; }, 0);
   }
-  function updateCartBadge() {
-    var n = getCart().length;
+  var WISH_KEY = "slife_wish_v1";
+  function wishes() { return (storage(WISH_KEY) || []).filter(function (id) { return BY_ID[id]; }); }
+  function isWished(id) { return wishes().indexOf(id) >= 0; }
+  function toggleWish(id) {
+    var list = wishes(), i = list.indexOf(id), on = i < 0;
+    if (on) list.unshift(id); else list.splice(i, 1);
+    storage(WISH_KEY, list);
+    $all('[data-wish="' + id + '"]').forEach(function (b) { b.setAttribute("aria-pressed", on); });
+    updateBadges();
+    toast(on ? "Đã lưu vào Yêu thích" : "Đã bỏ khỏi Yêu thích");
+  }
+  function wishBtn(p) {
+    if (!WISH) return "";
+    var on = isWished(p.id);
+    return '<button type="button" class="wish" data-wish="' + esc(p.id) + '" aria-pressed="' + on + '" aria-label="Yêu thích ' + esc(p.name) + '">' + I.heart + "</button>";
+  }
+  function updateBadges() {
+    var n = cartCount(getCart()), w = wishes().length;
     $all("[data-cart-count]").forEach(function (el) { el.textContent = n; el.hidden = !n; });
+    $all("[data-wish-count]").forEach(function (el) { el.textContent = w; el.hidden = !w; });
   }
   var SEEN_KEY = "slife_seen_v1";
   function markSeen(id) {
@@ -277,7 +368,7 @@
   var toastTimer;
   function toast(msg) {
     var t = $(".toast");
-    if (!t) { t = document.createElement("div"); t.className = "toast"; t.setAttribute("role", "status"); document.body.appendChild(t); }
+    if (!t) { t = document.createElement("div"); t.className = "toast"; t.setAttribute("role", "status"); t.setAttribute("aria-live", "polite"); document.body.appendChild(t); }
     t.textContent = msg;
     t.classList.add("is-show");
     clearTimeout(toastTimer);
@@ -297,293 +388,836 @@
     try { document.execCommand("copy"); } catch (e) { /* bỏ qua */ }
     ta.remove();
   }
+  // Giữ phím Tab trong hộp thoại, trả lại vị trí cũ khi đóng
+  function trapFocus(box) {
+    function onKey(e) {
+      if (e.key !== "Tab") return;
+      var f = $all('a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])', box).filter(function (x) { return x.offsetParent !== null; });
+      if (!f.length) return;
+      if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+      else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+    }
+    box.addEventListener("keydown", onKey);
+    return function () { box.removeEventListener("keydown", onKey); };
+  }
   function modal(html, cls) {
+    var opener = document.activeElement;
     var wrap = document.createElement("div");
     wrap.className = "modal";
-    wrap.innerHTML = '<div class="modal__box ' + (cls || "") + '" role="dialog" aria-modal="true">' + html + "</div>";
-    function close() { wrap.remove(); document.removeEventListener("keydown", onKey); }
+    wrap.innerHTML = '<div class="modal__box ' + (cls || "") + '" role="dialog" aria-modal="true">' +
+      '<button type="button" class="icon-btn modal__x" data-close aria-label="Đóng">' + I.close + "</button>" + html + "</div>";
+    var box = wrap.firstChild, untrap = trapFocus(box);
+    var h = $("h3", box);
+    if (h) { h.id = "m-" + Date.now(); box.setAttribute("aria-labelledby", h.id); }
+    function close() {
+      wrap.remove(); untrap(); document.removeEventListener("keydown", onKey); document.body.style.overflow = "";
+      if (opener && opener.focus) opener.focus();
+    }
     function onKey(e) { if (e.key === "Escape") close(); }
     wrap.addEventListener("click", function (e) { if (e.target === wrap || e.target.closest("[data-close]")) close(); });
     document.addEventListener("keydown", onKey);
     document.body.appendChild(wrap);
+    document.body.style.overflow = "hidden";
+    var first = $("[data-autofocus]", box) || $(".modal__x", box);
+    if (first) first.focus();
     return { el: wrap, close: close };
   }
-  // Hộp thoại "Mua ngay": hiện tin nhắn, bấm nút thì sao chép và mở Zalo
-  function orderModal(build, askFoot) {
+  // Đo hành trình mua: mọi sự kiện đi qua một hàm. Chỉ gửi đi khi đã điền ga4Id trong data/shop.js.
+  window.slifeEvents = window.slifeEvents || [];
+  function track(name, data) {
+    var ev = Object.assign({ event: name, page: document.body.dataset.page, time: Date.now() }, data || {});
+    window.slifeEvents.push(ev);
+    if (typeof window.gtag === "function") window.gtag("event", name, data || {});
+  }
+  function loadAnalytics() {
+    if (!SHOP.ga4Id || !/^G-[A-Z0-9]+$/.test(SHOP.ga4Id)) return;
+    var s = document.createElement("script");
+    s.async = true; s.src = "https://www.googletagmanager.com/gtag/js?id=" + SHOP.ga4Id;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    window.gtag("js", new Date());
+    window.gtag("config", SHOP.ga4Id);
+  }
+  /* ---------- Facebook: kênh tư vấn và chốt đơn chính ----------
+     Bấm nút là mở Facebook của shop (SHOP.facebookChat) ở nơi khách đã đăng nhập Facebook:
+     - điện thoại: mở thẳng app Facebook (Android: intent tới app; iPhone: fb://), không mở được thì mở link như thường;
+     - đang ở trong app Facebook / Messenger: mở ngay tại đó;
+     - máy tính dùng Chrome: mở tab mới. Máy tính dùng trình duyệt khác (Edge, Cốc Cốc…): trang web không tự bật được
+       Chrome, nên hiện hộp chọn "Sao chép link để mở bằng Chrome" hoặc "Mở luôn bằng trình duyệt này".
+     Trên trang sản phẩm, thông tin mẫu (tên, mã, size, giá, link) được chép sẵn để khách dán vào tin nhắn. */
+  function fbLink(label, cls, extra) {
+    return '<a class="btn btn--fb ' + (cls || "") + '" href="' + esc(SHOP.facebookChat) + '" target="_blank" rel="noopener" data-fb' + (extra || "") + ">" + I.fbc + (label || "Nhắn Facebook cho shop") + "</a>";
+  }
+  var fbContext = null; // trang sản phẩm gán hàm soạn tin nhắn cho mẫu đang xem
+  var fbPending = "";   // tin nhắn vừa chép, để chép lại trong hộp chọn trình duyệt
+  function consultMsg(p, size) {
+    return "Chào shop, mình cần tư vấn đôi này:\n" + fullName(p) + "\n" +
+      "Mã: " + (p.code || p.name) + " / Size: " + (size || "…") + "\n" +
+      (p.inStock ? "Giá: " + money(size ? itemPrice(p, size) : p.minPrice) + "\n" : "") +
+      "Chân mình dài: … cm\n" +
+      "Link: " + shareUrl(p);
+  }
+  function device() {
+    var ua = navigator.userAgent, brands = (navigator.userAgentData && navigator.userAgentData.brands) || [];
+    var android = /Android/i.test(ua), ios = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+    return {
+      android: android, ios: ios, mobile: android || ios || /Mobi/i.test(ua),
+      fbApp: /FBAN|FBAV|FB_IAB|FBIOS|MessengerForiOS/i.test(ua),
+      chrome: brands.length ? brands.some(function (b) { return b.brand === "Google Chrome"; }) : /Chrome\/\d/.test(ua) && !/Edg\/|OPR\/|coc_coc|YaBrowser|Vivaldi/i.test(ua),
+      name: /Edg\//.test(ua) ? "Edge" : /coc_coc/i.test(ua) ? "Cốc Cốc" : /Firefox\//.test(ua) ? "Firefox" : /OPR\//.test(ua) ? "Opera" : /Safari\//.test(ua) && !/Chrome\//.test(ua) ? "Safari" : "trình duyệt này",
+    };
+  }
+  function openFacebook(e) {
+    var url = SHOP.facebookChat, d = device();
+    if (!url || d.fbApp) return; // trong app Facebook: link mở ngay trong app
+    if (d.mobile) {
+      if (SHOP.openFacebookApp === false) return;
+      var target = d.android
+        ? "intent://" + url.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.facebook.katana;S.browser_fallback_url=" + encodeURIComponent(url) + ";end"
+        : d.ios ? (SHOP.facebookId ? "fb://profile/" + SHOP.facebookId : "fb://facewebmodal/f?href=" + encodeURIComponent(url)) : null;
+      if (!target) return;
+      e.preventDefault();
+      location.href = target;
+      // Không mở được app (chưa cài, trình duyệt trong app khác chặn): mở link như thường
+      setTimeout(function () { if (!document.hidden) location.href = url; }, 1600);
+      return;
+    }
+    if (d.chrome || SHOP.desktopAskChrome === false || storage("slife_fb_here")) return;
+    e.preventDefault();
+    chooseBrowser(url, d.name);
+  }
+  function chooseBrowser(url, name) {
     var m = modal(
-      "<h3>Gửi đơn cho shop qua Zalo</h3>" +
-      (askFoot ? '<div class="field" style="margin-top:10px"><label for="m-foot">Chiều dài bàn chân (cm) — không bắt buộc</label><input id="m-foot" inputmode="decimal" placeholder="VD: 25"><span class="hint">Để shop kiểm tra lại size giúp cho chắc.</span></div>' : "") +
-      '<div class="order-msg" data-msg></div>' +
-      '<p class="muted" style="font-size:13px;margin:10px 0 0">Bấm nút bên dưới: tin nhắn được sao chép, bạn dán vào khung chat Zalo rồi gửi. Shop xác nhận còn size, báo tổng tiền và phí ship.</p>' +
-      '<div class="modal__actions"><button class="btn btn--ghost" data-close>Đóng</button>' +
-      '<a class="btn btn--zalo" href="' + SHOP.zalo + '" target="_blank" rel="noopener" data-go>Sao chép & mở Zalo</a></div>'
+      "<h3>Mở Facebook của shop</h3>" +
+      '<p class="muted" style="font-size:14.5px;margin:8px 0 0">Bạn đang xem web bằng <b>' + esc(name) + "</b>. Trang web không tự mở được Chrome. Nếu Facebook của bạn đăng nhập trên <b>Chrome</b>:</p>" +
+      '<ol class="steps-mini fb-steps"><li><button type="button" class="btn btn--fb btn--sm" data-fbc-link data-autofocus>' + I.fbc + "Sao chép link Facebook shop</button><br>rồi mở Chrome, dán vào thanh địa chỉ (Ctrl + V), Enter.</li>" +
+      (fbPending ? '<li>Ở trang Facebook của shop, bấm <b>Nhắn tin</b>. Quay lại đây bấm <button type="button" class="btn btn--ghost btn--sm" data-fbc-msg>Sao chép tin nhắn</button> rồi dán vào khung chat.</li>' : "") + "</ol>" +
+      '<div class="modal__actions"><a class="btn btn--ghost" href="' + esc(url) + '" target="_blank" rel="noopener" data-fbc-here>Mở luôn bằng ' + esc(name) + "</a></div>" +
+      '<label class="check" style="margin-top:10px"><input type="checkbox" data-fbc-remember> Lần sau mở luôn bằng ' + esc(name) + ", không hỏi lại</label>"
     );
-    var msgEl = $("[data-msg]", m.el), foot = $("#m-foot", m.el);
-    function refresh() { msgEl.textContent = build(foot ? foot.value.trim() : ""); }
-    if (foot) foot.addEventListener("input", refresh);
-    refresh();
-    $("[data-go]", m.el).addEventListener("click", function () {
-      copyText(msgEl.textContent);
-      toast("Đã sao chép tin nhắn — dán vào Zalo để gửi shop");
-      setTimeout(m.close, 400);
+    m.el.addEventListener("click", function (ev) {
+      if (ev.target.closest("[data-fbc-link]")) { copyText(url); toast("Đã chép link — mở Chrome, dán vào thanh địa chỉ"); track("copy_fb_link", {}); }
+      if (ev.target.closest("[data-fbc-msg]")) { copyText(fbPending); toast("Đã chép tin nhắn — dán vào khung chat Facebook"); }
+      if (ev.target.closest("[data-fbc-here]")) {
+        if ($("[data-fbc-remember]", m.el).checked) storage("slife_fb_here", 1);
+        if (fbPending) copyText(fbPending);
+        setTimeout(m.close, 0);
+      }
     });
   }
-  // Popup "Thêm vào giỏ hàng thành công"
-  function addedModal(p, size) {
-    var cart = getCart();
-    modal(
-      '<div class="added__head">' + I.check + "<b>Thêm vào giỏ hàng thành công</b>" +
-      '<button class="added__x" data-close aria-label="Đóng">' + I.close + "</button></div>" +
-      '<div class="added__item"><div class="added__img">' + media(p, true) + "</div>" +
-      "<div><div>" + esc(fullName(p)) + '</div><div class="muted">Size ' + esc(size) + " · " + money(itemPrice(p, size)) + "</div></div></div>" +
-      '<div class="added__sum"><a href="cart.html">Giỏ hàng hiện có</a><div><b>' + money(cartTotal(cart)) + '</b><br><span class="muted">(' + cart.length + ") sản phẩm</span></div></div>" +
-      '<div class="modal__actions"><a class="btn btn--ghost" href="dat-hang.html">Đặt hàng</a><a class="btn" href="cart.html">Xem giỏ hàng</a></div>',
-      "added"
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("[data-fb]");
+    if (!a) return;
+    if (a.hasAttribute("data-fb-copy") && fbContext) {
+      fbPending = fbContext(a.dataset.fbSize || null);
+      copyText(fbPending);
+      toast("Đã chép sẵn thông tin mẫu — dán vào tin nhắn cho shop");
+      track("copy_message", { source: "san_pham" });
+    }
+    track("open_facebook", { source: a.dataset.fbSource || document.body.dataset.page });
+    openFacebook(e);
+  });
+
+  // Chọn size nhanh từ thẻ sản phẩm
+  function quickAdd(p) {
+    var sel = p.sizes.length === 1 ? p.sizes[0].s : null;
+    var m = modal(
+      "<h3>Chọn size</h3>" +
+      '<div class="quick"><div class="quick__img">' + media(p) + "</div><div><b>" + esc(fullName(p)) + '</b><span data-q-price>' + money(p.minPrice) + "</span></div></div>" +
+      '<div class="pd__sizehead"><span>Size (EU): <b data-q-label>' + esc(sel || "chưa chọn") + '</b></span><a class="pd__guide" href="size-guide.html">Hướng dẫn chọn size</a></div>' +
+      '<div class="sizes" role="group" aria-label="Chọn size">' + p.sizes.map(function (s) {
+        return '<button type="button" data-qs="' + esc(s.s) + '"' + (s.s === sel ? ' class="is-active" aria-pressed="true"' : ' aria-pressed="false"') + ">" + esc(s.s) + "</button>";
+      }).join("") + "</div>" +
+      (fitNote(p) ? '<div class="fit" style="margin:14px 0 0">' + I.info + "<div><b>Lưu ý form:</b> " + esc(fitNote(p).advice) + "</div></div>" : "") +
+      '<div class="modal__actions"><a class="btn btn--ghost" href="' + productUrl(p) + '">Xem chi tiết</a><button class="btn btn--grad" data-q-add>' + I.bagPlus + "Thêm vào giỏ</button></div>"
     );
+    m.el.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-qs]");
+      if (b) {
+        sel = b.dataset.qs;
+        $all("[data-qs]", m.el).forEach(function (x) { x.classList.toggle("is-active", x === b); x.setAttribute("aria-pressed", x === b); });
+        $("[data-q-label]", m.el).textContent = sel;
+        $("[data-q-price]", m.el).textContent = money(itemPrice(p, sel));
+      }
+      if (e.target.closest("[data-q-add]")) {
+        if (!sel) { toast("Bạn chọn size trước nhé"); var g = $(".sizes", m.el); g.classList.remove("is-shake"); void g.offsetWidth; g.classList.add("is-shake"); return; }
+        addToCart(p.id, sel, 1);
+        m.close();
+        openMini(p.id + "|" + sel);
+      }
+    });
   }
 
+  function pill(kind, text, sm) { return '<span class="pill pill--' + kind + (sm ? " pill--sm" : "") + '">' + esc(text) + "</span>"; }
   function card(p) {
     var tags = [];
-    if (!p.inStock) tags.push('<span class="tag tag--muted">Hết hàng</span>');
-    else if (p.sizes.length === 1) tags.push('<span class="tag">Còn 1 size</span>');
-    if (p.sale) tags.push('<span class="tag tag--dark">Xả kho</span>');
-    if (p.gender === "nu") tags.push('<span class="tag tag--pink">Nữ</span>');
-    if (p.gender === "gs" || p.gender === "kid") tags.push('<span class="tag tag--pink">' + GENDER_LABEL[p.gender] + "</span>");
+    if (p.inStock && p.sizes.length === 1) tags.push(pill("info", "Còn 1 size", 1));
+    if (p.sale) tags.push(pill("out", "Xả kho", 1));
+    if (p.gender === "nu") tags.push(pill("g", "Code nữ", 1));
+    if (p.gender === "gs" || p.gender === "kid") tags.push(pill("g", GENDER_LABEL[p.gender], 1));
+    var url = productUrl(p);
     var sizes = p.sizes.map(function (s) { return s.s; });
     return (
-      '<a class="card' + (p.inStock ? "" : " is-out") + '" href="' + productUrl(p) + '">' +
-      '<div class="card__img">' + media(p) + '<div class="card__tags">' + tags.join("") + "</div></div>" +
-      '<div class="card__brand">' + esc(p.brand) + "</div>" +
-      '<div class="card__name">' + esc(fullName(p)) + "</div>" +
-      (p.inStock ? '<div class="card__sizes">Size: ' + esc(sizes.join(" · ")) + "</div>" : "") +
+      '<article class="card' + (p.inStock ? "" : " is-out") + '">' +
+      '<div class="card__img"><a class="card__imglink" href="' + url + '" tabindex="-1" aria-hidden="true">' + media(p, { alt: true }) + "</a>" +
+      '<div class="card__badges">' + tags.join("") + "</div>" + wishBtn(p) +
+      (p.inStock ? '<button type="button" class="card__quick" data-quick="' + esc(p.id) + '" aria-label="Thêm nhanh ' + esc(p.name) + ' vào giỏ">' + I.bagPlus + "<span>Thêm nhanh</span></button>" : "") +
+      "</div>" +
+      '<div class="card__body">' +
+      '<h3 class="card__name"><a href="' + url + '">' + esc(p.name) + "</a></h3>" +
+      (p.code ? '<div class="card__code">' + esc(p.code) + "</div>" : "") +
+      (p.inStock ? '<div class="card__sizes">Size ' + esc(sizes.join(" · ")) + "</div>" : "") +
       (p.inStock
-        ? '<div class="card__price">' + (p.minPrice < p.price ? "Từ " : "") + money(p.minPrice) + "</div>"
+        ? '<div class="card__price">' + (p.minPrice < p.price ? "<small>Từ</small>" : "") + money(p.minPrice) + "</div>"
         : '<div class="card__price is-out">Tạm hết size</div>') +
-      "</a>"
+      "</div></article>"
     );
-  }
-  function tile(href, p, label, sub, active) {
-    return '<a class="tile' + (active ? " is-active" : "") + '" href="' + href + '"><div class="tile__img">' + (p ? media(p) : "") + "</div>" +
-      '<div class="tile__label"><span>' + esc(label) + (sub ? "<small>" + esc(sub) + "</small>" : "") + "</span></div></a>";
   }
   function crumbs(list) {
     return '<nav class="breadcrumb" aria-label="Breadcrumb">' + list.map(function (c, i) {
-      return (i ? "<span>/</span>" : "") + (c[1] ? '<a href="' + c[1] + '">' + esc(c[0]) + "</a>" : esc(c[0]));
+      return (i ? '<span aria-hidden="true">/</span>' : "") + (c[1] ? '<a href="' + c[1] + '">' + esc(c[0]) + "</a>" : '<b style="font-weight:500">' + esc(c[0]) + "</b>");
     }).join("") + "</nav>";
   }
-  // Khối sản phẩm có tiêu đề; trên điện thoại vuốt ngang
-  function rail(title, list, moreHref, moreText) {
+  function railBody(list) {
+    return '<div class="rail-wrap"><button type="button" class="rail-nav rail-nav--prev" data-rail="-1" aria-label="Xem mẫu trước">' + I.left + "</button>" +
+      '<div class="rail" data-rail-track>' + list.map(card).join("") + "</div>" +
+      '<button type="button" class="rail-nav rail-nav--next" data-rail="1" aria-label="Xem thêm mẫu">' + I.right + "</button></div>";
+  }
+  // Khối sản phẩm có tiêu đề; vuốt ngang trên điện thoại, nút ‹ › trên máy tính
+  function rail(title, list, moreHref, moreText, sub) {
     if (!list.length) return "";
-    return '<section class="sec"><div class="sec__head"><h2 class="sec__title">' + esc(title) + "</h2>" +
-      (moreHref ? '<a class="sec__link" href="' + moreHref + '">' + esc(moreText || "Xem tất cả") + "</a>" : "") + "</div>" +
-      '<div class="rail">' + list.map(card).join("") + "</div></section>";
+    return '<section class="sec"><div class="sec__head"><h2 class="sec__title">' + esc(title) + "</h2>" + (sub ? '<p class="sec__sub">' + esc(sub) + "</p>" : "") + "</div>" +
+      railBody(list) +
+      (moreHref ? '<div class="sec__foot"><a class="sec__link" href="' + moreHref + '">' + esc(moreText || "Xem tất cả") + I.arrow + "</a></div>" : "") + "</section>";
+  }
+  function bindRails(root) {
+    $all("[data-rail-track]", root).forEach(function (track) {
+      if (track.dataset.bound) return;
+      track.dataset.bound = 1;
+      var wrap = track.parentNode, prev = $(".rail-nav--prev", wrap), next = $(".rail-nav--next", wrap);
+      function sync() {
+        prev.disabled = track.scrollLeft < 8;
+        next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
+      }
+      track.addEventListener("scroll", debounce(sync, 60), { passive: true });
+      wrap.addEventListener("click", function (e) {
+        var b = e.target.closest("[data-rail]");
+        if (b) track.scrollBy({ left: +b.dataset.rail * track.clientWidth * 0.9, behavior: REDUCED ? "auto" : "smooth" });
+      });
+      sync();
+    });
+  }
+
+  /* ---------- Giỏ trượt từ phải ---------- */
+  var layerOpener = null, layerUntrap = null;
+  function openLayer(el, open) {
+    if (!el) return;
+    el.classList.toggle("is-open", open);
+    el.setAttribute("aria-hidden", open ? "false" : "true");
+    document.body.style.overflow = open ? "hidden" : "";
+    if (open) {
+      layerOpener = document.activeElement;
+      layerUntrap = trapFocus(el);
+      var f = $("[data-autofocus]", el) || $(".drawer__head button", el) || $(".filters__head button", el);
+      if (f) setTimeout(function () { f.focus(); }, 60);
+    } else {
+      if (layerUntrap) layerUntrap();
+      if (layerOpener && layerOpener.focus && document.contains(layerOpener)) layerOpener.focus();
+    }
+  }
+  function openMini(newKey) {
+    var el = $("#mini");
+    if (!el) { location.href = "cart.html"; return; }
+    var cart = getCart();
+    $("[data-mini-body]", el).innerHTML =
+      (newKey ? '<div class="mini__ok" role="status">' + I.check + "Đã thêm vào giỏ hàng</div>" : "") +
+      (cart.length
+        ? '<div class="mini__list">' + cart.map(function (it) {
+          var p = BY_ID[it.id];
+          return '<div class="mini__item' + (newKey === it.id + "|" + it.size ? " mini__new" : "") + '"><a class="mini__img" href="' + productUrl(p) + '">' + media(p) + "</a>" +
+            '<div><a class="mini__name" href="' + productUrl(p) + '">' + esc(fullName(p)) + '</a><div class="mini__meta">Size ' + esc(it.size) + "</div></div>" +
+            '<div class="mini__price">' + money(itemPrice(p, it.size)) + "</div></div>";
+        }).join("") + "</div>" +
+          '<div class="mini__foot"><div class="mini__sum"><span>Tạm tính (' + cartCount(cart) + ' đôi)</span><b>' + money(cartTotal(cart)) + "</b></div>" +
+          '<p class="muted" style="font-size:13px;margin:0">Shop xác nhận size, phí ship và tiền cọc qua Facebook.</p>' +
+          '<div class="row2"><a class="btn btn--ghost" href="cart.html">Xem giỏ hàng</a><a class="btn btn--grad" href="dat-hang.html" data-autofocus>Gửi yêu cầu</a></div>' +
+          '<button type="button" class="link" data-mini-close style="justify-self:center">Tiếp tục mua sắm</button></div>'
+        : '<div class="mini__empty"><p>Giỏ hàng đang trống.</p><a class="btn btn--grad" href="shop.html">Xem hàng sẵn</a></div>');
+    openLayer(el, true);
   }
 
   /* ---------- Header / Menu / Footer ---------- */
+  function needsList() {
+    function count(f) { return IN_STOCK.filter(f).length; }
+    var tennis = count(function (p) { return p.line === "Giày tennis"; });
+    function price(a, b) { return count(function (p) { return p.minPrice >= a && (!b || p.minPrice <= b); }); }
+    return [
+      { tone: "cobalt", label: "Giày nam", sub: "Mẫu nam và unisex", href: "shop.html?gender=nam,unisex", n: count(function (p) { return p.gender === "nam" || p.gender === "unisex"; }) },
+      { tone: "berry", label: "Giày nữ", sub: "Mẫu code nữ", href: "shop.html?gender=nu", n: count(function (p) { return p.gender === "nu"; }) },
+      { tone: "red", label: "Giày tennis", sub: "Asics, Nike", href: lineUrl(null, "Giày tennis"), n: tennis },
+      { tone: "t-cobalt", label: "Dưới 2 triệu", sub: "Giá tốt để bắt đầu", href: "shop.html?max=1999", n: price(0, 1999) },
+      { tone: "t-red", label: "2 – 2,5 triệu", sub: "Tầm giá dễ mua", href: "shop.html?min=2000&max=2499", n: price(2000, 2499) },
+      { tone: "t-berry", label: "2,5 – 3 triệu", sub: "Tầm giá phổ biến", href: "shop.html?min=2500&max=2999", n: price(2500, 2999) },
+      { tone: "t-ink", label: "3 – 4 triệu", sub: "Dòng cao cấp hơn", href: "shop.html?min=3000&max=3999", n: price(3000, 3999) },
+      { tone: "ink", label: "Từ 4 triệu", sub: "Mẫu hiếm, bản đặc biệt", href: "shop.html?min=4000", n: price(4000, 0) },
+    ].filter(function (x) { return x.n > 0; });
+  }
   function renderChrome() {
     var brands = brandList();
     var q = params().get("q") || "";
+    var file = location.pathname.split("/").pop() || "index.html";
+    var needs = needsList();
     var headerEl = $("#site-header");
     if (headerEl) {
-      var navBrands = brands.slice(0, 6);
+      // Dòng chữ đầu trang: đứng yên (không chạy chữ). Máy tính hiện cả 3 câu, điện thoại hiện câu đầu.
+      var msgs = (SHOP.announcements && SHOP.announcements.length ? SHOP.announcements : [SHOP.announcement]).filter(Boolean);
+      function navLink(href, text) { return '<div class="nav__item"><a class="nav__link" href="' + href + '"' + (file === href ? ' aria-current="page"' : "") + ">" + text + "</a></div>"; }
       headerEl.outerHTML =
-        (SHOP.announcement ? '<div class="announce">' + esc(SHOP.announcement) + "</div>" : "") +
-        '<header class="hd"><div class="container">' +
-        '<div class="hd__row">' +
-        '<a class="hd__cart" href="cart.html" aria-label="Giỏ hàng">' + I.bag + '<span class="badge" data-cart-count hidden>0</span></a>' +
-        '<a class="logo" href="index.html" aria-label="' + esc(SHOP.name) + ' — Trang chủ"><b>S&amp;LIFE</b><small>Sneakers</small></a>' +
-        '<nav class="nav" aria-label="Thương hiệu"><a href="index.html">Trang chủ</a>' +
-        navBrands.map(function (b) {
-          var lines = lineList(b.name);
-          return '<div class="nav__item"><a href="' + brandUrl(b.name) + '">' + esc(b.name) + (lines.length > 1 ? I.down : "") + "</a>" +
-            (lines.length > 1 ? '<div class="nav__drop">' + lines.map(function (l) {
-              return '<a href="' + lineUrl(b.name, l.name) + '">' + esc(l.name) + "</a>";
-            }).join("") + '<a class="nav__all" href="' + brandUrl(b.name) + '">Tất cả ' + esc(b.name) + " →</a></div>" : "") +
+        '<a class="skip" href="#main">Bỏ qua, tới nội dung chính</a>' +
+        // Dòng chữ chạy liên tục trên nền màu chảy (chủ shop chọn); máy bật "giảm chuyển động" thì đứng yên
+        (msgs.length ? '<div class="announce" role="region" aria-label="Thông tin shop"><div class="announce__in">' +
+          '<div class="announce__track">' + [0, 1].map(function (k) {
+            return '<div class="announce__set"' + (k ? ' aria-hidden="true"' : "") + ">" + msgs.map(function (m) { return "<span>" + esc(m) + '</span><i aria-hidden="true">✦</i>'; }).join("") + "</div>";
+          }).join("") + "</div>" +
+          "</div></div>" : "") +
+        '<header class="hd"><div class="container hd__row">' +
+        '<button type="button" class="icon-btn hd__menu" data-menu-open aria-label="Mở menu" aria-controls="menu" aria-expanded="false">' + I.menu + "</button>" +
+        '<a class="logo" href="index.html" aria-label="' + esc(SHOP.name) + ' — Trang chủ"><span class="logo__img" role="img" aria-label="S&amp;LIFE Since 2021"></span></a>' +
+        '<form class="search" action="shop.html" role="search" data-search>' + '<svg class="search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>' +
+        '<input type="search" name="q" value="' + esc(q) + '" placeholder="Tìm tên, mã hoặc biệt danh, VD: 204L, AF1" aria-label="Tìm giày theo tên, mã hoặc biệt danh" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-pop">' +
+        '<button type="submit" class="search__go">Tìm</button><div class="search__pop" id="search-pop" role="listbox" aria-label="Gợi ý tìm kiếm" hidden></div></form>' +
+        '<nav class="nav" aria-label="Menu chính">' +
+        navLink("shop.html", "Hàng sẵn") +
+        '<div class="nav__item" data-mega-item><button type="button" class="nav__link" aria-expanded="false" aria-controls="mega-brands">Thương hiệu' + I.down + "</button>" +
+        '<div class="mega" id="mega-brands"><div class="container mega__in">' +
+        brands.map(function (b) {
+          var lines = lineList(b.name).filter(function (l) { return l.name !== OTHER_LINE; });
+          return '<div class="mega__col"><h4><a href="' + brandUrl(b.name) + '">' + esc(b.name) + "</a><small>" + b.count + " mẫu</small></h4>" +
+            (lines.length ? "<ul>" + lines.map(function (l) { return '<li><a href="' + lineUrl(b.name, l.name) + '">' + esc(l.name) + " <small>" + l.count + "</small></a></li>"; }).join("") + "</ul>" : "") +
             "</div>";
-        }).join("") +
-        '<a href="shop.html">Tất cả giày</a></nav>' +
-        '<div class="hd__right">' +
-        '<button class="icon-btn hd__searchbtn" data-search-toggle aria-label="Tìm kiếm">' + I.search + "</button>" +
-        '<a class="icon-btn hd__cart2" href="cart.html" aria-label="Giỏ hàng">' + I.bag + '<span class="badge" data-cart-count hidden>0</span></a>' +
-        '<button class="menu-btn" data-menu-open aria-label="Mở menu" aria-controls="menu">' + I.menu + "MENU</button></div>" +
-        "</div>" +
-        '<form class="hd__search" action="shop.html" role="search"><input type="search" name="q" value="' + esc(q) + '" placeholder="Tìm tên giày hoặc mã, VD: 204L, 1183C102" aria-label="Tìm kiếm sản phẩm"><button type="submit">TÌM KIẾM</button></form>' +
-        "</div></header>" +
+        }).join("") + "</div></div></div>" +
+        '<div class="nav__item" data-mega-item><button type="button" class="nav__link" aria-expanded="false" aria-controls="mega-needs">Theo nhu cầu' + I.down + "</button>" +
+        '<div class="mega" id="mega-needs"><div class="container mega__in mega__in--needs">' +
+        needs.map(function (x) { return '<a class="need" href="' + x.href + '"><b>' + esc(x.label) + "</b><span>" + esc(x.sub) + " · " + x.n + " mẫu</span></a>"; }).join("") +
+        "</div></div></div>" +
+        navLink("size-guide.html", "Chọn size") + navLink("lien-he.html", "Liên hệ") +
+        "</nav>" +
+        '<div class="hd__icons">' +
+        '<a class="icon-btn hd__fb" href="' + esc(SHOP.facebookChat) + '" target="_blank" rel="noopener" aria-label="Nhắn Facebook cho shop" data-fb>' + I.fbc + "</a>" +
+        (WISH ? '<a class="icon-btn" href="shop.html?wish=1" aria-label="Yêu thích">' + I.heart + '<span class="badge" data-wish-count hidden>0</span></a>' : "") +
+        '<a class="icon-btn" href="cart.html" aria-label="Giỏ hàng">' + I.bag + '<span class="badge" data-cart-count hidden>0</span></a>' +
+        "</div></div></header>" +
+        // Ngăn kéo menu điện thoại
         '<div class="drawer" id="menu" aria-hidden="true"><div class="drawer__backdrop" data-menu-close></div>' +
-        '<div class="drawer__panel" role="dialog" aria-label="Menu">' +
-        '<div class="drawer__head"><b>MENU</b><button class="menu-btn" data-menu-close aria-label="Đóng menu">' + I.close + "</button></div>" +
+        '<div class="drawer__panel" role="dialog" aria-modal="true" aria-label="Menu">' +
+        '<div class="drawer__head"><b>Menu</b><button type="button" class="icon-btn" data-menu-close aria-label="Đóng menu">' + I.close + "</button></div>" +
         '<div class="drawer__body">' +
         '<div class="drawer__title">Giày theo hãng</div>' +
-        '<div class="m-item"><div class="m-row"><a href="shop.html">Tất cả giày <small>' + IN_STOCK.length + "</small></a></div></div>" +
+        '<div class="m-item"><div class="m-row"><a href="shop.html">Tất cả hàng sẵn <small>' + IN_STOCK.length + " mẫu</small></a></div></div>" +
         brands.map(function (b) {
           var lines = lineList(b.name);
-          return '<div class="m-item"><div class="m-row"><a href="' + brandUrl(b.name) + '">Giày ' + esc(b.name) + " <small>" + b.count + "</small></a>" +
-            (lines.length > 1 ? '<button class="m-toggle" data-menu-sub aria-label="Xem các dòng ' + esc(b.name) + '">' + I.chev + "</button>" : "") +
+          return '<div class="m-item"><div class="m-row"><a href="' + brandUrl(b.name) + '">' + esc(b.name) + " <small>" + b.count + "</small></a>" +
+            (lines.length > 1 ? '<button type="button" class="m-toggle" data-menu-sub aria-expanded="false" aria-label="Các dòng ' + esc(b.name) + '">' + I.chev + "</button>" : "") +
             "</div>" +
             (lines.length > 1 ? '<div class="m-sub">' + lines.map(function (l) {
               return '<a href="' + lineUrl(b.name, l.name) + '">' + esc(l.name) + " <small>" + l.count + "</small></a>";
             }).join("") + "</div>" : "") +
             "</div>";
         }).join("") +
+        '<div class="drawer__title">Theo nhu cầu</div><div class="m-links">' +
+        needs.map(function (x) { return '<a href="' + x.href + '">' + esc(x.label) + "</a>"; }).join("") + "</div>" +
         '<div class="drawer__title">Hỗ trợ</div><div class="m-links">' +
-        '<a href="size-guide.html">Hướng dẫn chọn size</a><a href="policy.html">Đổi trả, ship &amp; thanh toán</a><a href="gioi-thieu.html">Giới thiệu</a><a href="lien-he.html">Liên hệ</a><a href="cart.html">Giỏ hàng</a></div>' +
-        '<div class="m-contact">Hotline / Zalo: <a href="tel:' + SHOP.phone + '"><b>' + SHOP.phoneDisplay + "</b></a> (" + esc(SHOP.openHours) + ")</div>" +
-        "</div></div></div>";
+        '<a href="size-guide.html">Hướng dẫn chọn size</a><a href="policy.html">Mua hàng, giao hàng &amp; đổi size</a><a href="gioi-thieu.html">Giới thiệu</a><a href="lien-he.html">Liên hệ</a><a href="cart.html">Giỏ hàng</a></div>' +
+        '<div class="m-contact"><p style="margin:0 0 10px">Tư vấn size và chốt đơn qua Facebook (' + esc(SHOP.openHours) + ").</p>" + fbLink("Nhắn Facebook cho shop", "btn--block") + "</div>" +
+        "</div></div></div>" +
+        // Giỏ trượt
+        '<div class="drawer drawer--right" id="mini" aria-hidden="true"><div class="drawer__backdrop" data-mini-close></div>' +
+        '<div class="drawer__panel" role="dialog" aria-modal="true" aria-label="Giỏ hàng">' +
+        '<div class="drawer__head"><b>Giỏ hàng</b><button type="button" class="icon-btn" data-mini-close aria-label="Đóng giỏ hàng">' + I.close + "</button></div>" +
+        '<div data-mini-body style="display:flex;flex-direction:column;flex:1;min-height:0"></div></div></div>';
     }
 
     var footerEl = $("#site-footer");
     if (footerEl) {
       var social = [
-        SHOP.facebook ? ["Facebook S&LIFE Sneakers", SHOP.facebook, I.fb] : null,
-        SHOP.facebookGarment ? ["Facebook S&LIFE Garment", SHOP.facebookGarment, I.fb] : null,
-        SHOP.facebookOwner ? ["Facebook Mr. Bảo", SHOP.facebookOwner, I.fb] : null,
-        ["Zalo", SHOP.zalo, "<b>Zalo</b>"],
-        ["Instagram S&LIFE Sneakers", SHOP.instagram, I.ig],
-        SHOP.instagramGarment ? ["Instagram S&LIFE Garment", SHOP.instagramGarment, I.ig] : null,
-        ["TikTok", SHOP.tiktok, I.tt],
+        [SHOP.facebookChat, I.fbc, "Facebook " + (SHOP.facebookChatName || "")],
+        SHOP.facebookOwner ? [SHOP.facebookOwner, I.fb, "Facebook " + (SHOP.facebookName || "chủ shop")] : null,
+        SHOP.instagram ? [SHOP.instagram, I.ig, "Instagram S&LIFE Sneaker"] : null,
+        SHOP.tiktok ? [SHOP.tiktok, I.tt, "TikTok S&LIFE"] : null,
       ].filter(Boolean);
       footerEl.outerHTML =
-        '<footer class="ft"><div class="container"><div class="ft__grid">' +
-        '<div><a class="logo" href="index.html"><b>S&amp;LIFE</b><small>Sneakers</small></a>' +
+        '<footer class="ft"><div class="container">' +
+        '<div class="ft__trust">' +
+        "<div>" + I.shield + '<p style="margin:0"><b>Chính hãng</b><span>Mã sản phẩm khớp tem hộp</span></p></div>' +
+        "<div>" + I.ruler + '<p style="margin:0"><b>Tư vấn size</b><span>Theo form từng dòng giày</span></p></div>' +
+        "<div>" + I.camera + '<p style="margin:0"><b>Ảnh thật</b><span>Shop gửi ảnh đôi giày trước khi giao</span></p></div>' +
+        "<div>" + I.swap + '<p style="margin:0"><b>Đổi size ' + SHOP.returnDays + " ngày</b><span>Còn nguyên hộp, tem</span></p></div></div>" +
+        '<div class="ft__grid">' +
+        '<div><a href="index.html" aria-label="' + esc(SHOP.name) + '"><img class="ft__logo" src="images/brand/slife-full-white.svg" alt="S&amp;LIFE Since 2021" width="96" height="143" loading="lazy"></a>' +
         '<ul class="ft__info">' +
+        "<li>" + esc(SHOP.name) + " — giày chính hãng, hàng sẵn. Bán online, giao toàn quốc.</li>" +
         (SHOP.legalName ? "<li>" + esc(SHOP.legalName) + "</li>" : "") +
         (SHOP.address ? "<li>Địa chỉ: " + esc(SHOP.address) + "</li>" : "") +
-        '<li>Hotline / Zalo: <a href="tel:' + SHOP.phone + '">' + SHOP.phoneDisplay + "</a> (" + esc(SHOP.openHours) + ")</li>" +
         (SHOP.email ? '<li>Email: <a href="mailto:' + esc(SHOP.email) + '">' + esc(SHOP.email) + "</a></li>" : "") +
         (SHOP.taxCode ? "<li>MST / GPKD: " + esc(SHOP.taxCode) + "</li>" : "") +
-        "</ul>" +
+        "<li>Tư vấn qua Facebook: " + esc(SHOP.openHours) + "</li></ul>" +
         '<div class="ft__social">' + social.map(function (s) {
-          return '<a href="' + esc(s[1]) + '" target="_blank" rel="noopener" aria-label="' + esc(s[0]) + '" title="' + esc(s[0]) + '">' + s[2] + "</a>";
+          return '<a href="' + esc(s[0]) + '" target="_blank" rel="noopener" aria-label="' + esc(s[2]) + '" title="' + esc(s[2]) + '">' + s[1] + "</a>";
         }).join("") + "</div></div>" +
         "<div><h4>Cửa hàng</h4><ul>" +
-        '<li><a href="index.html">Trang chủ</a></li>' +
+        '<li><a href="shop.html">Tất cả hàng sẵn</a></li>' +
         brands.slice(0, 7).map(function (b) { return '<li><a href="' + brandUrl(b.name) + '">Giày ' + esc(b.name) + "</a></li>"; }).join("") +
-        '<li><a href="lien-he.html">Liên hệ</a></li>' +
         "</ul></div>" +
-        '<div><h4>Chính sách</h4><ul><li><a href="gioi-thieu.html">Giới thiệu</a></li><li><a href="policy.html#dat-hang">Hướng dẫn đặt hàng</a></li><li><a href="size-guide.html">Hướng dẫn chọn size</a></li><li><a href="policy.html#doi-tra">Chính sách đổi trả</a></li><li><a href="policy.html#ship">Vận chuyển & thanh toán</a></li><li><a href="policy.html#khieu-nai">Giải quyết khiếu nại</a></li><li><a href="chinh-sach-bao-mat.html">Chính sách bảo mật</a></li></ul></div>' +
-        "<div><h4>Thanh toán</h4>" +
-        '<div class="ft__pay"><span>COD</span><span>Chuyển khoản</span><span>VietQR</span></div>' +
-        '<p class="ft__note">Được mở hộp kiểm tra trước khi trả tiền.</p>' +
+        '<div><h4>Hỗ trợ</h4><ul><li><a href="gioi-thieu.html">Giới thiệu</a></li><li><a href="policy.html#dat-hang">Cách mua hàng</a></li><li><a href="size-guide.html">Hướng dẫn chọn size</a></li><li><a href="policy.html#doi-tra">Đổi size, đổi trả</a></li><li><a href="policy.html#ship">Giao hàng, đặt cọc</a></li><li><a href="policy.html#khieu-nai">Giải quyết khiếu nại</a></li><li><a href="chinh-sach-bao-mat.html">Chính sách bảo mật</a></li><li><a href="lien-he.html">Liên hệ</a></li></ul></div>' +
+        "<div><h4>Mua hàng</h4>" +
+        '<ol class="ft__steps"><li>Chọn mẫu và size còn sẵn</li><li>Gửi yêu cầu cho shop qua Facebook</li><li>Shop xác nhận size, phí ship và tiền cọc</li></ol>' +
+        '<p class="ft__note">Website không thu tiền. Số tài khoản và mức cọc shop gửi riêng trong tin nhắn.</p>' +
+        fbLink("Nhắn Facebook", "btn--sm ft__fb") +
         (SHOP.bctUrl ? '<a class="ft__bct" href="' + esc(SHOP.bctUrl) + '" target="_blank" rel="noopener">✓ Đã thông báo Bộ Công Thương</a>' : "") +
         "</div></div>" +
-        '<div class="ft__bottom">© ' + new Date().getFullYear() + " " + esc(SHOP.name) + " · Giá và tồn kho có thể thay đổi trong ngày — nhắn shop xác nhận size trước khi chuyển khoản.</div>" +
-        "</div></footer>" +
-        '<div class="float-contact">' +
-        '<button class="fc-top" data-top aria-label="Lên đầu trang" hidden>' + I.up + "</button>" +
-        (SHOP.facebook ? '<a class="fc-ms" href="' + esc(SHOP.facebook) + '" target="_blank" rel="noopener" aria-label="Nhắn Facebook">' + I.ms + "</a>" : "") +
-        '<a class="fc-zalo" href="' + SHOP.zalo + '" target="_blank" rel="noopener" aria-label="Chat Zalo">Zalo</a>' +
-        '<a class="fc-phone" href="tel:' + SHOP.phone + '" aria-label="Gọi shop">' + I.phone + "</a></div>";
+        '<div class="ft__bottom"><span>© ' + new Date().getFullYear() + " " + esc(SHOP.name) + ' · Since 2021</span><button type="button" data-top>Lên đầu trang ↑</button></div>' +
+        "</div></footer>";
     }
 
+    var hd = $(".hd");
+    // Chiều cao header thật (để thanh lọc, cột ảnh dính đúng chỗ)
+    function syncHd() { if (hd) document.documentElement.style.setProperty("--hd-h", hd.offsetHeight + "px"); }
+    syncHd();
+    window.addEventListener("resize", debounce(syncHd, 100));
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncHd);
+    window.addEventListener("scroll", function () { if (hd) hd.classList.toggle("is-scrolled", window.scrollY > 4); }, { passive: true });
+
     var menu = $("#menu");
-    function toggleMenu(open) {
-      if (!menu) return;
-      menu.classList.toggle("is-open", open);
-      menu.setAttribute("aria-hidden", open ? "false" : "true");
-      document.body.style.overflow = open ? "hidden" : "";
-    }
+    function closeMegas(except) { $all("[data-mega-item].is-open").forEach(function (it) { if (it !== except) { it.classList.remove("is-open"); $(".nav__link", it).setAttribute("aria-expanded", "false"); } }); }
     document.addEventListener("click", function (e) {
-      if (e.target.closest("[data-menu-open]")) toggleMenu(true);
-      if (e.target.closest("[data-menu-close]")) toggleMenu(false);
-      var sub = e.target.closest("[data-menu-sub]");
-      if (sub) sub.closest(".m-item").classList.toggle("is-open");
-      if (e.target.closest("[data-search-toggle]")) {
-        var hd = $(".hd");
-        hd.classList.toggle("is-search");
-        if (hd.classList.contains("is-search")) $(".hd__search input").focus();
-      }
-      if (e.target.closest("[data-top]")) window.scrollTo({ top: 0, behavior: "smooth" });
+      var t = e.target;
+      if (t.closest("[data-menu-open]")) { openLayer(menu, true); $("[data-menu-open]").setAttribute("aria-expanded", "true"); }
+      if (t.closest("[data-menu-close]")) { openLayer(menu, false); $("[data-menu-open]").setAttribute("aria-expanded", "false"); }
+      if (t.closest("[data-mini-close]")) openLayer($("#mini"), false);
+      var sub = t.closest("[data-menu-sub]");
+      if (sub) { var it = sub.closest(".m-item"); it.classList.toggle("is-open"); sub.setAttribute("aria-expanded", it.classList.contains("is-open")); }
+      var megaBtn = t.closest("[data-mega-item] > .nav__link");
+      if (megaBtn) {
+        var item = megaBtn.parentNode, open = !item.classList.contains("is-open");
+        closeMegas(item);
+        item.classList.toggle("is-open", open);
+        megaBtn.setAttribute("aria-expanded", open);
+      } else if (!t.closest(".mega")) closeMegas();
+      if (t.closest("[data-top]")) window.scrollTo({ top: 0, behavior: REDUCED ? "auto" : "smooth" });
+      var w = t.closest("[data-wish]");
+      if (w) { e.preventDefault(); toggleWish(w.dataset.wish); }
+      var qa = t.closest("[data-quick]");
+      if (qa) { e.preventDefault(); quickAdd(BY_ID[qa.dataset.quick]); }
     });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape") toggleMenu(false); });
-    var topBtn = $("[data-top]");
-    if (topBtn) window.addEventListener("scroll", function () { topBtn.hidden = window.scrollY < 600; }, { passive: true });
-    updateCartBadge();
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      if (menu && menu.classList.contains("is-open")) { openLayer(menu, false); }
+      var mini = $("#mini");
+      if (mini && mini.classList.contains("is-open")) openLayer(mini, false);
+      closeMegas();
+    });
+    // Ảnh thứ hai khi rê chuột lên thẻ (chỉ tải khi cần)
+    document.addEventListener("mouseover", function (e) {
+      var c = e.target.closest && e.target.closest(".card");
+      if (!c) return;
+      var a = $(".media__alt[data-src]", c);
+      if (a) { a.src = a.dataset.src; a.removeAttribute("data-src"); }
+    });
+    $all("[data-search]").forEach(initSearch);
+    updateBadges();
+  }
+
+  /* ---------- Ô tìm kiếm: gợi ý tức thì ---------- */
+  function initSearch(form) {
+    var input = $("input", form), pop = $(".search__pop", form), active = -1, lastQ = null;
+    var popular = [];
+    brandList().forEach(function (b) {
+      lineList(b.name).forEach(function (l) { if (l.name !== OTHER_LINE && l.count >= 8) popular.push({ t: lineTitle(b.name, l.name), href: lineUrl(b.name, l.name), n: l.count }); });
+    });
+    popular.sort(function (a, b) { return b.n - a.n; });
+    function items() { return $all("[data-sug]", pop); }
+    function setActive(i) {
+      var list = items();
+      active = list.length ? (i + list.length) % list.length : -1;
+      list.forEach(function (x, j) { x.classList.toggle("is-active", j === active); x.setAttribute("aria-selected", j === active); });
+      if (active >= 0) { input.setAttribute("aria-activedescendant", list[active].id); list[active].scrollIntoView({ block: "nearest" }); }
+      else input.removeAttribute("aria-activedescendant");
+    }
+    function show(open) { pop.hidden = !open; input.setAttribute("aria-expanded", open); if (!open) active = -1; }
+    function render() {
+      var q = input.value.trim();
+      if (q === lastQ && !pop.hidden) return;
+      lastQ = q;
+      active = -1;
+      if (!q) {
+        pop.innerHTML = '<div class="sug-head">Dòng giày được tìm nhiều</div><div class="sug-chips">' +
+          popular.slice(0, 8).map(function (x, i) { return '<a href="' + x.href + '" id="sg-p' + i + '" role="option" data-sug>' + esc(x.t) + "</a>"; }).join("") + "</div>";
+        show(true);
+        return;
+      }
+      var res = searchProducts(q);
+      pop.innerHTML = res.length
+        ? res.slice(0, 6).map(function (p, i) {
+          return '<a class="sug" href="' + productUrl(p) + '" id="sg-' + i + '" role="option" data-sug><span class="sug__img">' + media(p) + "</span>" +
+            '<span><span class="sug__name">' + esc(p.name) + '</span><span class="sug__code">' + esc(p.code || p.brand) + (p.inStock ? "" : " · hết size") + "</span></span>" +
+            '<span class="sug__price">' + (p.inStock ? money(p.minPrice) : "") + "</span></a>";
+        }).join("") + '<a class="sug-all" href="shop.html?q=' + encodeURIComponent(q) + '" id="sg-all" role="option" data-sug>Xem tất cả ' + res.length + " kết quả" + I.arrow.replace("<svg", '<svg width="18" height="18"') + "</a>"
+        : '<div class="sug-empty">Chưa thấy mẫu “' + esc(q) + '”. Thử gõ mã in trên tem hộp, hoặc <a href="' + esc(SHOP.facebookChat) + '" target="_blank" rel="noopener" data-fb>nhắn Facebook</a> để shop tìm giúp.</div>';
+      show(true);
+    }
+    input.addEventListener("input", debounce(render, 90));
+    input.addEventListener("focus", render);
+    input.addEventListener("keydown", function (e) {
+      if (pop.hidden && e.key !== "Escape") return;
+      if (e.key === "ArrowDown") { e.preventDefault(); setActive(active + 1); }
+      if (e.key === "ArrowUp") { e.preventDefault(); setActive(active - 1); }
+      if (e.key === "Enter" && active >= 0) { e.preventDefault(); items()[active].click(); }
+      if (e.key === "Escape") { show(false); lastQ = null; }
+    });
+    document.addEventListener("click", function (e) { if (!form.contains(e.target)) { show(false); lastQ = null; } });
+    form.addEventListener("submit", function (e) {
+      var q = input.value.trim();
+      if (!q) { e.preventDefault(); input.focus(); return; }
+      track("search", { q: q });
+      // Gõ đúng mã sản phẩm: vào thẳng trang sản phẩm
+      var exact = BY_CODE[compact(q)];
+      if (exact) { e.preventDefault(); location.href = productUrl(exact); }
+    });
   }
 
   /* ---------- Trang chủ ---------- */
+  // Hero: tự chuyển mỗi 6 giây (slide mới mở vòng tròn từ hình của nó). Dừng khi rê chuột, chạm, dùng bàn phím trong banner,
+  // banner khuất màn hình, hoặc khách bấm nút tạm dừng. Máy bật "giảm chuyển động": không tự chuyển.
+  // Khách vẫn bấm chấm / mũi tên hoặc vuốt để chuyển; slide mới mở theo vòng tròn từ chỗ bấm.
+  var HERO_DELAY = 6000;
+  function hero(root, slides) {
+    var track = $("[data-hero-track]", root), dots = $("[data-hero-dots]", root), cur = 0;
+    var auto = !REDUCED, stopped = false, hold = {}, timer = 0, left = HERO_DELAY, t0 = 0;
+    function all() { return $all(".hero__slide", track); }
+    function paint() {
+      var list = all();
+      dots.innerHTML = list.length > 1 ? list.map(function (s, i) { return '<button type="button" data-dot="' + i + '" aria-label="Xem slide ' + (i + 1) + '"></button>'; }).join("") : "";
+      $all(".hero__nav", root).forEach(function (n) { n.hidden = list.length < 2; });
+      go(cur);
+    }
+    // Đồng hồ tự chuyển: nhớ thời gian còn lại khi tạm dừng để vạch chạy trên chấm và slide khớp nhau
+    function tick() {
+      clearTimeout(timer);
+      if (t0) { left = Math.max(0, left - (Date.now() - t0)); t0 = 0; }
+      var off = !auto || stopped || all().length < 2 || Object.keys(hold).some(function (k) { return hold[k]; });
+      root.classList.toggle("is-paused", off);
+      track.setAttribute("aria-live", auto && !stopped ? "off" : "polite");
+      if (off) return;
+      t0 = Date.now();
+      timer = setTimeout(function () { t0 = 0; go(cur + 1, autoAt()); }, left);
+    }
+    function setHold(k, v) { if (!!hold[k] !== v) { hold[k] = v; tick(); } }
+    // Tự chuyển: vòng tròn mở ra từ giữa hình của slide kế tiếp
+    function autoAt() {
+      var list = all(), s = list[(cur + 1) % list.length], a = s && $(".hero__art", s), r = root.getBoundingClientRect();
+      if (!a || !a.offsetHeight) return [r.width * 0.8, r.height * 0.45];
+      var b = a.getBoundingClientRect();
+      return [b.left - r.left + b.width / 2, b.top - r.top + b.height / 2];
+    }
+    // Chuyển slide: slide mới mở ra theo vòng tròn (slide cũ nằm dưới cho tới khi mở xong)
+    function go(i, at) {
+      var list = all();
+      if (!list.length) return;
+      var next = (i + list.length) % list.length, changed = next !== cur, prev = list[cur];
+      cur = next;
+      var slide = list[cur];
+      if (at) { slide.style.setProperty("--ox", at[0] + "px"); slide.style.setProperty("--oy", at[1] + "px"); }
+      list.forEach(function (s, j) {
+        s.classList.toggle("is-active", j === cur);
+        s.classList.toggle("is-prev", changed && s === prev);
+        s.setAttribute("aria-hidden", j !== cur); s.inert = j !== cur;
+      });
+      root.classList.toggle("is-light", slide.classList.contains("hero__slide--light"));
+      if (changed && !REDUCED) {
+        slide.classList.remove("is-reveal"); void slide.offsetWidth; slide.classList.add("is-reveal");
+        clearTimeout(go.t);
+        go.t = setTimeout(function () { $all(".is-prev", track).forEach(function (s) { s.classList.remove("is-prev"); }); }, 1000);
+      } else if (prev) prev.classList.remove("is-prev");
+      $all("[data-dot]", dots).forEach(function (d, j) { d.classList.toggle("is-active", j === cur); d.setAttribute("aria-current", j === cur); });
+      t0 = 0; left = HERO_DELAY; tick();
+    }
+    track.innerHTML = slides.join("");
+    if (auto) {
+      root.style.setProperty("--hero-delay", HERO_DELAY + "ms");
+      $(".hero__nav", root).insertAdjacentHTML("afterbegin", '<button type="button" class="hero__btn hero__play" data-hero-play aria-label="Tạm dừng banner tự chuyển">' +
+        svg('<path d="M9 6v12M15 6v12"/>', { w: 2.4 }).replace("<svg ", '<svg class="hero__ic-pause" ') + svg('<path d="M8 5.5v13l10-6.5z" fill="currentColor"/>', { w: 1.6 }).replace("<svg ", '<svg class="hero__ic-play" ') + "</button>");
+      root.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") setHold("hover", true); });
+      root.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") setHold("hover", false); });
+      root.addEventListener("focusin", function (e) { var kb = true; try { kb = e.target.matches(":focus-visible"); } catch (x) {} if (kb) setHold("focus", true); });
+      root.addEventListener("focusout", function (e) { if (!root.contains(e.relatedTarget)) setHold("focus", false); });
+      root.addEventListener("touchstart", function () { setHold("touch", true); }, { passive: true });
+      root.addEventListener("touchend", function () { setHold("touch", false); });
+      root.addEventListener("touchcancel", function () { setHold("touch", false); });
+      document.addEventListener("visibilitychange", function () { setHold("tab", document.hidden); });
+      if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { setHold("view", es[0].intersectionRatio < 0.35); }, { threshold: [0, 0.35] }).observe(root);
+    }
+    root.addEventListener("click", function (e) {
+      var d = e.target.closest("[data-dot]"), n = e.target.closest("[data-hero-go]"), pb = e.target.closest("[data-hero-play]");
+      var r = root.getBoundingClientRect(), at = [e.clientX - r.left, e.clientY - r.top];
+      if (pb) {
+        stopped = !stopped;
+        root.classList.toggle("is-stopped", stopped);
+        pb.setAttribute("aria-label", stopped ? "Cho banner tự chuyển tiếp" : "Tạm dừng banner tự chuyển");
+        tick();
+      }
+      if (d) go(+d.dataset.dot, at);
+      if (n) go(cur + (+n.dataset.heroGo), at);
+    });
+    var x0 = null, y0 = null;
+    track.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    track.addEventListener("touchend", function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+      var r = root.getBoundingClientRect();
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) go(cur + (dx < 0 ? 1 : -1), [e.changedTouches[0].clientX - r.left, e.changedTouches[0].clientY - r.top]);
+      x0 = null;
+    });
+    paint();
+    return { add: function (html) { track.insertAdjacentHTML("beforeend", html); paint(); } };
+  }
+
+  // Chữ lớn của một dòng: bỏ tên hãng lặp lại, VD "Jordan 1 Low" -> "1 Low", "Giày tennis" giữ nguyên
+  function lineWord(brand, line) { return line.replace(new RegExp("^" + brand + "\\s+", "i"), ""); }
+  // Mỗi hãng: dòng có tên riêng (không tính "Giày tennis", "các dòng khác") có nhiều mẫu sẵn nhất; xếp hãng nhiều mẫu trước
+  function topLines(brands) {
+    return brands.map(function (b) {
+      var l = lineList(b.name).filter(function (x) { return x.name !== OTHER_LINE && !/^Giày /.test(x.name); })
+        .sort(function (a, c) { return c.count - a.count; })[0];
+      if (!l) return null;
+      var list = IN_STOCK.filter(function (p) { return p.brand === b.name && p.line === l.name; });
+      return { brand: b.name, line: l.name, count: l.count, best: bestOf(list),
+        from: Math.min.apply(null, list.map(function (p) { return p.minPrice || 1e9; })) };
+    }).filter(Boolean).sort(function (a, c) { return c.count - a.count; });
+  }
+  // Mẫu cho chùm banner đầu: chủ shop tự chọn bằng SHOP.heroPicks (mã sản phẩm) trong data/shop.js;
+  // để trống thì giữa là mẫu có ảnh thật đẹp nhất, xung quanh là mẫu tiêu biểu của 4 hãng khác.
+  function heroPicks(photos, tops) {
+    var own = (SHOP.heroPicks || []).map(findProduct).filter(function (p) { return p && p.inStock; });
+    if (own.length) return own.slice(0, 5);
+    var center = photos[0] || (tops[0] && tops[0].best);
+    if (!center) return [];
+    return [center].concat(tops.filter(function (t) { return t.brand !== center.brand; }).slice(0, 4).map(function (t) { return t.best; }));
+  }
+  function heroCard(p, i) {
+    var body;
+    if (hasPhoto(p)) {
+      body = media(p, { eager: i === 0 }) + (i === 0 ? '<span class="hero__tag"><b>' + esc(p.name) + "</b><b>" + money(p.minPrice) + "</b></span>" : "");
+    } else {
+      // Mẫu chưa có ảnh: thẻ chữ, không giả ảnh
+      var word = p.line !== OTHER_LINE ? lineWord(p.brand, p.line) : p.name.replace(new RegExp("^" + p.brand + "\\s+", "i"), "");
+      body = '<span class="hero__type">' + brandLogo(p.brand, "hero__type-logo", "hero__type-word") +
+        '<b class="' + (word.length > 7 ? "is-long" : "") + '">' + esc(word) + "</b>" +
+        "<small>" + esc(p.name) + "</small><em>" + money(p.minPrice) + "</em></span>";
+    }
+    return '<a class="hero__card hero__card--' + i + (hasPhoto(p) ? "" : " hero__card--type") + '" href="' + productUrl(p) + '" aria-label="' + esc(fullName(p)) + '">' + body + "</a>";
+  }
+
+  // Trộn đều các hãng: lần lượt mỗi hãng một mẫu (hãng nhiều mẫu trước), trong hãng lấy mẫu nhiều size nhất,
+  // mỗi lượt khác dòng giày — không ưu tiên mẫu đã có ảnh (chủ shop sẽ bổ sung ảnh sau)
+  function mixBrands(brands, n) {
+    var queues = brands.slice().sort(function (a, b) { return b.count - a.count; }).map(function (b) {
+      var list = IN_STOCK.filter(function (p) { return p.brand === b.name; })
+        .sort(function (x, y) { return (y.sizes.length - x.sizes.length) || (x.order - y.order); });
+      var seen = {}, first = [], rest = []; // mẫu đầu tiên của mỗi dòng trước, để không lặp một dòng
+      list.forEach(function (p) { (seen[p.line] ? rest : first).push(p); seen[p.line] = 1; });
+      return first.concat(rest);
+    });
+    var out = [];
+    for (var r = 0; out.length < n && queues.some(function (q) { return q[r]; }); r++)
+      queues.forEach(function (q) { if (q[r] && out.length < n) out.push(q[r]); });
+    return out;
+  }
+
   function initHome() {
     var brands = brandList();
-    $all("[data-stat-products]").forEach(function (el) { el.textContent = IN_STOCK.length; });
+    var photos = IN_STOCK.filter(hasPhoto).sort(rank);
 
-    var pics = $("[data-banner-pics]");
-    if (pics) {
-      pics.innerHTML = ["New Balance", "Onitsuka Tiger", "Jordan", "Adidas"].map(function (b) {
-        var p = bestOf(IN_STOCK.filter(function (x) { return x.brand === b; }));
-        return p ? '<a href="' + brandUrl(b) + '">' + media(p, true) + "<span>" + esc(b) + "</span></a>" : "";
-      }).join("");
-    }
-    // Banner ảnh do shop tải lên (images/banners/banner-1.jpg …): có thì thay banner chữ bằng slider ảnh
-    var slider = $("[data-slider]");
-    if (slider) {
-      findSeries("images/banners/banner-", 1, 6).then(function (urls) {
-        if (!urls.length) return;
-        var track = $("[data-slides]", slider), dots = $("[data-dots]", slider), cur = 0, timer;
-        track.innerHTML = urls.map(function (u, i) { return '<a class="slide" href="shop.html"><img src="' + esc(u) + '" alt="Banner ' + (i + 1) + '"' + (i ? ' loading="lazy"' : "") + "></a>"; }).join("");
-        dots.innerHTML = urls.length > 1 ? urls.map(function (u, i) { return '<button data-dot="' + i + '" aria-label="Banner ' + (i + 1) + '"></button>'; }).join("") : "";
-        function go(i) {
-          cur = (i + urls.length) % urls.length;
-          track.style.transform = "translateX(" + (-100 * cur) + "%)";
-          $all("[data-dot]", dots).forEach(function (d, j) { d.classList.toggle("is-active", j === cur); });
-          clearTimeout(timer);
-          if (urls.length > 1) timer = setTimeout(function () { go(cur + 1); }, 5000);
-        }
-        slider.hidden = false;
-        $("[data-text-banner]").hidden = true;
-        $all("[data-slide-nav]", slider).forEach(function (b) { b.hidden = urls.length < 2; });
-        slider.addEventListener("click", function (e) {
-          var d = e.target.closest("[data-dot]"), n = e.target.closest("[data-slide-nav]");
-          if (d) go(+d.dataset.dot);
-          if (n) go(cur + (+n.dataset.slideNav));
+    // Hero: 5 slide — chùm mẫu nổi bật nhiều hãng · tường logo các hãng · top dòng giày · dòng có nhiều ảnh thật · hỏi size
+    var heroEl = $("[data-hero]");
+    if (heroEl) {
+      var tops = topLines(brands);
+      var slides = [
+        '<div class="hero__slide hero__slide--grad"><div class="container hero__in"><div>' +
+        '<div class="hero__kicker"><img src="images/brand/slife-mark-white.svg" alt="" width="22" height="22">S&amp;LIFE Sneaker · Since 2021</div>' +
+        '<h2 class="hero__title"><span>Only</span><span>Authentic</span></h2>' +
+        '<p class="hero__lead">Giày chính hãng, có sẵn size. Mỗi đôi có mã sản phẩm khớp tem hộp — tra trên trang chủ của hãng ra đúng mẫu, đúng màu.</p>' +
+        '<div class="hero__cta"><a class="btn btn--light btn--run" href="shop.html"><span>Xem ' + IN_STOCK.length + ' mẫu có sẵn</span></a><a class="btn btn--line-light" href="size-guide.html">Hướng dẫn chọn size</a></div></div>' +
+        // Chùm mẫu nổi bật của nhiều hãng: mẫu có ảnh thật hiện ảnh, mẫu chưa có ảnh hiện thẻ chữ (logo hãng, tên dòng, giá) — không vẽ giày giả
+        '<div class="hero__art"><div class="hero__fan">' + heroPicks(photos, tops).map(heroCard).join("") + "</div></div></div></div>",
+
+        // Tường logo: mỗi hãng một ô màu, ô lớn cho hãng nhiều mẫu nhất
+        '<div class="hero__slide hero__slide--bento hero__slide--light"><div class="container hero__in"><div>' +
+        '<div class="hero__kicker">Chính hãng · ' + brands.length + ' thương hiệu</div>' +
+        '<h2 class="hero__title"><span>Chọn hãng</span><span>bạn thích</span></h2>' +
+        '<p class="hero__lead">' + IN_STOCK.length + " đôi sẵn size từ " + esc(brands.slice().sort(function (a, b) { return b.count - a.count; }).slice(0, 4).map(function (b) { return b.name; }).join(", ")) + "… Bấm logo để xem đúng hãng.</p>" +
+        '<div class="hero__cta"><a class="btn btn--grad" href="shop.html">Xem tất cả hàng sẵn</a></div></div>' +
+        '<div class="hero__art"><div class="bento">' + brands.slice().sort(function (a, b) { return b.count - a.count; }).map(function (b, i) {
+          return '<a class="bento__tile bento__tile--' + i + '" href="' + brandUrl(b.name) + '" aria-label="' + esc(b.name) + ", " + b.count + ' mẫu">' + brandLogo(b.name, "bento__logo", "bento__word") +
+            "<small>" + (i ? "" : '<span class="bento__name">' + esc(b.name) + " · </span>") + b.count + " mẫu</small></a>";
+        }).join("") + "</div></div></div></div>",
+      ];
+      // Bảng xếp hạng: 5 dòng có nhiều mẫu sẵn nhất, mỗi hãng một dòng (đếm từ bảng hàng, không bịa "bán chạy")
+      if (tops.length >= 3) {
+        slides.push(
+          '<div class="hero__slide hero__slide--index"><div class="container hero__in"><div>' +
+          '<div class="hero__kicker">Xếp theo số mẫu đang sẵn size</div>' +
+          '<h2 class="hero__title"><span>Top ' + Math.min(5, tops.length) + "</span><span>dòng giày</span></h2>" +
+          '<p class="hero__lead">Mỗi hãng một dòng có nhiều mẫu nhất tại shop lúc này. Bấm để xem đủ màu, đủ size.</p>' +
+          '<div class="hero__cta"><a class="btn btn--light" href="shop.html">Xem hàng sẵn</a></div></div>' +
+          '<div class="hero__art"><ol class="lineup">' + tops.slice(0, 5).map(function (t, i) {
+            return '<li><a href="' + lineUrl(t.brand, t.line) + '"><span class="lineup__n">0' + (i + 1) + "</span>" + brandLogo(t.brand, "lineup__logo", "lineup__word") +
+              '<span class="lineup__name"><b>' + esc(lineWord(t.brand, t.line)) + "</b><small>" + t.count + " mẫu · từ " + money(t.from) + "</small></span>" + I.arrow + "</a></li>";
+          }).join("") + "</ol></div></div></div>"
+        );
+      }
+      // Dòng giày có nhiều ảnh thật nhất
+      var byLine = {};
+      photos.forEach(function (p) { var k = p.brand + "|" + p.line; if (p.line !== OTHER_LINE) (byLine[k] = byLine[k] || []).push(p); });
+      var topLine = Object.keys(byLine).sort(function (a, b) { return byLine[b].length - byLine[a].length; })[0];
+      if (topLine && byLine[topLine].length >= 3) {
+        var tb = topLine.split("|")[0], tl = topLine.split("|")[1];
+        var inLine = IN_STOCK.filter(function (p) { return p.brand === tb && p.line === tl; });
+        var sz = {};
+        inLine.forEach(function (p) { p.sizes.forEach(function (s) { sz[s.s] = 1; }); });
+        var szs = Object.keys(sz).sort(function (a, b) { return sizeNum(a) - sizeNum(b); });
+        slides.push(
+          '<div class="hero__slide hero__slide--ink"><div class="container hero__in"><div>' +
+          '<div class="hero__kicker">Dòng giày có ảnh chụp thật</div>' +
+          '<h2 class="hero__title"><span>' + esc(tb) + "</span><span>" + esc(tl) + "</span></h2>" +
+          '<p class="hero__lead">' + inLine.length + " mẫu " + esc(lineTitle(tb, tl)) + " đang có sẵn tại shop" + (szs.length > 1 ? ", size từ " + esc(szs[0]) + " đến " + esc(szs[szs.length - 1]) : "") + ". Ảnh chụp thật từng đôi.</p>" +
+          '<div class="hero__cta"><a class="btn btn--light" href="' + lineUrl(tb, tl) + '">Xem dòng ' + esc(tl) + '</a><a class="btn btn--line-light" href="' + brandUrl(tb) + '">Tất cả ' + esc(tb) + "</a></div></div>" +
+          '<div class="hero__art"><div class="hero__stack">' + byLine[topLine].slice(0, 3).map(function (p) { return '<a href="' + productUrl(p) + '" aria-label="' + esc(p.name) + '">' + media(p) + "</a>"; }).join("") + "</div></div>" +
+          "</div></div>"
+        );
+      }
+      slides.push(
+        '<div class="hero__slide hero__slide--ink hero__slide--ask"><div class="container hero__in"><div>' +
+        '<div class="hero__kicker">Tư vấn trước khi chốt</div>' +
+        '<h2 class="hero__title"><span>Hỏi size</span><span>trước khi mua</span></h2>' +
+        '<p class="hero__lead">Nhắn Facebook số cm chân và đôi bạn đang đi vừa nhất — shop tư vấn theo form từng dòng, gửi ảnh chụp thật trước khi giao.</p>' +
+        '<div class="hero__cta">' + fbLink("Nhắn Facebook cho shop", "btn--light") + '<a class="btn btn--line-light" href="policy.html#dat-hang">Cách mua hàng</a></div></div>' +
+        '<div class="hero__art"><img class="hero__mark" src="images/brand/slife-full-white.svg" alt="S&amp;LIFE Since 2021" width="340" height="507"></div>' +
+        "</div></div>"
+      );
+      var h = hero(heroEl, slides);
+      // Banner ảnh shop tự tải lên: images/banners/banner-1.jpg … thêm vào cuối hero
+      (SITE_IMAGES ? Promise.resolve(listedImages("banners", /^banner-\d+\.(jpe?g|png|webp)$/i).slice(0, 6)) : findSeries("images/banners/banner-", 1, 6, ["jpg", "webp"])).then(function (urls) {
+        urls.forEach(function (u, i) {
+          h.add('<div class="hero__slide hero__slide--img"><img src="' + esc(u) + '" alt="Banner S&amp;LIFE ' + (i + 1) + '" loading="lazy"><div class="container hero__in"><div><div class="hero__cta"><a class="btn btn--light" href="shop.html">Xem hàng sẵn</a></div></div></div></div>');
         });
-        var x0 = null;
-        track.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
-        track.addEventListener("touchend", function (e) {
-          if (x0 === null) return;
-          var dx = e.changedTouches[0].clientX - x0;
-          if (Math.abs(dx) > 40) go(cur + (dx < 0 ? 1 : -1));
-          x0 = null;
-        });
-        go(0);
       });
     }
 
-    var brandEl = $("[data-brand-tiles]");
-    if (brandEl) {
-      brandEl.innerHTML = brands.map(function (b) {
-        return tile(brandUrl(b.name), bestOf(IN_STOCK.filter(function (x) { return x.brand === b.name; })), "Giày " + b.name, b.count + " mẫu");
-      }).join("");
+    // Dải logo các hãng chạy liên tục dưới banner (rê chuột / dùng bàn phím thì dừng). Mỗi nửa dải lặp đủ dài để nối liền.
+    var runEl = $("[data-logo-run]");
+    if (runEl && brands.length) {
+      var runItem = function (b, hide) {
+        return '<a class="logo-run__item" href="' + brandUrl(b.name) + '"' + (hide ? ' tabindex="-1" aria-hidden="true"' : ' aria-label="' + esc(b.name) + ", " + b.count + ' mẫu"') + ">" +
+          brandLogo(b.name, "logo-run__logo", "logo-run__word") + "</a>";
+      };
+      var reps = Math.max(1, Math.ceil(16 / brands.length)), half = [];
+      for (var k = 0; k < reps; k++) brands.forEach(function (b) { half.push([b, k > 0]); });
+      runEl.innerHTML = '<div class="logo-run__track">' + [0, 1].map(function (copy) {
+        return '<div class="logo-run__set"' + (copy ? ' aria-hidden="true"' : "") + ">" + half.map(function (x) { return runItem(x[0], copy || x[1]); }).join("") + "</div>";
+      }).join("") + "</div>";
     }
 
-    // Dòng giày nổi bật (như hàng "Mexico 66 SD / Mexico 66 / …" của N&N)
-    var linesEl = $("[data-featured-lines]");
+    // Hàng sẵn, mua ngay — ngay sau hero
+    var picks = $("[data-picks]");
+    if (picks) {
+      picks.innerHTML = rail("Hàng sẵn, mua ngay", mixBrands(brands, 12), "shop.html", "Xem tất cả " + IN_STOCK.length + " mẫu có sẵn", "Còn size tại shop · mẫu tiêu biểu của từng hãng");
+    }
+
+    var perksEl = $("[data-perks]");
+    if (perksEl) {
+      perksEl.innerHTML = [
+        [I.shield, "Chính hãng", "Mã sản phẩm khớp tem hộp, tra được trên trang chủ hãng"],
+        [I.ruler, "Tư vấn size", "Theo form từng dòng, trước khi chốt đơn"],
+        [I.camera, "Ảnh thật", "Shop gửi ảnh chụp đôi giày trước khi giao"],
+        [I.swap, "Đổi size " + SHOP.returnDays + " ngày", "Còn nguyên hộp, tem, chưa đi ngoài trời"],
+      ].map(function (x) { return '<div class="perk"><span class="perk__ic">' + x[0] + "</span><b>" + x[1] + "</b><span>" + x[2] + "</span></div>"; }).join("");
+    }
+
+    var brandEl = $("[data-brands]");
+    if (brandEl) {
+      brandEl.innerHTML = brands.map(function (b) {
+        return '<a class="brand-tile" href="' + brandUrl(b.name) + '">' + brandLogo(b.name, "brand-tile__logo", "brand-tile__word") +
+          '<span class="brand-tile__meta"><b>' + esc(b.name) + "</b><small>" + b.count + " mẫu có sẵn</small></span></a>";
+      }).join("") +
+        '<a class="brand-tile brand-tile--all" href="shop.html"><span class="brand-tile__word" aria-hidden="true">' + IN_STOCK.length + '</span><span class="brand-tile__meta"><b>Tất cả hàng sẵn</b><small>Mọi hãng</small></span></a>';
+    }
+    var needsEl = $("[data-needs]");
+    if (needsEl) needsEl.innerHTML = needsList().map(function (x) { return '<a class="need need--' + x.tone + '" href="' + x.href + '"><b>' + esc(x.label) + "</b><span>" + esc(x.sub) + " · " + x.n + " mẫu</span></a>"; }).join("");
+
+    // Dòng giày nổi bật: ô lớn
+    var linesEl = $("[data-lines]");
     if (linesEl) {
       var all = [];
       brands.forEach(function (b) {
-        lineList(b.name).forEach(function (l) { if (l.name !== OTHER_LINE && l.count >= 3) all.push({ brand: b.name, line: l.name, count: l.count }); });
+        lineList(b.name).forEach(function (l) {
+          if (l.name === OTHER_LINE || l.count < 3) return;
+          var list = IN_STOCK.filter(function (y) { return y.brand === b.name && y.line === l.name; });
+          all.push({ brand: b.name, line: l.name, count: l.count, list: list, photos: list.filter(hasPhoto).length });
+        });
       });
-      all.sort(function (a, b) { return b.count - a.count; });
-      linesEl.innerHTML = all.slice(0, 12).map(function (x) {
-        var p = bestOf(IN_STOCK.filter(function (y) { return y.brand === x.brand && y.line === x.line; }));
-        return '<a class="line-card" href="' + lineUrl(x.brand, x.line) + '"><div class="line-card__img">' + media(p) +
-          '<span class="line-card__over">' + esc(lineTitle(x.brand, x.line)) + "</span></div>" +
-          "<b>" + esc(lineTitle(x.brand, x.line)) + '</b><span class="muted">' + x.count + " sản phẩm</span></a>";
+      all.sort(function (a, b) { return (b.photos > 0) - (a.photos > 0) || b.count - a.count; });
+      linesEl.innerHTML = all.slice(0, 5).map(function (x) {
+        var p = bestOf(x.list), title = lineTitle(x.brand, x.line);
+        // Chữ lớn trong ô: bỏ tên hãng lặp lại, VD "Jordan 1 Low" -> "1 Low"
+        var word = x.line.replace(/^Giày /, "").replace(new RegExp("^" + x.brand + "\\s+", "i"), "");
+        if (hasPhoto(p)) {
+          return '<a class="line-card" href="' + lineUrl(x.brand, x.line) + '">' + media(p) +
+            '<span class="line-card__txt"><b>' + esc(title) + "</b><small>" + x.count + " mẫu</small></span></a>";
+        }
+        // Chưa có ảnh thật: chỉ ghi tên dòng một lần (tên hãng nhỏ phía trên), không lặp nhãn ở đáy
+        return '<a class="line-card line-card--text" href="' + lineUrl(x.brand, x.line) + '" aria-label="' + esc(title) + ", " + x.count + ' mẫu">' +
+          '<span class="line-card__plain"><small>' + esc(x.brand) + '</small><b class="' + (word.length > 9 ? "is-long" : word.length > 5 ? "is-mid" : "") + '">' + esc(word) + "</b><em>" + x.count + " mẫu</em></span></a>";
       }).join("");
     }
 
-    // Mỗi hãng một khối sản phẩm
-    var secEl = $("[data-brand-sections]");
-    if (secEl) {
-      secEl.innerHTML = brands.filter(function (b) { return b.count >= 4; }).map(function (b) {
-        var list = IN_STOCK.filter(function (p) { return p.brand === b.name; })
-          .sort(function (a, c) { return c.sizes.length - a.sizes.length; }).slice(0, 10);
-        return rail(b.name, list, brandUrl(b.name), "Xem tất cả");
-      }).join("");
+    // Khối tư vấn size: trả lời nỗi lo lớn nhất của khách (size, form)
+    var consult = $("[data-consult]");
+    if (consult) {
+      consult.innerHTML = '<div class="consult__text"><h2>Chưa chắc size?</h2>' +
+        "<p>Mỗi dòng giày có form khác nhau: Mexico 66 hẹp và ngắn, Samba thân hẹp, 204L thoải mái. Trên từng mẫu đã có lưu ý form và bảng size; cần chắc hơn, nhắn shop.</p>" +
+        '<ol class="consult__steps"><li><b>Đo chân</b>Đứng trên tờ A4, đo từ gót tới ngón dài nhất (cm).</li><li><b>Nhắn shop</b>Gửi số cm và tên đôi bạn đang đi vừa nhất.</li><li><b>Chốt size</b>Shop tư vấn size theo form của mẫu bạn chọn.</li></ol>' +
+        '<div class="consult__cta">' + fbLink("Hỏi size qua Facebook", "btn--grad") + '<a class="btn btn--ghost" href="size-guide.html">Hướng dẫn chọn size</a></div></div>' +
+        '<div class="consult__notes"><h3>Lưu ý form thường gặp</h3><ul>' +
+        FIT_NOTES.slice(0, 6).map(function (f) { return "<li><b>" + esc(f.line) + "</b><span>" + esc(f.advice) + "</span></li>"; }).join("") + "</ul></div>";
     }
 
-    // Khoảnh khắc cùng khách hàng: images/khach-hang/1.jpg, 2.jpg…
+    // Theo thương hiệu: tab chọn hãng + băng sản phẩm
+    var byBrand = $("[data-by-brand]");
+    if (byBrand) {
+      var tabBrands = brands.filter(function (b) { return b.count >= 4; });
+      var tabs = $(".tabs-row", byBrand), body = $("[data-by-brand-body]", byBrand);
+      tabs.innerHTML = tabBrands.map(function (b, i) {
+        return '<button type="button" class="chip' + (i ? "" : " is-active") + '" role="tab" aria-selected="' + !i + '" data-tab-brand="' + esc(b.name) + '">' + esc(b.name) + " <small>" + b.count + "</small></button>";
+      }).join("");
+      function showBrand(name) {
+        var list = IN_STOCK.filter(function (p) { return p.brand === name; }).sort(rank).slice(0, 12);
+        body.innerHTML = railBody(list) + '<div class="sec__foot"><a class="sec__link" href="' + brandUrl(name) + '">Xem tất cả giày ' + esc(name) + I.arrow + "</a></div>";
+        bindRails(body);
+      }
+      tabs.addEventListener("click", function (e) {
+        var b = e.target.closest("[data-tab-brand]");
+        if (!b) return;
+        $all("[data-tab-brand]", tabs).forEach(function (x) { x.classList.toggle("is-active", x === b); x.setAttribute("aria-selected", x === b); });
+        showBrand(b.dataset.tabBrand);
+      });
+      if (tabBrands.length) showBrand(tabBrands[0].name);
+    }
+
+    // Ảnh khách thật: images/khach-hang/1.jpg, 2.jpg…
     var moments = $("[data-moments]");
     if (moments) {
-      findSeries("images/khach-hang/", 1, 24).then(function (urls) {
+      (SITE_IMAGES ? Promise.resolve(listedImages("khach-hang", /^\d+\.(jpe?g|png|webp)$/i).slice(0, 24)) : findSeries("images/khach-hang/", 1, 24, ["jpg", "webp"])).then(function (urls) {
         if (!urls.length) return;
         moments.hidden = false;
         $(".moments", moments).innerHTML = urls.map(function (u) {
@@ -591,37 +1225,71 @@
         }).join("");
       });
     }
+
+    var faq = $("[data-faq]");
+    if (faq) faq.innerHTML = (SHOP.faq || []).map(function (x) {
+      return "<details><summary>" + esc(x[0]) + '<i aria-hidden="true"></i></summary><div class="faq__a">' + esc(x[1]) + "</div></details>";
+    }).join("");
+
+    var follow = $("[data-follow]");
+    if (follow) {
+      var links = [
+        [SHOP.facebookChat, I.fbc, "Facebook", "Tư vấn và chốt đơn"],
+        SHOP.facebookOwner && SHOP.facebookOwner !== SHOP.facebookChat ? [SHOP.facebookOwner, I.fb, "Facebook", SHOP.facebookName || "Chủ shop"] : null,
+        SHOP.instagram ? [SHOP.instagram, I.ig, "Instagram", handle(SHOP.instagram)] : null,
+        SHOP.tiktok ? [SHOP.tiktok, I.tt, "TikTok", handle(SHOP.tiktok)] : null,
+      ].filter(Boolean);
+      follow.innerHTML = '<div class="container follow__in"><div><h2>Theo dõi S&amp;LIFE</h2>' +
+        "<p>Hàng mới về, ảnh thật từng đôi và mẹo chọn size — shop đăng trên các kênh dưới đây.</p></div>" +
+        '<div class="follow__links">' + links.map(function (l) {
+          return '<a href="' + esc(l[0]) + '" target="_blank" rel="noopener"' + (l[0] === SHOP.facebookChat ? " data-fb" : "") + ">" + l[1] + "<span><b>" + l[2] + "</b><small>" + esc(l[3]) + "</small></span></a>";
+        }).join("") + "</div></div>";
+    }
+    bindRails(document);
   }
 
-  /* ---------- Trang danh mục: tất cả / hãng / dòng / tìm kiếm ---------- */
+  /* ---------- Trang danh mục: tất cả / hãng / dòng / tìm kiếm / yêu thích ---------- */
   function initShop() {
     var p = params();
     var brands = brandList();
     var brand = fromSlug(brands, p.get("brand") || "");
     brand = brand ? brand.name : null;
     var lines = brand ? lineList(brand) : [];
-    var line = brand ? fromSlug(lines, p.get("line") || "") : null;
-    line = line ? line.name : null;
+    var line = null;
+    if (p.get("line")) {
+      if (brand) { line = fromSlug(lines, p.get("line")); line = line ? line.name : null; }
+      else {
+        // Dòng chung nhiều hãng, VD giày tennis
+        var ln = PRODUCTS.filter(function (x) { return slug(x.line) === p.get("line"); })[0];
+        line = ln ? ln.line : null;
+      }
+    }
+    var wishMode = WISH && p.get("wish") === "1";
 
     var state = {
       q: p.get("q") || "",
+      brands: (p.get("brands") || "").split(",").filter(Boolean),
       sizes: (p.get("size") || "").split(",").filter(Boolean),
       colors: (p.get("color") || "").split(",").filter(Boolean),
       genders: (p.get("gender") || "").split(",").filter(Boolean),
-      price: p.get("price") || "",
+      min: +p.get("min") || 0,
+      max: +p.get("max") || 0,
       sort: p.get("sort") || "default",
-      showOut: p.get("all") === "1",
+      lines: (p.get("lines") || "").split(",").filter(Boolean),
+      showOut: false, // website chỉ hiện hàng sẵn
       page: Math.max(1, +p.get("page") || 1),
     };
 
-    // Tiêu đề, breadcrumb
-    var title = line ? lineTitle(brand, line) : brand ? "Giày " + brand : state.q ? "Tìm kiếm: " + state.q : "Giày chính hãng";
-    $("[data-title]").textContent = title;
+    var title = wishMode ? "Yêu thích" : line ? lineTitle(brand, line) : brand ? "Giày " + brand : state.q ? "Kết quả cho “" + state.q + "”" : "Giày chính hãng";
+    var titleEl = $("[data-title]");
+    titleEl.innerHTML = brand && !line ? 'Giày <span class="grad-text">' + esc(brand) + "</span>" : esc(title);
+    if (brand && !line) titleEl.insertAdjacentHTML("beforebegin", brandLogo(brand, "coll__brandlogo").replace(/role="img" aria-label="[^"]*"/, 'aria-hidden="true"'));
     document.title = title + " — " + SHOP.name;
-    var trail = [["Trang chủ", "index.html"], ["Danh mục", brand || state.q ? "shop.html" : ""]];
+    var trail = [["Trang chủ", "index.html"], ["Hàng sẵn", brand || line || state.q || wishMode ? "shop.html" : ""]];
     if (brand) trail.push(["Giày " + brand, line ? brandUrl(brand) : ""]);
     if (line) trail.push([line, ""]);
     if (state.q && !brand) trail.push(["Tìm kiếm", ""]);
+    if (wishMode) trail.push(["Yêu thích", ""]);
     $("[data-crumbs]").innerHTML = crumbs(trail);
 
     // Banner hãng / dòng nếu shop có tải ảnh: images/banners/<hãng>.jpg hoặc <hãng>-<dòng>.jpg
@@ -630,7 +1298,8 @@
       var tries = line ? ["images/banners/" + slug(brand) + "-" + slug(line), "images/banners/" + slug(brand)] : ["images/banners/" + slug(brand)];
       (function next(i) {
         if (i >= tries.length) return;
-        findImage(tries[i]).then(function (u) {
+        var name = tries[i].replace("images/banners/", "");
+        (SITE_IMAGES ? Promise.resolve(listedImages("banners", new RegExp("^" + name + "\\.(jpe?g|png|webp)$", "i"))[0] || null) : findImage(tries[i], ["jpg", "webp"])).then(function (u) {
           if (!u) return next(i + 1);
           bannerEl.innerHTML = '<img src="' + esc(u) + '" alt="' + esc(title) + '">';
           bannerEl.hidden = false;
@@ -638,94 +1307,140 @@
       })(0);
     }
 
-    // Ô hãng (trang tất cả) hoặc ô dòng giày (trang hãng)
+    // Hàng chip điều hướng: các hãng (trang tất cả) hoặc các dòng (trang hãng)
     var tilesEl = $("[data-tiles]");
-    if (!brand && !state.q) {
-      tilesEl.innerHTML = brands.map(function (b) {
-        return tile(brandUrl(b.name), bestOf(IN_STOCK.filter(function (x) { return x.brand === b.name; })), "Giày " + b.name, b.count + " mẫu");
-      }).join("");
-    } else if (brand && !line && lines.length > 1) {
-      tilesEl.innerHTML = lines.map(function (l) {
-        return tile(lineUrl(brand, l.name), bestOf(IN_STOCK.filter(function (x) { return x.brand === brand && x.line === l.name; })), l.name, l.count + " mẫu");
-      }).join("");
+    if (brand && lines.length > 1) {
+      tilesEl.innerHTML = '<a class="chip' + (line ? "" : " is-active") + '" href="' + brandUrl(brand) + '">Tất cả <small>' + IN_STOCK.filter(function (x) { return x.brand === brand; }).length + "</small></a>" +
+        lines.map(function (l) { return '<a class="chip' + (l.name === line ? " is-active" : "") + '" href="' + lineUrl(brand, l.name) + '">' + esc(l.name) + " <small>" + l.count + "</small></a>"; }).join("");
+    } else if (!brand && !line && !wishMode) {
+      tilesEl.innerHTML = '<a class="chip is-active" href="shop.html">Tất cả <small>' + IN_STOCK.length + "</small></a>" +
+        brands.map(function (b) { return '<a class="chip" href="' + brandUrl(b.name) + '">' + esc(b.name) + " <small>" + b.count + "</small></a>"; }).join("");
     } else {
       tilesEl.hidden = true;
     }
 
-    // Bộ lọc: cột trái trên máy tính, ngăn kéo trên điện thoại
-    var pool = PRODUCTS.filter(function (x) { return (!brand || x.brand === brand) && (!line || x.line === line); });
-    var sizeSet = {}, colorCount = {};
+    // Tập sản phẩm của trang
+    var wishIds = wishes();
+    var pool = IN_STOCK.filter(function (x) {
+      if (wishMode) return wishIds.indexOf(x.id) >= 0;
+      return (!brand || x.brand === brand) && (!line || x.line === line);
+    });
+    var sizeSet = {}, colorCount = {}, brandCount = {}, prices = [];
     pool.forEach(function (x) {
       x.sizes.forEach(function (s) { sizeSet[s.s] = 1; });
-      if (x.inStock) x.colors.forEach(function (c) { colorCount[c] = (colorCount[c] || 0) + 1; });
+      if (x.inStock) {
+        x.colors.forEach(function (c) { colorCount[c] = (colorCount[c] || 0) + 1; });
+        brandCount[x.brand] = (brandCount[x.brand] || 0) + 1;
+        if (x.minPrice) prices.push(x.minPrice);
+      }
     });
+    var pMin = prices.length ? Math.floor(Math.min.apply(null, prices) / 100) * 100 : 0;
+    var pMax = prices.length ? Math.ceil(Math.max.apply(null, prices) / 100) * 100 : 0;
     var sizeKeys = Object.keys(sizeSet).sort(function (a, b) { return sizeNum(a) - sizeNum(b); });
     var fEl = $("[data-filters]");
+    function section(titleText, html, open) {
+      return '<details class="filter"' + (open ? " open" : "") + "><summary>" + titleText + I.down + '</summary><div class="filter__body">' + html + "</div></details>";
+    }
+    var brandKeys = Object.keys(brandCount).sort(function (a, b) { return BRAND_ORDER.indexOf(a) - BRAND_ORDER.indexOf(b); });
     $(".filters__body", fEl).innerHTML =
-      '<div class="filter"><h3>Size (EU)</h3><div class="size-grid">' +
-      sizeKeys.map(function (s) { return '<button type="button" class="size-btn" data-size="' + esc(s) + '">' + esc(s) + "</button>"; }).join("") +
-      '</div><p class="muted" style="font-size:12.5px;margin:8px 0 0">40Y: size 40 bản GS.</p></div>' +
-      '<div class="filter"><h3>Màu sắc</h3><div class="colors">' +
-      COLOR_FILTERS.filter(function (c) { return colorCount[c.id]; }).map(function (c) {
-        return '<label class="color"><input type="checkbox" name="color" value="' + c.id + '"><i style="background:' + c.hex + '"></i>' + c.label + " <small>" + colorCount[c.id] + "</small></label>";
-      }).join("") + "</div></div>" +
-      '<div class="filter"><h3>Khoảng giá</h3>' +
-      [{ id: "", label: "Tất cả" }].concat(PRICE_RANGES).map(function (r) {
-        return '<label class="check"><input type="radio" name="price" value="' + r.id + '"> ' + r.label + "</label>";
-      }).join("") + "</div>" +
-      '<div class="filter"><h3>Dành cho</h3>' +
-      ["nam", "nu", "gs", "kid"].map(function (g) { return '<label class="check"><input type="checkbox" name="gender" value="' + g + '"> Code ' + GENDER_LABEL[g] + "</label>"; }).join("") +
-      '<p class="muted" style="font-size:12.5px;margin:6px 0 0">Mẫu không ghi code là unisex / size nam.</p></div>' +
-      '<div class="filter"><label class="check"><input type="checkbox" name="showOut"> Hiện cả mẫu đã hết size</label></div>';
+      (!brand && brandKeys.length > 1 ? section("Thương hiệu", brandKeys.map(function (b) {
+        return '<label class="check"><input type="checkbox" name="brand" value="' + esc(b) + '"> ' + esc(b) + " <small>" + brandCount[b] + "</small></label>";
+      }).join(""), true) : "") +
+      '<div data-lines-filter></div>' +
+      (sizeKeys.length ? section("Size (EU)", '<div class="size-grid">' +
+        sizeKeys.map(function (s) { return '<button type="button" class="size-btn" data-size="' + esc(s) + '" aria-pressed="false">' + esc(s) + "</button>"; }).join("") +
+        '</div><p class="filter__note">40Y: size 40 bản GS. Chọn nhiều size được.</p>', true) : "") +
+      (pMax > pMin ? section("Khoảng giá", '<div class="range" data-range><div class="range__track"></div><div class="range__fill" data-range-fill></div>' +
+        '<input type="range" min="' + pMin + '" max="' + pMax + '" step="100" data-range-min aria-label="Giá thấp nhất">' +
+        '<input type="range" min="' + pMin + '" max="' + pMax + '" step="100" data-range-max aria-label="Giá cao nhất"></div>' +
+        '<div class="price-inputs"><label><input type="number" inputmode="numeric" step="100" min="0" data-price-min aria-label="Giá từ (nghìn đồng)"><span>k</span></label><span class="muted">–</span>' +
+        '<label><input type="number" inputmode="numeric" step="100" min="0" data-price-max aria-label="Giá đến (nghìn đồng)"><span>k</span></label></div>' +
+        '<div class="price-quick">' + PRICE_QUICK.map(function (r, i) { return '<button type="button" data-price-quick="' + i + '">' + r.label + "</button>"; }).join("") + "</div>", true) : "") +
+      section("Dành cho", ["nam", "nu", "gs", "kid"].map(function (g) { return '<label class="check"><input type="checkbox" name="gender" value="' + g + '"> Code ' + GENDER_LABEL[g] + "</label>"; }).join("") +
+        '<p class="filter__note">Mẫu không ghi code là unisex / size nam.</p>', false);
 
+    // Lọc theo dòng giày: trong trang hãng, hoặc khi đã chọn 1–3 hãng
+    var linesBox = $("[data-lines-filter]", fEl), linesKey = null;
+    function lineOptions() {
+      var bs = brand ? [brand] : state.brands.length && state.brands.length <= 3 ? state.brands : [];
+      if (line) return [];
+      var out = [];
+      bs.forEach(function (b) {
+        var ls = lineList(b);
+        if (ls.length > 1) ls.forEach(function (l) { out.push({ key: b + "|" + l.name, label: (bs.length > 1 ? b + " · " : "") + l.name, n: l.count }); });
+      });
+      return out;
+    }
+    function renderLines() {
+      var opts = lineOptions(), key = opts.map(function (o) { return o.key; }).join(",");
+      // Bỏ các dòng không còn thuộc hãng đang chọn
+      state.lines = state.lines.filter(function (k) { return key.split(",").indexOf(k) >= 0; });
+      if (key === linesKey) return;
+      linesKey = key;
+      linesBox.innerHTML = opts.length ? section("Dòng giày", opts.map(function (o) {
+        return '<label class="check"><input type="checkbox" name="line" value="' + esc(o.key) + '"' + (state.lines.indexOf(o.key) >= 0 ? " checked" : "") + "> " + esc(o.label) + " <small>" + o.n + "</small></label>";
+      }).join(""), true) : "";
+    }
+
+    var rMin = $("[data-range-min]", fEl), rMax = $("[data-range-max]", fEl), iMin = $("[data-price-min]", fEl), iMax = $("[data-price-max]", fEl), fill = $("[data-range-fill]", fEl);
+    function syncRange() {
+      if (!rMin) return;
+      var lo = state.min || pMin, hi = state.max || pMax;
+      rMin.value = lo; rMax.value = hi; iMin.value = lo; iMax.value = hi;
+      var span = pMax - pMin || 1;
+      fill.style.left = ((lo - pMin) / span * 100) + "%";
+      fill.style.right = ((pMax - hi) / span * 100) + "%";
+    }
     function syncInputs() {
+      $all('input[name="brand"]', fEl).forEach(function (i) { i.checked = state.brands.indexOf(i.value) >= 0; });
       $all('input[name="gender"]', fEl).forEach(function (i) { i.checked = state.genders.indexOf(i.value) >= 0; });
-      $all('input[name="color"]', fEl).forEach(function (i) { i.checked = state.colors.indexOf(i.value) >= 0; });
-      $all('input[name="price"]', fEl).forEach(function (i) { i.checked = i.value === state.price; });
-      $all("[data-size]", fEl).forEach(function (b) { b.classList.toggle("is-active", state.sizes.indexOf(b.dataset.size) >= 0); });
-      $('input[name="showOut"]', fEl).checked = state.showOut;
+      $all('input[name="line"]', fEl).forEach(function (i) { i.checked = state.lines.indexOf(i.value) >= 0; });
+      $all("[data-size]", fEl).forEach(function (b) { var on = state.sizes.indexOf(b.dataset.size) >= 0; b.classList.toggle("is-active", on); b.setAttribute("aria-pressed", on); });
+      syncRange();
     }
     function writeUrl() {
       var u = new URLSearchParams();
+      if (wishMode) u.set("wish", "1");
       if (brand) u.set("brand", slug(brand));
       if (line) u.set("line", slug(line));
       if (state.q) u.set("q", state.q);
+      if (state.brands.length) u.set("brands", state.brands.join(","));
       if (state.sizes.length) u.set("size", state.sizes.join(","));
-      if (state.colors.length) u.set("color", state.colors.join(","));
+      if (state.lines.length) u.set("lines", state.lines.join(","));
       if (state.genders.length) u.set("gender", state.genders.join(","));
-      if (state.price) u.set("price", state.price);
+      if (state.min) u.set("min", state.min);
+      if (state.max) u.set("max", state.max);
       if (state.sort !== "default") u.set("sort", state.sort);
-      if (state.showOut) u.set("all", "1");
       if (state.page > 1) u.set("page", state.page);
       history.replaceState(null, "", "shop.html" + (u.toString() ? "?" + u : ""));
     }
     function filtered() {
-      var words = norm(state.q).split(/\s+/).filter(Boolean);
-      var range = PRICE_RANGES.filter(function (r) { return r.id === state.price; })[0];
+      var m = matcher(state.q);
       var list = pool.filter(function (x) {
         if (!state.showOut && !x.inStock) return false;
+        if (state.brands.length && state.brands.indexOf(x.brand) < 0) return false;
         if (state.genders.length && state.genders.indexOf(x.gender) < 0) return false;
-        if (state.colors.length && !x.colors.some(function (c) { return state.colors.indexOf(c) >= 0; })) return false;
+        if (state.lines.length && state.lines.indexOf(x.brand + "|" + x.line) < 0) return false;
         if (state.sizes.length && !x.sizes.some(function (s) { return state.sizes.indexOf(s.s) >= 0; })) return false;
-        if (range && !(x.minPrice >= range.min && x.minPrice <= range.max)) return false;
-        for (var i = 0; i < words.length; i++) if (x.search.indexOf(words[i]) < 0) return false;
-        return true;
+        if (state.min && !(x.minPrice >= state.min)) return false;
+        if (state.max && !(x.minPrice <= state.max)) return false;
+        return m(x);
       });
       var cmp = {
         "name-asc": function (a, b) { return a.name.localeCompare(b.name); },
-        "name-desc": function (a, b) { return b.name.localeCompare(a.name); },
         "price-asc": function (a, b) { return (a.minPrice || 1e9) - (b.minPrice || 1e9); },
         "price-desc": function (a, b) { return (b.minPrice || 0) - (a.minPrice || 0); },
         "sizes": function (a, b) { return b.sizes.length - a.sizes.length; },
       }[state.sort];
       return list.sort(function (a, b) {
         if (a.inStock !== b.inStock) return a.inStock ? -1 : 1;
-        return cmp ? cmp(a, b) : a.order - b.order;
+        return cmp ? cmp(a, b) : rank(a, b);
       });
     }
 
     var gridEl = $("[data-grid]"), pagerEl = $("[data-pager]"), countEl = $("[data-count]"), chipsEl = $("[data-chips]"), sortEl = $("[data-sort]");
     sortEl.value = state.sort;
+    if (sortEl.value !== state.sort) { state.sort = "default"; sortEl.value = "default"; }
 
     function pagesHtml(total) {
       var pages = Math.ceil(total / PAGE_SIZE);
@@ -733,56 +1448,93 @@
       var cur = state.page, out = [], shown = {};
       [1, 2, cur - 1, cur, cur + 1, pages - 1, pages].forEach(function (n) { if (n >= 1 && n <= pages) shown[n] = 1; });
       var last = 0;
-      if (cur > 1) out.push('<button class="next" data-page="' + (cur - 1) + '" aria-label="Trang trước">‹</button>');
+      if (cur > 1) out.push('<button data-page="' + (cur - 1) + '" aria-label="Trang trước">‹</button>');
       Object.keys(shown).map(Number).sort(function (a, b) { return a - b; }).forEach(function (n) {
         if (n - last > 1) out.push("<span>…</span>");
-        out.push('<button data-page="' + n + '"' + (n === cur ? ' class="is-current" aria-current="page"' : "") + ">" + n + "</button>");
+        out.push('<button data-page="' + n + '"' + (n === cur ? ' class="is-current" aria-current="page"' : "") + ' aria-label="Trang ' + n + '">' + n + "</button>");
         last = n;
       });
-      if (cur < pages) out.push('<button class="next" data-page="' + (cur + 1) + '" aria-label="Trang sau">›</button>');
+      if (cur < pages) out.push('<button data-page="' + (cur + 1) + '" aria-label="Trang sau">›</button>');
       return out.join("");
     }
+    function activeChips() {
+      var chips = [];
+      state.brands.forEach(function (b) { chips.push(["brand", b, b]); });
+      state.sizes.forEach(function (s) { chips.push(["size", s, "Size " + s]); });
+      if (state.min || state.max) chips.push(["price", "", (state.min ? million(state.min) : "0") + " – " + (state.max ? million(state.max) : "…")]);
+      state.lines.forEach(function (k) { chips.push(["line", k, k.split("|")[1] + (brand ? "" : " (" + k.split("|")[0] + ")")]); });
+      state.genders.forEach(function (g) { chips.push(["gender", g, "Code " + GENDER_LABEL[g]]); });
+      if (state.q && (brand || wishMode)) chips.push(["q", "", "“" + state.q + "”"]);
+      return chips;
+    }
+    function chipHtml(c) { return '<button type="button" data-remove="' + c[0] + '" data-value="' + esc(c[1]) + '" aria-label="Bỏ lọc ' + esc(c[2]) + '">' + esc(c[2]) + I.close + "</button>"; }
 
     function render() {
+      renderLines();
       var list = filtered();
       var pages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
       if (state.page > pages) state.page = pages;
       var start = (state.page - 1) * PAGE_SIZE;
-      countEl.textContent = list.length + " mẫu" + (state.showOut ? "" : " còn size");
-      gridEl.innerHTML = list.length
-        ? list.slice(start, start + PAGE_SIZE).map(card).join("")
-        : '<div class="empty"><h3>Chưa có mẫu phù hợp</h3><p class="muted">Thử bỏ bớt bộ lọc, hoặc nhắn shop mẫu bạn cần — shop nhận order theo yêu cầu.</p><a class="btn btn--zalo" href="' + SHOP.zalo + '" target="_blank" rel="noopener">Nhắn Zalo cho shop</a></div>';
+      var chips = activeChips();
+      countEl.textContent = list.length + " mẫu có sẵn";
+      if (list.length) {
+        gridEl.innerHTML = list.slice(start, start + PAGE_SIZE).map(card).join("");
+      } else if (wishMode && !chips.length) {
+        gridEl.innerHTML = '<div class="empty"><h2>Chưa có mẫu yêu thích</h2><p class="muted">Bấm biểu tượng trái tim trên mẫu giày để lưu lại, xem lại sau ở đây (lưu trên trình duyệt này).</p><div class="empty__actions"><a class="btn btn--grad" href="shop.html">Xem hàng sẵn</a></div></div>';
+      } else {
+        gridEl.innerHTML = '<div class="empty"><h2>Chưa có mẫu phù hợp</h2>' +
+          '<p class="muted">' + (chips.length ? "Thử bỏ bớt bộ lọc bên dưới." : "Thử gõ mã in trên tem hộp, hoặc tên ngắn hơn (VD: 204L, Samba).") + " Website chỉ hiện hàng đang có sẵn — cần mẫu khác, nhắn Facebook để shop tư vấn.</p>" +
+          (chips.length ? '<div class="empty__chips chips">' + chips.map(chipHtml).join("") + "</div>" : "") +
+          '<div class="empty__actions">' + (chips.length ? '<button type="button" class="btn btn--ghost" data-clear>Xoá tất cả bộ lọc</button>' : "") +
+          fbLink("Nhắn Facebook cho shop") + "</div></div>" +
+          '<div style="grid-column:1/-1">' + rail("Gợi ý cho bạn", IN_STOCK.slice().sort(rank).slice(0, 10)) + "</div>";
+        bindRails(gridEl);
+      }
       pagerEl.innerHTML = pagesHtml(list.length);
-
-      var chips = [];
-      state.sizes.forEach(function (s) { chips.push(["size", s, "Size " + s]); });
-      state.colors.forEach(function (c) { chips.push(["color", c, COLOR_FILTERS.filter(function (x) { return x.id === c; })[0].label]); });
-      state.genders.forEach(function (g) { chips.push(["gender", g, "Code " + GENDER_LABEL[g]]); });
-      if (state.price) chips.push(["price", "", PRICE_RANGES.filter(function (r) { return r.id === state.price; })[0].label]);
-      if (state.showOut) chips.push(["showOut", "", "Gồm mẫu hết size"]);
-      chipsEl.innerHTML = chips.map(function (c) { return '<button data-remove="' + c[0] + '" data-value="' + esc(c[1]) + '">' + esc(c[2]) + "</button>"; }).join("");
+      chipsEl.innerHTML = chips.map(chipHtml).join("") + (chips.length > 1 ? '<button type="button" class="chips__clear" data-clear>Xoá tất cả</button>' : "");
       chipsEl.hidden = !chips.length;
-      var n = state.sizes.length + state.colors.length + state.genders.length + (state.price ? 1 : 0);
-      $("[data-filter-count]").textContent = n ? "(" + n + ")" : "";
+      var n = state.brands.length + state.lines.length + state.sizes.length + state.genders.length + (state.min || state.max ? 1 : 0);
+      $("[data-filter-count]").innerHTML = n ? "<b>" + n + "</b>" : "";
       $("[data-apply]").textContent = "Xem " + list.length + " mẫu";
       writeUrl();
     }
     function toggle(arr, v) { var i = arr.indexOf(v); if (i >= 0) arr.splice(i, 1); else arr.push(v); }
-    function openFilters(open) { fEl.classList.toggle("is-open", open); document.body.style.overflow = open ? "hidden" : ""; }
+    function openFilters(open) { openLayer(fEl, open); }
+    function clearAll() { state.brands = []; state.lines = []; state.sizes = []; state.genders = []; state.min = 0; state.max = 0; if (brand || wishMode) state.q = ""; state.page = 1; syncInputs(); render(); }
 
+    function trackFilter() { track("filter", { brands: state.brands.join(","), lines: state.lines.join(","), sizes: state.sizes.join(","), min: state.min, max: state.max }); }
     fEl.addEventListener("change", function (e) {
       var t = e.target;
+      setTimeout(trackFilter, 0);
+      if (t.name === "brand") toggle(state.brands, t.value);
       if (t.name === "gender") toggle(state.genders, t.value);
-      if (t.name === "color") toggle(state.colors, t.value);
-      if (t.name === "price") state.price = t.value;
-      if (t.name === "showOut") state.showOut = t.checked;
+      if (t.name === "line") toggle(state.lines, t.value);
+      if (t.matches("[data-price-min], [data-price-max]")) {
+        var lo = Math.max(pMin, Math.min(+iMin.value || pMin, pMax)), hi = Math.max(pMin, Math.min(+iMax.value || pMax, pMax));
+        if (lo > hi) { var tmp = lo; lo = hi; hi = tmp; }
+        state.min = lo > pMin ? lo : 0; state.max = hi < pMax ? hi : 0;
+        syncRange();
+      }
+      if (t.matches("[data-range-min], [data-range-max]")) {
+        state.min = +rMin.value > pMin ? +rMin.value : 0;
+        state.max = +rMax.value < pMax ? +rMax.value : 0;
+      }
       state.page = 1; render();
+    });
+    fEl.addEventListener("input", function (e) {
+      if (!e.target.matches("[data-range-min], [data-range-max]")) return;
+      var lo = +rMin.value, hi = +rMax.value;
+      if (lo > hi - 100) { if (e.target === rMin) rMin.value = lo = hi - 100; else rMax.value = hi = lo + 100; }
+      state.min = lo > pMin ? lo : 0; state.max = hi < pMax ? hi : 0;
+      syncRange();
     });
     fEl.addEventListener("click", function (e) {
       var b = e.target.closest("[data-size]");
-      if (b) { toggle(state.sizes, b.dataset.size); b.classList.toggle("is-active"); state.page = 1; render(); }
+      if (b) { toggle(state.sizes, b.dataset.size); state.page = 1; syncInputs(); render(); trackFilter(); }
+      var pq = e.target.closest("[data-price-quick]");
+      if (pq) { var r = PRICE_QUICK[+pq.dataset.priceQuick]; state.min = r.min > pMin ? r.min : 0; state.max = r.max && r.max < pMax ? r.max : 0; state.page = 1; syncRange(); render(); }
       if (e.target.closest("[data-filters-close]")) openFilters(false);
-      if (e.target.closest("[data-clear]")) { state.sizes = []; state.colors = []; state.genders = []; state.price = ""; state.showOut = false; state.page = 1; syncInputs(); render(); }
+      if (e.target.closest("[data-clear]")) clearAll();
     });
     $("[data-filters-open]").addEventListener("click", function () { openFilters(true); });
     sortEl.addEventListener("change", function () { state.sort = sortEl.value; state.page = 1; render(); });
@@ -790,19 +1542,24 @@
       var b = e.target.closest("[data-page]");
       if (!b) return;
       state.page = +b.dataset.page; render();
-      $("[data-count]").scrollIntoView({ behavior: "smooth", block: "start" });
+      $(".coll__head").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
     });
-    chipsEl.addEventListener("click", function (e) {
+    function onChip(e) {
+      if (e.target.closest("[data-clear]")) { clearAll(); return; }
       var b = e.target.closest("[data-remove]");
       if (!b) return;
       var k = b.dataset.remove, v = b.dataset.value;
+      if (k === "brand") toggle(state.brands, v);
       if (k === "size") toggle(state.sizes, v);
-      if (k === "color") toggle(state.colors, v);
+      if (k === "line") toggle(state.lines, v);
       if (k === "gender") toggle(state.genders, v);
-      if (k === "price") state.price = "";
-      if (k === "showOut") state.showOut = false;
+      if (k === "price") { state.min = 0; state.max = 0; }
+      if (k === "q") state.q = "";
       state.page = 1; syncInputs(); render();
-    });
+    }
+    chipsEl.addEventListener("click", onChip);
+    gridEl.addEventListener("click", onChip);
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && fEl.classList.contains("is-open")) openFilters(false); });
 
     // Đoạn giới thiệu cuối trang ("Đọc thêm")
     var about = $("[data-about]");
@@ -817,210 +1574,391 @@
       $("button", about).addEventListener("click", function () {
         about.classList.toggle("is-open");
         this.textContent = about.classList.contains("is-open") ? "Thu gọn" : "Đọc thêm";
+        this.setAttribute("aria-expanded", about.classList.contains("is-open"));
       });
     }
 
     var seenEl = $("[data-seen]");
-    if (seenEl) seenEl.innerHTML = rail("Sản phẩm đã xem", seenProducts().slice(0, 8));
+    if (seenEl) { seenEl.innerHTML = rail("Đã xem gần đây", seenProducts().slice(0, 10)); bindRails(seenEl); }
 
     syncInputs();
     render();
   }
 
   /* ---------- Trang sản phẩm ---------- */
+  // Bảng size tham khảo theo hãng (data/shop.js SIZE_CHARTS); tô đậm size mẫu đang có
+  // Bảng size theo hãng (data/shop.js): mở sẵn bảng hợp với mẫu (code nữ → Nữ, GS/Kid → Trẻ em), tô size shop đang có
+  var MEASURE_STEPS = "<li>Mang loại tất bạn thường mang khi đi đôi giày này.</li>" +
+    "<li>Đứng thẳng trên mặt phẳng, gót chân chạm tường; nhờ người khác đo giúp nếu cần.</li>" +
+    "<li>Đo từ điểm sau cùng của gót chân tới đầu ngón chân dài nhất (cm).</li>" +
+    "<li>Đo cả hai chân, lấy số của bàn chân dài hơn.</li>" +
+    "<li>Số đo nằm giữa hai cỡ: muốn ôm chân thì chọn nhỏ hơn một cỡ, muốn rộng rãi thì chọn lớn hơn một cỡ.</li>";
+  var chartSeq = 0;
+  function sizeVal(s) {
+    var m = String(s).replace(",", ".").match(/^(\d+(?:\.\d+)?)(?:\s+(\d)\/(\d))?$/);
+    return m ? +m[1] + (m[2] ? m[2] / m[3] : 0) : NaN;
+  }
+  function sizeChartHtml(p) {
+    var chart = SIZE_CHARTS[p.brand];
+    if (!chart || !chart.tables) {
+      return '<p class="chart__none">Bảng size ' + esc(p.brand) + " shop đang cập nhật. Nhắn Facebook số cm chân và đôi bạn đang đi vừa nhất, shop tư vấn size cho mẫu này.</p>";
+    }
+    var own = (p.sizes || []).map(function (s) { return sizeVal(s.s); }).filter(isFinite);
+    // Bảng mở sẵn: ưu tiên bảng hợp giới tính (code nữ → Nữ, GS/Kid → Trẻ em) nhưng phải chứa size shop đang có
+    var want = p.gender === "nu" ? "women" : p.gender === "gs" || p.gender === "kid" ? "kids" : "";
+    function hits(tb) { return tb.rows.some(function (r) { var eu = sizeVal(r[0]); return own.some(function (x) { return Math.abs(x - eu) < 0.2; }); }); }
+    var order = chart.tables.map(function (tb, i) { return i; }).sort(function (a, b) { return (want && chart.tables[b][want] ? 1 : 0) - (want && chart.tables[a][want] ? 1 : 0) || a - b; });
+    var pick = order.filter(function (i) { return hits(chart.tables[i]); })[0];
+    if (pick === undefined) pick = order[0];
+    var id = "chart" + (++chartSeq);
+    var tabs = chart.tables.length > 1 ? '<div class="chart__tabs" role="tablist" aria-label="Chọn bảng size">' + chart.tables.map(function (tb, i) {
+      return '<button type="button" role="tab" id="' + id + "-t" + i + '" aria-controls="' + id + "-p" + i + '" aria-selected="' + (i === pick) + '" data-chart-tab="' + i + '">' + esc(tb.name) + "</button>";
+    }).join("") + "</div>" : "";
+    var panels = chart.tables.map(function (tb, i) {
+      return '<div class="table-wrap chart__table" id="' + id + "-p" + i + '" data-chart-panel="' + i + '"' + (chart.tables.length > 1 ? ' role="tabpanel" aria-labelledby="' + id + "-t" + i + '"' : "") + (i === pick ? "" : " hidden") + ">" +
+        "<table><thead><tr>" + tb.cols.map(function (c) { return '<th scope="col">' + esc(c) + "</th>"; }).join("") + "</tr></thead><tbody>" +
+        tb.rows.map(function (r) {
+          var eu = sizeVal(r[0]);
+          var has = isFinite(eu) && own.some(function (x) { return Math.abs(x - eu) < 0.2; });
+          return "<tr" + (has ? ' class="is-own"' : "") + ">" + r.map(function (c, j) {
+            return "<td>" + esc(c) + (j === 0 && has ? ' <span class="chart__tag">còn</span>' : "") + "</td>";
+          }).join("") + "</tr>";
+        }).join("") + "</tbody></table></div>";
+    }).join("");
+    return '<div class="chart__body" data-chart>' + tabs + panels +
+      '<p class="chart__note">Theo bảng size chính thức của ' + esc(p.brand === "Jordan" ? "Nike / Jordan" : p.brand) + " (" + esc(chart.source) + "), để tham khảo. " +
+      "Mỗi dòng giày có form khác nhau — shop xác nhận lại size theo số cm chân của bạn.</p></div>";
+  }
+  document.addEventListener("click", function (e) {
+    var tab = e.target.closest("[data-chart-tab]");
+    if (!tab) return;
+    var box = tab.closest("[data-chart]"), i = tab.dataset.chartTab;
+    $all("[data-chart-tab]", box).forEach(function (b) { b.setAttribute("aria-selected", b.dataset.chartTab === i); });
+    $all("[data-chart-panel]", box).forEach(function (pn) { pn.hidden = pn.dataset.chartPanel !== i; });
+  });
+  function sizeGuideModal(p) {
+    var fit = fitNote(p);
+    modal(
+      "<h3>Hướng dẫn chọn size</h3>" +
+      (fit ? '<div class="fit">' + I.info + "<div><b>Form " + esc(fit.line) + ":</b> " + esc(fit.advice) + "</div></div>" : "") +
+      '<p style="margin:0 0 8px"><b>Cách đo chiều dài bàn chân</b></p><ol style="margin:0 0 14px;padding-left:20px;color:var(--ink-2);font-size:14.5px">' + MEASURE_STEPS + "</ol>" +
+      '<p style="margin:0 0 8px"><b>Bảng size ' + esc(p.brand) + "</b></p>" + sizeChartHtml(p) +
+      '<p class="muted" style="font-size:14px;margin:12px 0 0">Còn phân vân giữa hai size: nhắn shop số cm chân kèm tên đôi giày đang đi vừa nhất.</p>' +
+      '<div class="modal__actions"><a class="btn btn--ghost" href="size-guide.html">Xem đầy đủ</a>' + fbLink("Hỏi size qua Facebook", "", " data-fb-copy") + "</div>",
+      "modal__box--wide"
+    );
+  }
+  function lightbox(shots, start, alt) {
+    var cur = start;
+    var m = modal(
+      '<div class="lightbox"><div class="lightbox__top"><span data-lb-count></span><button type="button" class="icon-btn" data-close aria-label="Đóng">' + I.close + "</button></div>" +
+      '<div class="lightbox__stage"><img data-lb-img alt="' + esc(alt) + '">' +
+      (shots.length > 1 ? '<button type="button" class="gallery__nav gallery__nav--prev" data-lb="-1" aria-label="Ảnh trước">' + I.left + '</button><button type="button" class="gallery__nav gallery__nav--next" data-lb="1" aria-label="Ảnh sau">' + I.left + "</button>" : "") +
+      "</div>" +
+      (shots.length > 1 ? '<div class="lightbox__thumbs">' + shots.map(function (u, i) { return '<button type="button" data-lbi="' + i + '" aria-label="Ảnh ' + (i + 1) + '"><img src="' + esc(u) + '" alt="" loading="lazy"></button>'; }).join("") + "</div>" : "") +
+      "</div>", "lb-box");
+    var box = $(".modal__box", m.el);
+    box.style.cssText = "max-width:none;width:100%;height:100%;max-height:none;padding:0;border-radius:0;background:transparent;box-shadow:none";
+    m.el.style.padding = "0";
+    $(".modal__x", box).remove();
+    function show(i) {
+      cur = (i + shots.length) % shots.length;
+      $("[data-lb-img]", box).src = shots[cur];
+      $("[data-lb-count]", box).textContent = (cur + 1) + " / " + shots.length;
+      $all("[data-lbi]", box).forEach(function (b, j) { b.classList.toggle("is-active", j === cur); });
+    }
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-lb]"), t = e.target.closest("[data-lbi]");
+      if (b) show(cur + (+b.dataset.lb));
+      if (t) show(+t.dataset.lbi);
+    });
+    function key(e) { if (e.key === "ArrowRight") show(cur + 1); if (e.key === "ArrowLeft") show(cur - 1); }
+    document.addEventListener("keydown", key);
+    new MutationObserver(function (_, obs) { if (!document.contains(m.el)) { document.removeEventListener("keydown", key); obs.disconnect(); } }).observe(document.body, { childList: true });
+    var stage = $(".lightbox__stage", box), x0 = null;
+    stage.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    stage.addEventListener("touchend", function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) show(cur + (dx < 0 ? 1 : -1)); x0 = null; });
+    $("[data-close]", box).focus();
+    show(cur);
+  }
+
   function initProduct() {
     var root = $("[data-product]");
-    var p = BY_ID[params().get("id")];
+    var p = findProduct(params().get("id"));
     if (!p) {
-      root.innerHTML = '<div class="empty" style="margin:40px 0"><h2>Không tìm thấy sản phẩm</h2><p class="muted">Mẫu này có thể vừa được cập nhật. Xem các mẫu đang còn hàng nhé.</p><a class="btn" href="shop.html">Xem hàng sẵn</a></div>';
+      var q = params().get("id") || "";
+      root.innerHTML = '<div class="empty" style="margin:40px 0"><h2>Không tìm thấy sản phẩm</h2><p class="muted">Mẫu này có thể vừa được cập nhật. Tìm lại theo mã hoặc xem các mẫu đang có sẵn.</p><div class="empty__actions">' +
+        (q ? '<a class="btn btn--ghost" href="shop.html?q=' + encodeURIComponent(q) + '">Tìm “' + esc(q) + "”</a>" : "") + '<a class="btn btn--grad" href="shop.html">Xem hàng sẵn</a></div></div>';
       return;
     }
     var name = fullName(p);
     document.title = name + " — " + SHOP.name;
+    var meta = $('meta[name="description"]');
+    if (meta) meta.content = name + " chính hãng tại " + SHOP.name + ". " + (p.inStock ? "Size còn: " + p.sizes.map(function (s) { return s.s; }).join(", ") + ". " : "") + "Tư vấn size theo form, đổi size " + SHOP.returnDays + " ngày.";
     var fit = fitNote(p);
     var selected = p.sizes.length === 1 ? p.sizes[0].s : null;
+    fbContext = function (size) { return consultMsg(p, size || selected); }; // nút Facebook: chép sẵn mẫu + size đang chọn
+    track("view_item", { id: p.id, code: p.code, brand: p.brand, price: p.minPrice * 1000 });
     var sizeText = p.sizes.map(function (s) { return s.s; }).join(", ");
     var hasLines = (LINES[p.brand] || []).length > 0;
-    var pageUrl = absUrl(productUrl(p));
+    var pageUrl = absUrl(productUrl(p)), linkUrl = shareUrl(p);
     var trail = [["Trang chủ", "index.html"], [p.brand, brandUrl(p.brand)]];
-    if (hasLines) trail.push([p.line, lineUrl(p.brand, p.line)]);
-    trail.push([name, ""]);
+    if (hasLines && p.line !== OTHER_LINE) trail.push([p.line, lineUrl(p.brand, p.line)]);
+    trail.push([p.name, ""]);
+    var known = shotsOf(p);
 
-    // Dữ liệu có cấu trúc cho Google (giá, tình trạng còn hàng)
+    // Dữ liệu có cấu trúc cho Google (giá, tình trạng còn hàng) — chỉ dữ liệu thật
     var ld = document.createElement("script");
     ld.type = "application/ld+json";
     ld.textContent = JSON.stringify({
       "@context": "https://schema.org", "@type": "Product", name: name, sku: p.code || p.id, mpn: p.code || undefined,
-      brand: { "@type": "Brand", name: p.brand }, image: absUrl(imgBase(p) + ".jpg"),
+      brand: { "@type": "Brand", name: p.brand }, image: known ? known.map(absUrl) : undefined,
       offers: { "@type": "Offer", priceCurrency: "VND", price: (p.minPrice || 0) * 1000, url: pageUrl, itemCondition: "https://schema.org/NewCondition",
         availability: p.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" },
     });
     document.head.appendChild(ld);
 
+    // Dải size theo hãng: size đang có đậm, size đã hết làm mờ (bấm để nhắn shop tư vấn)
+    var range = [];
+    if (p.inStock) {
+      var kid = p.gender === "gs" || p.gender === "kid", seen = {};
+      PRODUCTS.forEach(function (x) {
+        if (x.brand !== p.brand || ((x.gender === "gs" || x.gender === "kid") !== kid)) return;
+        x.sizes.forEach(function (s) { seen[s.s] = 1; });
+      });
+      var own = p.sizes.map(function (s) { return s.s; });
+      var lo = sizeNum(own[0]) - 1.5, hi = sizeNum(own[own.length - 1]) + 1.5;
+      range = Object.keys(seen).filter(function (s) { return own.indexOf(s) >= 0 || (sizeNum(s) >= lo && sizeNum(s) <= hi && !/y$/i.test(s)); })
+        .sort(function (a, b) { return sizeNum(a) - sizeNum(b); });
+    }
+    var status = p.inStock
+      ? pill("ok", "Có sẵn · " + p.sizes.length + " size")
+      : pill("out", "Tạm hết size");
+    var genderPill = p.gender !== "unisex" ? pill("g", p.gender === "nam" ? "Code nam" : p.gender === "nu" ? "Code nữ" : GENDER_LABEL[p.gender]) : "";
+
     root.innerHTML =
-      '<div class="pd__crumb">' + crumbs(trail) + "</div>" +
+      '<div class="pd-top">' + crumbs(trail) + "</div>" +
       '<div class="pd">' +
-      '<div class="gallery"><div class="gallery__thumbs" data-thumbs></div><div class="gallery__main" data-main>' + media(p, true) + "</div>" +
-      '<div class="share"><span>Chia sẻ</span>' +
-      '<a href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(pageUrl) + '" target="_blank" rel="noopener" aria-label="Chia sẻ Facebook" class="share__fb">' + I.fb + "</a>" +
-      '<button type="button" data-copy-link aria-label="Sao chép link">' + I.link + "</button></div></div>" +
+      '<div class="gallery"><div class="gallery__main" data-main>' + media(p, { eager: true }) +
+      '<span class="gallery__hint" hidden>' + I.zoom + "Rê chuột để phóng to · bấm để xem lớn</span></div>" +
+      '<div class="thumbs" data-thumbs></div></div>' +
       '<div class="pd__info">' +
-      "<h1>" + esc(name) + "</h1>" +
-      '<div class="pd__sub">Thương hiệu: <a href="' + brandUrl(p.brand) + '">' + esc(p.brand) + "</a>" +
-      (p.code ? '<span>Mã sản phẩm: <a href="#" data-copy-code title="Sao chép mã">' + esc(p.code) + "</a></span>" : "") + "</div>" +
-      '<div class="pd__price" data-price>' + money(p.price) + "</div>" +
-      '<div class="promo"><div class="promo__title">' + I.gift + "Cam kết & ưu đãi</div><ul>" +
-      (SHOP.perks || []).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>" +
+      '<div class="pd__brand"><a href="' + brandUrl(p.brand) + '">' + esc(p.brand) + "</a>" +
+      (p.code ? '<button type="button" class="pd__code" data-copy-code title="Sao chép mã">Mã ' + esc(p.code) + I.copy + "</button>" : "") + "</div>" +
+      "<h1>" + esc(p.name) + "</h1>" +
+      '<div class="pd__pills">' + status + genderPill + "</div>" +
+      '<div class="pd__price" data-price>' + money(p.minPrice) + "</div>" +
       (p.note ? '<div class="pd__note"><b>Ghi chú của shop:</b> ' + esc(p.note) + "</div>" : "") +
       (p.inStock
-        ? '<div class="pd__sizehead"><span>Kích thước: <b data-size-label>' + esc(selected || "chọn size") + '</b></span><a class="pd__guide" href="size-guide.html">Hướng dẫn chọn size</a></div>' +
-          '<div class="sizes">' +
-          p.sizes.map(function (s) {
-            var extra = s.p && s.p !== p.price ? money(s.p).replace(".000₫", "k") : s.n ? "Lưu ý" : "";
-            return '<button type="button" data-size="' + esc(s.s) + '" title="' + esc(s.n || "") + '">' + esc(s.s) + (extra ? "<small>" + esc(extra) + "</small>" : "") + "</button>";
+        ? '<div class="pd__sizehead" id="chon-size"><span>Chọn size (EU): <b data-size-label>' + esc(selected || "chưa chọn") + '</b></span><button type="button" class="pd__guide" data-guide>' + I.ruler + "Hướng dẫn chọn size</button></div>" +
+          '<div class="sizes" data-sizes role="group" aria-label="Chọn size">' +
+          range.map(function (s) {
+            var own = p.sizes.filter(function (x) { return x.s === s; })[0];
+            if (!own) return '<button type="button" class="is-off" data-off="' + esc(s) + '" aria-label="Size ' + esc(s) + ' đã hết">' + esc(s) + "</button>";
+            var extra = own.p && own.p !== p.price ? money(own.p).replace(".000₫", "k") : own.n ? "Lưu ý" : "";
+            return '<button type="button" data-size="' + esc(s) + '" aria-pressed="false" title="' + esc(own.n || "") + '">' + esc(s) + (extra ? "<small>" + esc(extra) + "</small>" : "") + "</button>";
           }).join("") + "</div>" +
-          '<p class="pd__hint" data-size-note>Size không có trong danh sách là đã hết — nhắn shop để order.</p>'
-        : '<span class="pill is-out">Tạm hết size</span>') +
-      (fit ? '<div class="fit"><b>Lưu ý form ' + esc(fit.line) + ":</b> " + esc(fit.advice) + "</div>" : "") +
-      '<div class="pd__buttons">' +
-      (p.inStock ? '<button class="btn btn--ghost btn--block" data-add>Thêm vào giỏ</button>' : "") +
-      '<button class="btn btn--block" data-buy>' + (p.inStock ? "Mua ngay" : "Hỏi shop qua Zalo") + "</button>" +
+          '<p class="pd__hint" data-size-note>' + (range.length > p.sizes.length ? "Size mờ đã hết tại shop — cần size khác, nhắn Facebook để shop tư vấn." : "Chỉ hiện size đang còn tại shop.") + "</p>" +
+          // Tư vấn form và bảng size: đặt TRƯỚC nút mua
+          '<div class="fitbox">' +
+          (fit ? '<div class="fit">' + I.info + "<div><b>Lưu ý form " + esc(fit.line) + ":</b> " + esc(fit.advice) + "</div></div>" : "") +
+          '<details class="chart"><summary>' + I.ruler + "Bảng size " + esc(p.brand) + I.down.replace("<svg", '<svg class="chev"') + "</summary>" + sizeChartHtml(p) + "</details></div>" +
+          '<div class="pd__buy" data-buy-block><button type="button" class="btn btn--grad" data-add>' + I.bagPlus + "Thêm vào giỏ</button>" +
+          fbLink("Tư vấn qua Facebook", "", " data-fb-copy") + "</div>" +
+          (WISH ? '<div class="pd__buy2">' + wishBtn(p) + "</div>" : "") +
+          '<p class="pd__fbnote">Bấm <b>Tư vấn qua Facebook</b>: thông tin mẫu và size bạn chọn được chép sẵn, mở Facebook shop rồi dán vào tin nhắn.</p>'
+        : '<div class="pd__out"><b>Tạm hết size</b><p>Mẫu này vừa hết size tại shop. Nhắn Facebook để shop tư vấn mẫu tương tự đang có sẵn.</p></div>' +
+          (fit ? '<div class="fit">' + I.info + "<div><b>Lưu ý form " + esc(fit.line) + ":</b> " + esc(fit.advice) + "</div></div>" : "") +
+          '<div class="pd__buy2" data-buy-block>' + fbLink("Nhắn Facebook cho shop", "btn--grad", " data-fb-copy") + wishBtn(p) + "</div>") +
+      '<p class="pd__call">Shop xác nhận size, phí ship và tiền cọc qua Facebook. Website không thu tiền.</p>' +
+      '<div class="acc">' +
+      "<details open><summary>" + I.shield + "Cam kết của S&amp;LIFE" + I.down.replace("<svg", '<svg class="chev"') + '</summary><div class="acc__body"><ul>' +
+      (SHOP.perks || []).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div></details>" +
+      "<details><summary>" + I.truck + "Giao hàng &amp; đặt cọc" + I.down.replace("<svg", '<svg class="chev"') + '</summary><div class="acc__body"><ul>' +
+      "<li>Giao qua SPX Express hoặc Viettel Post. Phí ship do đơn vị vận chuyển tính, shop báo khi xác nhận đơn.</li>" +
+      "<li>Hà Nội và TP.HCM có thể giao trong ngày.</li>" +
+      "<li>Sau khi xác nhận còn size, shop gửi số tài khoản và mức cọc qua Facebook.</li>" +
+      "<li>Đồng kiểm tuỳ đơn vị vận chuyển — shop xác nhận riêng khi chốt đơn.</li>" +
+      '</ul><p style="margin:8px 0 0"><a class="link" href="policy.html#ship">Chi tiết giao hàng</a></p></div></details>' +
+      "<details><summary>" + I.swap + "Đổi size &amp; đổi trả" + I.down.replace("<svg", '<svg class="chev"') + '</summary><div class="acc__body"><ul>' +
+      "<li>Đổi size trong " + SHOP.returnDays + " ngày kể từ khi nhận hàng: giày còn nguyên hộp, tem, chưa đi ngoài trời.</li>" +
+      "<li>Đổi theo nhu cầu: bạn chịu phí ship hai chiều.</li>" +
+      "<li>Giao sai mẫu, sai size hoặc hàng lỗi đã được xác nhận: shop đổi lại hoặc hoàn tiền và chịu phí ship.</li>" +
+      '</ul><p style="margin:8px 0 0"><a class="link" href="policy.html#doi-tra">Xem đầy đủ chính sách</a></p></div></details>' +
       "</div>" +
-      '<p class="pd__call">Gọi đặt mua <a href="tel:' + SHOP.phone + '"><b>' + SHOP.phoneDisplay + "</b></a> (" + esc(SHOP.openHours) + ")</p>" +
+      '<div class="share"><span>Chia sẻ</span>' +
+      '<a href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(linkUrl) + '" target="_blank" rel="noopener">' + I.fb + "Facebook</a>" +
+      '<button type="button" data-copy-link>' + I.link + "Sao chép link</button>" +
+      (navigator.share ? '<button type="button" data-native-share>' + I.share + "Chia sẻ…</button>" : "") + "</div>" +
       "</div></div>" +
 
-      '<div class="tabs">' +
-      '<div class="tabs__nav" role="tablist"><button class="is-active" data-tab="0" role="tab">Mô tả sản phẩm</button><button data-tab="1" role="tab">Thông tin sản phẩm</button><button data-tab="2" role="tab">Chính sách đổi trả</button></div>' +
-      '<div class="tabs__panel" data-panel="0">' +
-      "<p><b>" + esc(name) + "</b> là hàng chính hãng đang có sẵn tại " + esc(SHOP.name) + "." +
+      '<section class="pd-sec"><div class="pd-desc"><div><h2>Mô tả sản phẩm</h2><div class="pd-desc__text">' +
+      "<p><b>" + esc(name) + "</b> là hàng chính hãng" + (p.inStock ? " đang có sẵn" : "") + " tại " + esc(SHOP.name) + "." +
       (p.code ? " Mã sản phẩm <b>" + esc(p.code) + "</b> khớp với tem hộp — bạn tra mã này trên trang chủ của " + esc(p.brand) + " sẽ ra đúng mẫu, đúng màu." : "") + "</p>" +
-      (p.inStock ? "<p>Size còn tại shop: <b>" + esc(sizeText) + "</b>. Tồn kho thay đổi trong ngày, bạn nhắn shop xác nhận size trước khi chuyển khoản nhé.</p>" : "<p>Mẫu này tạm hết size tại shop. Bạn nhắn Zalo để shop kiểm tra và báo giá order.</p>") +
-      (fit ? "<p>Về form: " + esc(fit.advice) + " Còn phân vân, gửi shop số cm chân kèm tên đôi giày đang đi vừa nhất để được tư vấn.</p>" : "") +
+      (p.inStock ? "<p>Size còn tại shop: <b>" + esc(sizeText) + "</b>. Tồn kho thay đổi trong ngày; shop xác nhận lại size khi bạn gửi yêu cầu.</p>" : "<p>Mẫu này tạm hết size tại shop. Nhắn Facebook để shop tư vấn mẫu tương tự đang có sẵn.</p>") +
+      (fit ? "<p>Về form: " + esc(fit.advice) + " Còn phân vân, nhắn shop số cm chân kèm tên đôi giày đang đi vừa nhất để được tư vấn.</p>" : "") +
       "<p><b>Bảo quản:</b> tránh ngâm nước, không giặt máy, không dùng chất tẩy mạnh, không phơi trực tiếp dưới nắng gắt.</p>" +
-      "<p>Mỗi đôi giao đủ hộp, giấy gói, tem và phụ kiện đi kèm. Shop gửi ảnh chụp thật trước khi đóng gói, bạn được mở hộp kiểm tra trước khi trả tiền.</p>" +
+      "<p>Shop gửi ảnh chụp thật đôi giày trước khi giao.</p>" +
       "</div>" +
-      '<div class="tabs__panel" data-panel="1" hidden><table class="spec"><tbody>' +
+      '<div class="about-shop"><img src="images/brand/icon-192.png" alt="" width="64" height="64" loading="lazy"><div><b>Về ' + esc(SHOP.name) + "</b>" +
+      "<p>Giày chính hãng, hàng sẵn, bán online từ 2021. Shop tư vấn size theo form từng dòng và nói rõ nguồn hàng, tình trạng từng đôi trước khi chốt.</p>" +
+      '<div class="about-shop__links">' +
+      '<a href="' + esc(SHOP.facebookChat) + '" target="_blank" rel="noopener" aria-label="Facebook" data-fb>' + I.fbc + "</a>" +
+      (SHOP.facebookOwner && SHOP.facebookOwner !== SHOP.facebookChat ? '<a href="' + esc(SHOP.facebookOwner) + '" target="_blank" rel="noopener" aria-label="Facebook">' + I.fb + "</a>" : "") +
+      (SHOP.instagram ? '<a href="' + esc(SHOP.instagram) + '" target="_blank" rel="noopener" aria-label="Instagram">' + I.ig + "</a>" : "") +
+      (SHOP.tiktok ? '<a href="' + esc(SHOP.tiktok) + '" target="_blank" rel="noopener" aria-label="TikTok">' + I.tt + "</a>" : "") +
+      "</div></div></div></div>" +
+      '<div><h2>Thông tin sản phẩm</h2><table class="spec"><tbody>' +
       "<tr><th>Thương hiệu</th><td>" + esc(p.brand) + "</td></tr>" +
       (hasLines ? "<tr><th>Dòng giày</th><td>" + esc(p.line) + "</td></tr>" : "") +
       (p.code ? "<tr><th>Mã sản phẩm</th><td>" + esc(p.code) + "</td></tr>" : "") +
       "<tr><th>Dành cho</th><td>" + (p.gender === "unisex" ? "Unisex / size nam" : "Code " + GENDER_LABEL[p.gender]) + "</td></tr>" +
-      "<tr><th>Size còn</th><td>" + (p.inStock ? esc(sizeText) : "Tạm hết") + "</td></tr>" +
-      "<tr><th>Tình trạng</th><td>Mới, đủ hộp, tem và phụ kiện</td></tr>" +
-      "</tbody></table></div>" +
-      '<div class="tabs__panel" data-panel="2" hidden><ul>' +
-      "<li>Đổi trả trong " + SHOP.returnDays + " ngày kể từ khi giao hàng: giữ nguyên hộp, tem, chưa đi ngoài trời. Khách hỗ trợ phí đổi trả.</li>" +
-      "<li>Sai size do shop tư vấn: shop chịu phí đổi.</li>" +
-      "<li>Giao sai mẫu, sai size do shop đóng nhầm: quay video lúc đồng kiểm và gửi shop trong 24 giờ, shop đổi lại và chịu toàn bộ chi phí.</li>" +
-      "<li>Ship toàn quốc. COD đặt cọc " + SHOP.depositPercent + "% giá bán, phần còn lại thu khi nhận hàng.</li>" +
-      '</ul><p><a href="policy.html" style="text-decoration:underline">Xem đầy đủ chính sách</a></p></div>' +
-      "</div>";
+      "<tr><th>Size còn</th><td>" + (p.inStock ? esc(sizeText) : "Tạm hết size") + "</td></tr>" +
+      (fit ? "<tr><th>Form</th><td>" + esc(fit.advice) + "</td></tr>" : "") +
+      "</tbody></table></div></div></section>";
 
-    // Bộ ảnh: MÃ, MÃ-2 … MÃ-12. Hiện dần từng ảnh khi tìm thấy; nút ‹ › và vuốt để xem
-    var base = imgBase(p), shots = [], cur = 0;
-    var thumbs = $("[data-thumbs]", root), mainBox = $("[data-main]", root);
-    function mainImg() { return $("img", mainBox); }
+    // Bộ ảnh: dùng danh sách có sẵn, hoặc dò dần MÃ, MÃ-2 … MÃ-12
+    var shots = [], cur = 0;
+    var thumbs = $("[data-thumbs]", root), mainBox = $("[data-main]", root), hint = $(".gallery__hint", mainBox);
+    var fine = window.matchMedia && matchMedia("(hover: hover) and (pointer: fine)").matches;
+    function mainImg() { return $(".media__img", mainBox); }
     function show(i) {
       if (!shots.length) return;
       cur = (i + shots.length) % shots.length;
       var img = mainImg();
       if (img) { img.src = shots[cur]; img.classList.add("ok"); }
-      $all("button", thumbs).forEach(function (x, j) { x.classList.toggle("is-active", j === cur); });
+      $all("button", thumbs).forEach(function (x, j) { x.classList.toggle("is-active", j === cur); x.setAttribute("aria-current", j === cur); });
       var active = thumbs.children[cur];
-      if (active && active.scrollIntoView) active.scrollIntoView({ block: "nearest", inline: "nearest" });
+      if (active) thumbs.scrollTo({ left: active.offsetLeft - thumbs.clientWidth / 2 + active.clientWidth / 2, behavior: REDUCED ? "auto" : "smooth" });
       var counter = $("[data-counter]", mainBox);
       if (counter) counter.textContent = (cur + 1) + " / " + shots.length;
     }
     function addShot(u) {
       shots.push(u);
+      mainBox.classList.remove("is-empty");
+      var cta = $(".gallery__ph-cta", mainBox);
+      if (cta) cta.remove();
+      if (fine) hint.hidden = false;
       if (shots.length < 2) return;
       if (shots.length === 2) {
-        thumbs.innerHTML = '<button type="button" data-shot="0" class="is-active"><img src="' + esc(shots[0]) + '" alt=""></button>';
+        thumbs.innerHTML = '<button type="button" data-shot="0" class="is-active" aria-label="Ảnh 1"><img src="' + esc(shots[0]) + '" alt=""></button>';
         mainBox.insertAdjacentHTML("beforeend",
           '<button type="button" class="gallery__nav gallery__nav--prev" data-nav="-1" aria-label="Ảnh trước">' + I.left + "</button>" +
           '<button type="button" class="gallery__nav gallery__nav--next" data-nav="1" aria-label="Ảnh sau">' + I.left + "</button>" +
           '<span class="gallery__count" data-counter></span>');
       }
-      thumbs.insertAdjacentHTML("beforeend", '<button type="button" data-shot="' + (shots.length - 1) + '"><img src="' + esc(u) + '" alt="" loading="lazy"></button>');
+      thumbs.insertAdjacentHTML("beforeend", '<button type="button" data-shot="' + (shots.length - 1) + '" aria-label="Ảnh ' + shots.length + '"><img src="' + esc(u) + '" alt="" loading="lazy"></button>');
       var counter = $("[data-counter]", mainBox);
       if (counter) counter.textContent = (cur + 1) + " / " + shots.length;
     }
-    findImage(base).then(function (first) {
-      if (!first) return;
-      addShot(first);
-      var n = 2;
-      (function next() {
-        if (n > MAX_SHOTS) return;
-        findImage(base + "-" + n++).then(function (u) { if (u) { addShot(u); next(); } });
-      })();
-    });
+    if (!known) {
+      mainBox.classList.add("is-empty");
+      mainBox.insertAdjacentHTML("beforeend", '<a class="btn btn--fb btn--sm gallery__ph-cta" href="' + esc(SHOP.facebookChat) + '" target="_blank" rel="noopener" data-fb data-fb-copy>' + I.camera + "Nhắn Facebook xin ảnh thật</a>");
+    }
+    loadShots(p, addShot);
     thumbs.addEventListener("click", function (e) {
       var b = e.target.closest("[data-shot]");
       if (b) show(+b.dataset.shot);
     });
     mainBox.addEventListener("click", function (e) {
       var b = e.target.closest("[data-nav]");
-      if (b) show(cur + (+b.dataset.nav));
+      if (b) { show(cur + (+b.dataset.nav)); return; }
+      if (e.target.closest("a")) return;
+      if (shots.length) { mainBox.classList.remove("is-zoom"); lightbox(shots, cur, name); }
     });
-    var x0 = null;
-    mainBox.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    // Phóng to khi rê chuột (máy tính)
+    if (fine) {
+      mainBox.addEventListener("mousemove", function (e) {
+        if (!shots.length || e.target.closest("button")) { mainBox.classList.remove("is-zoom"); return; }
+        var r = mainBox.getBoundingClientRect(), img = mainImg();
+        mainBox.classList.add("is-zoom");
+        if (img) img.style.transformOrigin = ((e.clientX - r.left) / r.width * 100) + "% " + ((e.clientY - r.top) / r.height * 100) + "%";
+      });
+      mainBox.addEventListener("mouseleave", function () { mainBox.classList.remove("is-zoom"); });
+    }
+    var x0 = null, y0 = null;
+    mainBox.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
     mainBox.addEventListener("touchend", function (e) {
       if (x0 === null || shots.length < 2) return;
-      var dx = e.changedTouches[0].clientX - x0;
-      if (Math.abs(dx) > 40) show(cur + (dx < 0 ? 1 : -1));
+      var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { e.preventDefault(); show(cur + (dx < 0 ? 1 : -1)); }
       x0 = null;
     });
 
-    var priceEl = $("[data-price]", root);
+    var priceEl = $("[data-price]", root), noteEl = $("[data-size-note]", root), sizesEl = $("[data-sizes]", root);
     function markSize() {
-      $all("[data-size]", root).forEach(function (b) { b.classList.toggle("is-active", b.dataset.size === selected); });
+      $all("[data-size]", root).forEach(function (b) { var on = b.dataset.size === selected; b.classList.toggle("is-active", on); b.setAttribute("aria-pressed", on); });
       var s = p.sizes.filter(function (x) { return x.s === selected; })[0];
-      priceEl.innerHTML = money((s && s.p) || p.price) + (s && s.p && s.p !== p.price ? "<small>giá riêng size " + esc(s.s) + "</small>" : "");
+      priceEl.innerHTML = (s ? "" : p.minPrice < p.price ? "<small>Từ</small>" : "") + money((s && s.p) || p.minPrice) + (s && s.p && s.p !== p.price ? "<small>giá riêng size " + esc(s.s) + "</small>" : "");
       var label = $("[data-size-label]", root);
-      if (label) label.textContent = selected || "chọn size";
-      var noteEl = $("[data-size-note]", root);
-      if (noteEl && s && s.n) noteEl.textContent = "Size " + s.s + ": " + s.n;
+      if (label) label.textContent = selected || "chưa chọn";
+      if (noteEl && s) { noteEl.classList.remove("is-warn"); noteEl.textContent = s.n ? "Size " + s.s + ": " + s.n : "Size " + s.s + " còn hàng tại shop."; }
+      updateBar();
+    }
+    function needSize() {
+      toast("Bạn chọn size trước nhé");
+      if (!sizesEl) return;
+      sizesEl.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "center" });
+      sizesEl.classList.remove("is-shake"); void sizesEl.offsetWidth; sizesEl.classList.add("is-shake");
+      if (noteEl) { noteEl.textContent = "Chọn một size ở trên để tiếp tục."; noteEl.classList.add("is-warn"); }
+    }
+    function add() {
+      if (!selected) { needSize(); return false; }
+      addToCart(p.id, selected, 1);
+      track("add_to_cart", { id: p.id, code: p.code, size: selected, price: itemPrice(p, selected) * 1000 });
+      return true;
     }
     root.addEventListener("click", function (e) {
       var b = e.target.closest("[data-size]");
       if (b) { selected = b.dataset.size; markSize(); }
-      var tab = e.target.closest("[data-tab]");
-      if (tab) {
-        $all("[data-tab]", root).forEach(function (x) { x.classList.toggle("is-active", x === tab); });
-        $all("[data-panel]", root).forEach(function (x) { x.hidden = x.dataset.panel !== tab.dataset.tab; });
-      }
-      if (e.target.closest("[data-copy-code]")) {
-        e.preventDefault();
-        copyText(p.code).then(function () { toast("Đã sao chép mã " + p.code); });
-      }
-      if (e.target.closest("[data-copy-link]")) copyText(pageUrl).then(function () { toast("Đã sao chép link sản phẩm"); });
-      if (e.target.closest("[data-add]")) {
-        if (!selected) { toast("Bạn chọn size trước nhé"); return; }
-        if (!addToCart(p.id, selected)) { toast("Size " + selected + " đã có trong giỏ"); return; }
-        addedModal(p, selected);
-      }
-      if (e.target.closest("[data-buy]")) {
-        if (p.inStock && !selected) { toast("Bạn chọn size trước nhé"); return; }
-        orderModal(function (foot) {
-          return (p.inStock ? "Chào shop, mình muốn đặt đôi này:\n" : "Chào shop, mình muốn hỏi đôi này:\n") + name + "\n" +
-            "Mã: " + (p.code || p.name) + " / Size: " + (selected || "…") + " / Chân dài: " + (foot ? foot.replace(/\s*cm$/i, "") : "…") + " cm\n" +
-            (selected ? "Giá: " + money(itemPrice(p, selected)) + "\n" : "") +
-            "\nTên:\nSĐT:\nĐịa chỉ nhận hàng:";
-        }, true);
-      }
+      var off = e.target.closest("[data-off]");
+      if (off && noteEl) { noteEl.innerHTML = "Size " + esc(off.dataset.off) + ' đã hết tại shop. <a class="link" href="' + esc(SHOP.facebookChat) + '" target="_blank" rel="noopener" data-fb data-fb-copy data-fb-size="' + esc(off.dataset.off) + '">Nhắn Facebook để shop tư vấn</a>'; noteEl.classList.add("is-warn"); }
+      if (e.target.closest("[data-guide]")) sizeGuideModal(p);
+      if (e.target.closest("[data-copy-code]")) copyText(p.code).then(function () { toast("Đã sao chép mã " + p.code); });
+      if (e.target.closest("[data-copy-link]")) copyText(linkUrl).then(function () { toast("Đã sao chép link sản phẩm"); });
+      if (e.target.closest("[data-native-share]")) navigator.share({ title: name, url: linkUrl }).catch(function () {});
+      if (e.target.closest("[data-add]")) { if (add()) openMini(p.id + "|" + selected); }
     });
+
+    // Thanh mua dính đáy màn hình trên điện thoại
+    var bar = document.createElement("div");
+    bar.className = "buybar";
+    bar.innerHTML = '<div class="buybar__info"><b data-bar-price></b><small data-bar-sub></small></div>' +
+      (p.inStock ? '<button type="button" class="btn btn--grad" data-bar-add>' + I.bagPlus + "Thêm vào giỏ</button>" : fbLink("Nhắn shop", "btn--grad", " data-fb-copy"));
+    document.body.appendChild(bar);
+    function updateBar() {
+      var s = p.sizes.filter(function (x) { return x.s === selected; })[0];
+      $("[data-bar-price]", bar).textContent = money((s && s.p) || p.minPrice);
+      $("[data-bar-sub]", bar).textContent = p.inStock ? (selected ? "Size " + selected + " · " + p.name : "Chưa chọn size · " + p.name) : p.name;
+    }
+    bar.addEventListener("click", function (e) {
+      if (e.target.closest("[data-bar-add]")) { if (add()) openMini(p.id + "|" + selected); }
+    });
+    var block = $("[data-buy-block]", root), footer = $(".ft"), ticking = false;
+    // Chỉ hiện khi nút mua đã cuộn qua phía trên, ẩn khi tới footer
+    function syncBar() {
+      ticking = false;
+      if (!block) return;
+      var on = block.getBoundingClientRect().bottom < 0 && (!footer || footer.getBoundingClientRect().top > window.innerHeight);
+      bar.classList.toggle("is-show", on);
+      document.body.classList.toggle("has-buybar", on);
+    }
+    window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(syncBar); } }, { passive: true });
+    syncBar();
     markSize();
 
     // Sản phẩm cùng dòng, cùng tầm giá, đã xem
-    var sameLine = IN_STOCK.filter(function (x) { return x.id !== p.id && x.brand === p.brand && x.line === p.line; })
-      .sort(function (a, b) { return b.sizes.length - a.sizes.length; }).slice(0, 10);
+    var sameLine = IN_STOCK.filter(function (x) { return x.id !== p.id && x.brand === p.brand && (!hasLines || x.line === p.line); }).sort(rank).slice(0, 12);
     var used = {}; sameLine.forEach(function (x) { used[x.id] = 1; });
     var ref = p.minPrice || p.price || 0;
     var samePrice = IN_STOCK.filter(function (x) { return x.id !== p.id && !used[x.id] && x.minPrice && Math.abs(x.minPrice - ref) <= ref * 0.15; })
-      .sort(function (a, b) { return Math.abs(a.minPrice - ref) - Math.abs(b.minPrice - ref); }).slice(0, 10);
-    $("[data-related]").innerHTML =
-      rail(hasLines && p.line !== OTHER_LINE ? "Cùng dòng " + lineTitle(p.brand, p.line) : "Cùng thương hiệu " + p.brand, sameLine, hasLines ? lineUrl(p.brand, p.line) : brandUrl(p.brand)) +
+      .sort(function (a, b) { return (hasPhoto(b) - hasPhoto(a)) || Math.abs(a.minPrice - ref) - Math.abs(b.minPrice - ref); }).slice(0, 12);
+    var rel = $("[data-related]");
+    rel.innerHTML =
+      rail(hasLines && p.line !== OTHER_LINE ? "Cùng dòng " + lineTitle(p.brand, p.line) : "Cùng hãng " + p.brand, sameLine, hasLines && p.line !== OTHER_LINE ? lineUrl(p.brand, p.line) : brandUrl(p.brand), "Xem tất cả") +
       rail("Cùng tầm giá", samePrice) +
-      rail("Sản phẩm đã xem", seenProducts(p.id).slice(0, 8));
+      rail("Đã xem gần đây", seenProducts(p.id).slice(0, 10));
+    bindRails(rel);
     markSeen(p.id);
   }
 
@@ -1034,28 +1972,29 @@
       var cart = getCart();
       $("[data-cart-heading]").textContent = "Giỏ hàng (" + cart.length + ")";
       if (!cart.length) {
-        listEl.innerHTML = '<div class="empty"><h3>Giỏ hàng đang trống</h3><p class="muted">Chọn vài đôi ưng ý rồi quay lại đây để đặt hàng.</p><a class="btn" href="shop.html">Xem hàng sẵn</a></div>';
+        listEl.innerHTML = '<div class="empty"><h2>Giỏ hàng đang trống</h2><p class="muted">Chọn mẫu và size ưng ý, rồi quay lại đây để gửi yêu cầu cho shop.</p><div class="empty__actions"><a class="btn btn--grad" href="shop.html">Xem hàng sẵn</a></div></div>';
         sumEl.hidden = true;
       } else {
         sumEl.hidden = false;
         listEl.innerHTML = cart.map(function (it, i) {
           var p = BY_ID[it.id], price = itemPrice(p, it.size);
           var still = p.sizes.some(function (s) { return s.s === it.size; });
-          return '<div class="cart-item"><button class="cart-item__x" data-remove="' + i + '" aria-label="Xoá">' + I.close + "</button>" +
+          return '<div class="cart-item">' +
             '<a class="cart-item__img" href="' + productUrl(p) + '">' + media(p) + "</a>" +
             '<div><a class="cart-item__name" href="' + productUrl(p) + '">' + esc(fullName(p)) + "</a>" +
             '<div class="cart-item__meta">Size ' + esc(it.size) + "</div>" +
-            (still ? "" : '<div class="cart-item__meta" style="color:var(--buy-2)">Size này vừa hết trong bảng hàng — nhắn shop kiểm tra.</div>') +
-            '<div class="cart-item__price">' + money(price) + "</div></div></div>";
+            (still ? '<div class="cart-item__price">' + money(price) + "</div>" : '<div class="cart-item__warn">Size này vừa hết trong bảng hàng — bỏ khỏi giỏ hoặc nhắn shop tư vấn.</div>') +
+            "</div>" +
+            '<button class="cart-item__x" data-remove="' + i + '" aria-label="Xoá ' + esc(p.name) + ' size ' + esc(it.size) + ' khỏi giỏ">' + I.close + "</button></div>";
         }).join("");
         $("[data-total]", sumEl).textContent = money(cartTotal(cart));
       }
       // Gợi ý: cùng hãng với món trong giỏ
       var inCart = {}, brandsIn = {};
       cart.forEach(function (it) { inCart[it.id] = 1; brandsIn[BY_ID[it.id].brand] = 1; });
-      var sug = IN_STOCK.filter(function (x) { return !inCart[x.id] && (!cart.length || brandsIn[x.brand]); })
-        .sort(function (a, b) { return b.sizes.length - a.sizes.length; }).slice(0, 8);
+      var sug = IN_STOCK.filter(function (x) { return !inCart[x.id] && (!cart.length || brandsIn[x.brand]); }).sort(rank).slice(0, 10);
       $("[data-suggest]").innerHTML = rail("Có thể bạn sẽ thích", sug);
+      bindRails($("[data-suggest]"));
     }
     listEl.addEventListener("click", function (e) {
       var b = e.target.closest("[data-remove]");
@@ -1068,349 +2007,198 @@
     render();
   }
 
-  /* ---------- Đặt hàng (thanh toán) ---------- */
-  function orderCode() {
+  /* ---------- Gửi yêu cầu cho shop (thay cho đặt hàng / thanh toán) ----------
+     Không có máy chủ, không thu tiền. Web soạn sẵn tin nhắn → khách sao chép và gửi qua Facebook.
+     Giỏ KHÔNG tự xoá: chỉ xoá khi khách bấm "Tôi đã gửi cho shop". */
+  function reqCode() {
     var d = new Date();
-    return "SL" + String(d.getFullYear()).slice(2) + ("0" + (d.getMonth() + 1)).slice(-2) + ("0" + d.getDate()).slice(-2) +
-      String(Math.floor(Math.random() * 900) + 100);
+    return "SL" + String(d.getFullYear()).slice(2) + ("0" + (d.getMonth() + 1)).slice(-2) + ("0" + d.getDate()).slice(-2) + "-" +
+      (Math.random().toString(36) + "0000").slice(2, 6).toUpperCase();
   }
-  function vietQr(amountK, info) {
-    var b = SHOP.bank;
-    if (!b || !b.bin) return "";
-    return "https://img.vietqr.io/image/" + encodeURIComponent(b.bin) + "-" + encodeURIComponent(b.number) + "-compact2.png?amount=" + Math.round(amountK * 1000) +
-      "&addInfo=" + encodeURIComponent(info) + "&accountName=" + encodeURIComponent(b.holder);
+  function b64encode(obj) {
+    var bytes = new TextEncoder().encode(JSON.stringify(obj)), s = "";
+    bytes.forEach(function (b) { s += String.fromCharCode(b); });
+    return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function b64decode(str) {
+    var s = atob(str.replace(/-/g, "+").replace(/_/g, "/"));
+    var bytes = new Uint8Array(s.length);
+    for (var i = 0; i < s.length; i++) bytes[i] = s.charCodeAt(i);
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+  // Link tóm tắt yêu cầu: dữ liệu nằm trong đường link, không cần máy chủ. Không phải trạng thái đơn.
+  function requestLink(req) {
+    return absUrl("yeu-cau.html?r=" + b64encode({ c: req.code, i: req.items.map(function (it) { return [it.id, it.size]; }), n: req.name || undefined, p: req.province || undefined, f: req.foot || undefined, t: req.note || undefined }));
+  }
+  // Ghi sổ yêu cầu vào Google Sheet của shop (nếu đã cài orderEndpoint). Dùng JSONP để biết chắc đã ghi hay chưa.
+  function sendToSheet(payload) {
+    return new Promise(function (resolve, reject) {
+      if (!SHOP.orderEndpoint) return reject(new Error("no-endpoint"));
+      var cb = "slifeCb" + Date.now(), s = document.createElement("script"), done = false;
+      var timer = setTimeout(function () { finish(new Error("timeout")); }, 10000);
+      function finish(err, res) {
+        if (done) return;
+        done = true; clearTimeout(timer);
+        try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+        s.remove();
+        if (err) reject(err); else resolve(res);
+      }
+      window[cb] = function (res) { finish(res && res.ok ? null : new Error((res && res.error) || "sheet"), res); };
+      s.onerror = function () { finish(new Error("network")); };
+      s.src = SHOP.orderEndpoint + (SHOP.orderEndpoint.indexOf("?") < 0 ? "?" : "&") + "callback=" + cb + "&data=" + encodeURIComponent(JSON.stringify(payload));
+      document.head.appendChild(s);
+    });
   }
   function initCheckout() {
-    var cart = getCart();
     var root = $("[data-checkout]");
+    var cart = getCart();
     if (!cart.length) {
-      root.innerHTML = '<div class="empty" style="margin:30px 0"><h3>Giỏ hàng đang trống</h3><p class="muted">Chọn giày trước rồi quay lại đặt hàng nhé.</p><a class="btn" href="shop.html">Xem hàng sẵn</a></div>';
+      root.innerHTML = '<div class="empty" style="margin:30px 0;grid-column:1/-1"><h2>Giỏ hàng đang trống</h2><p class="muted">Chọn mẫu và size trước, rồi quay lại gửi yêu cầu cho shop.</p><div class="empty__actions"><a class="btn btn--grad" href="shop.html">Xem hàng sẵn</a>' + fbLink("Nhắn Facebook cho shop", "btn--ghost") + "</div></div>";
       return;
     }
-    var total = cartTotal(cart);
-    var deposit = Math.round(total * SHOP.depositPercent / 100);
+    var form = $("[data-req-form]"), msgEl = $("[data-req-msg]"), linkEl = $("[data-req-link]"), statusEl = $("[data-req-status]");
     var saved = storage("slife_customer") || {};
+    ["name", "province", "foot"].forEach(function (k) { if (saved[k] && form[k]) form[k].value = saved[k]; });
+    form.note.value = storage("slife_note") || "";
+    form.province.innerHTML = '<option value="">Chọn tỉnh / thành (không bắt buộc)</option>' + PROVINCES.map(function (x) { return "<option>" + x + "</option>"; }).join("");
+    if (saved.province) form.province.value = saved.province;
 
-    $("[data-summary]").innerHTML =
+    // Mã yêu cầu giữ nguyên khi giỏ không đổi — bấm nhiều lần không tạo yêu cầu trùng
+    var sig = cart.map(function (it) { return it.id + "|" + it.size; }).join(",");
+    var pending = storage("slife_req") || {};
+    if (pending.sig !== sig) pending = { sig: sig, code: reqCode(), logged: false };
+    storage("slife_req", pending);
+
+    function current() {
+      return {
+        code: pending.code, items: cart,
+        name: form.name.value.trim(), province: form.province.value, foot: form.foot.value.trim().replace(/\s*cm$/i, ""), note: form.note.value.trim(),
+      };
+    }
+    function message(req) {
+      var lines = req.items.map(function (it, i) {
+        var p = BY_ID[it.id];
+        return (i + 1) + ") " + p.name + "\n   Mã: " + (p.code || "—") + " · Size: " + it.size + " · " + money(itemPrice(p, it.size)) + "\n   " + shareUrl(p);
+      });
+      return "Chào shop, mình muốn mua (yêu cầu " + req.code + "):\n" + lines.join("\n") +
+        "\nTạm tính: " + money(cartTotal(req.items)) +
+        (req.foot ? "\nChân dài: " + req.foot + " cm" : "") +
+        (req.name ? "\nTên: " + req.name : "") +
+        (req.province ? "\nNhận hàng tại: " + req.province : "") +
+        (req.note ? "\nGhi chú: " + req.note : "") +
+        "\nNhờ shop xác nhận size, phí ship và tiền cọc giúp mình." +
+        "\nXem tóm tắt: " + requestLink(req);
+    }
+    function refresh() {
+      var req = current();
+      msgEl.textContent = message(req);
+      linkEl.href = requestLink(req);
+      storage("slife_customer", { name: req.name, province: req.province, foot: req.foot });
+      storage("slife_note", req.note);
+    }
+    function status(text, kind) { statusEl.hidden = !text; statusEl.className = "req__status" + (kind ? " is-" + kind : ""); statusEl.textContent = text || ""; }
+    // Ghi sổ một lần cho mỗi mã yêu cầu (chống trùng ở cả web và Apps Script)
+    function logOnce() {
+      if (!SHOP.orderEndpoint || pending.logged) return;
+      var req = current();
+      status("Đang ghi yêu cầu " + req.code + " vào sổ của shop…");
+      sendToSheet({
+        code: req.code, time: new Date().toISOString(), name: req.name, province: req.province, foot: req.foot, note: req.note,
+        total: cartTotal(req.items) * 1000, link: requestLink(req),
+        items: req.items.map(function (it) { var p = BY_ID[it.id]; return { code: p.code || p.id, name: p.name, size: it.size, price: (itemPrice(p, it.size) || 0) * 1000 }; }),
+      }).then(function () {
+        pending.logged = true; storage("slife_req", pending);
+        status("Đã ghi yêu cầu " + req.code + " vào sổ của shop. Đây chưa phải đơn đã xác nhận — shop xác nhận trong tin nhắn Facebook.", "ok");
+      }, function () {
+        status("Chưa ghi được vào sổ yêu cầu (mạng chậm hoặc lỗi). Không sao: bạn vẫn gửi tin nhắn qua Facebook bình thường, giỏ hàng vẫn được giữ.", "warn");
+      });
+    }
+
+    $("[data-summary]").innerHTML = "<h2>Mẫu bạn chọn</h2>" +
       cart.map(function (it) {
         var p = BY_ID[it.id];
         return '<div class="co-item"><div class="co-item__img">' + media(p) + "</div><div>" + esc(fullName(p)) +
           '<br><small class="muted">Size ' + esc(it.size) + "</small></div><b>" + money(itemPrice(p, it.size)) + "</b></div>";
       }).join("") +
-      '<div class="summary__row"><span>Tạm tính</span><span>' + money(total) + "</span></div>" +
-      '<div class="summary__row"><span>Phí vận chuyển</span><span class="muted">Shop báo khi xác nhận</span></div>' +
-      '<div class="summary__row summary__total"><span>Tổng cộng</span><span>' + money(total) + "</span></div>";
+      '<div class="summary__row summary__total"><span>Tạm tính</span><span>' + money(cartTotal(cart)) + "</span></div>" +
+      '<p class="muted" style="font-size:13.5px;margin:8px 0 0">Phí ship và tiền cọc: shop báo qua Facebook sau khi xác nhận size. Mua thêm đôi hoặc thêm size, bạn trao đổi trong tin nhắn.</p>' +
+      '<a class="link" href="cart.html" style="display:inline-block;margin-top:10px">Sửa giỏ hàng</a>';
 
-    var form = $("[data-co-form]");
-    var prov = form.province;
-    prov.innerHTML = '<option value="">Chọn tỉnh / thành</option>' + PROVINCES.map(function (x) { return "<option>" + x + "</option>"; }).join("");
-    ["name", "phone", "email", "province", "address", "foot"].forEach(function (k) { if (saved[k] && form[k]) form[k].value = saved[k]; });
-    form.note.value = storage("slife_note") || "";
-    $("[data-cod-text]").textContent = "Cọc " + SHOP.depositPercent + "% (" + money(deposit) + ") qua chuyển khoản, phần còn lại trả khi nhận hàng. Được mở hộp kiểm tra trước khi trả tiền.";
-    $("[data-bank-text]").innerHTML = "Ngân hàng " + esc(SHOP.bank.name) + "<br>STK: <b>" + esc(SHOP.bank.number) + "</b><br>Chủ TK: <b>" + esc(SHOP.bank.holder) + "</b>";
-
-    // Bước 1 -> Bước 2
-    function step(n) {
-      $all("[data-step]", root).forEach(function (s) { s.hidden = +s.dataset.step !== n; });
-      $all("[data-crumb-step]", root).forEach(function (s) { s.classList.toggle("is-current", +s.dataset.crumbStep === n); });
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-    function readForm() {
-      return {
-        name: form.name.value.trim(), phone: form.phone.value.trim(), email: form.email.value.trim(),
-        province: form.province.value, address: form.address.value.trim(), foot: form.foot.value.trim(), note: form.note.value.trim(),
-      };
-    }
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var d = readForm();
-      if (!d.name || !d.phone || !d.province || !d.address) { toast("Bạn điền giúp họ tên, số điện thoại, tỉnh/thành và địa chỉ nhé"); return; }
-      if (!/^(\+?84|0)[0-9 .]{8,12}$/.test(d.phone)) { toast("Số điện thoại chưa đúng"); form.phone.focus(); return; }
-      if (d.email && !/^\S+@\S+\.\S+$/.test(d.email)) { toast("Email chưa đúng"); form.email.focus(); return; }
-      if (!form.agree.checked) { toast("Bạn đồng ý chính sách bảo mật để shop dùng thông tin giao hàng nhé"); return; }
-      storage("slife_customer", d);
-      step(2);
+    form.addEventListener("input", refresh);
+    form.addEventListener("change", refresh);
+    form.addEventListener("submit", function (e) { e.preventDefault(); });
+    $("[data-req-copy]").addEventListener("click", function () {
+      refresh();
+      copyText(msgEl.textContent).then(function () { toast("Đã sao chép — mở Facebook shop rồi dán vào tin nhắn"); });
+      $("[data-req-copy]").classList.add("is-done");
+      track("copy_message", { source: "gui_yeu_cau", code: pending.code, items: cart.length });
+      logOnce();
     });
-    $("[data-back]").addEventListener("click", function () { step(1); });
-
-    $("[data-finish]").addEventListener("click", function () {
-      var d = readForm();
-      var pay = (root.querySelector('input[name="pay"]:checked') || {}).value || "cod";
-      var code = orderCode();
-      var lines = cart.map(function (it, i) {
-        var p = BY_ID[it.id];
-        return (i + 1) + ") Mã: " + (p.code || "—") + " / Size: " + it.size + " / " + p.name + " — " + money(itemPrice(p, it.size));
-      });
-      var payText = pay === "bank" ? "Chuyển khoản 100% (" + money(total) + ")" : "COD, cọc " + SHOP.depositPercent + "% (" + money(deposit) + ")";
-      var msg = "Chào shop, mình đặt đơn " + code + ":\n" + lines.join("\n") +
-        "\nTạm tính: " + money(total) +
-        "\n\nChân dài: " + (d.foot ? d.foot.replace(/\s*cm$/i, "") + " cm" : "…") +
-        "\nTên: " + d.name + "\nSĐT: " + d.phone + (d.email ? "\nEmail: " + d.email : "") +
-        "\nĐịa chỉ: " + d.address + ", " + d.province +
-        "\nThanh toán: " + payText + (d.note ? "\nGhi chú: " + d.note : "");
-
-      // Lưu đơn vào Google Sheet nếu shop đã cài (xem HUONG-DAN-DON-HANG.md)
-      if (SHOP.orderEndpoint) {
-        try {
-          fetch(SHOP.orderEndpoint, {
-            method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({
-              code: code, time: new Date().toISOString(), name: d.name, phone: d.phone, email: d.email, province: d.province, address: d.address,
-              foot: d.foot, note: d.note, payment: payText, total: total * 1000,
-              items: cart.map(function (it) { var p = BY_ID[it.id]; return { code: p.code, name: p.name, size: it.size, price: (itemPrice(p, it.size) || 0) * 1000 }; }),
-            }),
-          });
-        } catch (err) { /* vẫn còn tin nhắn Zalo làm dự phòng */ }
-      }
-
-      var payAmount = pay === "bank" ? total : deposit;
-      var qr = vietQr(payAmount, code);
-      $("[data-done]").innerHTML =
-        '<div class="done__head">' + I.check + "<div><h2>Đã tạo đơn " + esc(code) + "</h2>" +
-        '<p class="muted">Bước cuối: gửi đơn cho shop qua Zalo để shop xác nhận còn size và báo phí ship.</p></div></div>' +
-        '<div class="done__grid"><div>' +
-        '<div class="order-msg" data-msg>' + esc(msg) + "</div>" +
-        '<a class="btn btn--zalo btn--block" style="margin-top:12px" href="' + SHOP.zalo + '" target="_blank" rel="noopener" data-send>1. Sao chép đơn & mở Zalo</a>' +
-        '<p class="muted" style="font-size:13px;margin:8px 0 0">Dán tin nhắn vào khung chat Zalo của shop rồi gửi.</p></div>' +
-        (qr ? '<div class="done__qr"><b>2. ' + (pay === "bank" ? "Chuyển khoản" : "Chuyển cọc") + " " + money(payAmount) + "</b>" +
-          '<img src="' + esc(qr) + '" alt="Mã QR chuyển khoản ' + esc(code) + '" width="240" height="240" onerror="this.outerHTML=\'<p>' + esc(SHOP.bank.name) + "<br>STK <b>" + esc(SHOP.bank.number) + "</b><br>" + esc(SHOP.bank.holder) + "<br>Nội dung: <b>" + esc(code) + '</b></p>\'">' +
-          '<small class="muted">Mở app ngân hàng, quét mã — số tiền và nội dung <b>' + esc(code) + "</b> đã điền sẵn. Nên chờ shop xác nhận còn size rồi hẵng chuyển.</small></div>" : "") +
-        "</div>";
-      $("[data-send]").addEventListener("click", function () { copyText(msg); toast("Đã sao chép đơn — dán vào Zalo để gửi shop"); });
-      setCart([]);
-      storage("slife_note", "");
-      step(3);
+    $("[data-req-open]").href = SHOP.facebookChat;
+    $("[data-req-open]").insertAdjacentHTML("afterbegin", I.fbc);
+    $("[data-req-open]").addEventListener("click", function () {
+      refresh();
+      fbPending = msgEl.textContent;
+      copyText(fbPending);
+      toast("Đã chép tin nhắn — dán vào khung chat Facebook của shop");
+      logOnce();
     });
-    step(1);
+    $("[data-req-sent]").addEventListener("click", function () {
+      if (!confirm("Bạn đã dán và gửi tin nhắn cho shop trên Facebook chưa? Bấm OK để xoá giỏ hàng.")) return;
+      var link = linkEl.href, code = pending.code;
+      track("request_sent", { code: code, items: cart.length });
+      setCart([]); storage("slife_note", ""); storage("slife_req", null);
+      root.innerHTML = '<div class="req-done"><h2>Cảm ơn bạn</h2><p>Shop sẽ trả lời trong tin nhắn Facebook để xác nhận size, phí ship và tiền cọc cho yêu cầu <b>' + esc(code) + "</b>.</p>" +
+        '<p class="muted">Đây là yêu cầu mua, chưa phải đơn đã xác nhận. Lưu link tóm tắt nếu cần xem lại: <a class="link" href="' + esc(link) + '">xem tóm tắt yêu cầu</a>.</p>' +
+        '<div class="empty__actions">' + fbLink("Mở lại Facebook") + '<a class="btn btn--ghost" href="shop.html">Xem thêm giày</a></div></div>';
+    });
+    if (navigator.onLine === false) status("Thiết bị đang mất mạng. Giỏ hàng vẫn được giữ — khi có mạng, bấm Mở Facebook để gửi.", "warn");
+    window.addEventListener("offline", function () { status("Mất kết nối mạng. Giỏ hàng vẫn được giữ — khi có mạng, bấm Mở Facebook để gửi.", "warn"); });
+    refresh();
+    track("begin_request", { items: cart.length, total: cartTotal(cart) * 1000 });
   }
 
-  /* ---------- Trang kiểm tra & thêm ảnh (anh.html) ----------
-     Kéo ảnh vào dòng sản phẩm: ảnh được thu nhỏ, đặt đúng tên mã và lưu thẳng vào images/products
-     (Chrome / Edge, khi mở web bằng xem-web.bat). Trình duyệt khác: ảnh được tải về với đúng tên. */
-  function shrinkImage(file) {
-    return new Promise(function (resolve, reject) {
-      var url = URL.createObjectURL(file), im = new Image();
-      im.onload = function () {
-        var k = Math.min(1, 1200 / Math.max(im.naturalWidth, im.naturalHeight));
-        var c = document.createElement("canvas");
-        c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k);
-        var g = c.getContext("2d");
-        g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
-        g.drawImage(im, 0, 0, c.width, c.height);
-        URL.revokeObjectURL(url);
-        // WebP nhẹ hơn JPG ~40%; trình duyệt không xuất được WebP thì dùng JPG
-        c.toBlob(function (b) {
-          if (b && b.type === "image/webp") return resolve(b);
-          c.toBlob(function (j) { j ? resolve(j) : reject(new Error("toBlob")); }, "image/jpeg", 0.82);
-        }, "image/webp", 0.8);
-      };
-      im.onerror = function () { URL.revokeObjectURL(url); reject(new Error("unreadable")); };
-      im.src = url;
+  /* ---------- Trang tóm tắt yêu cầu (link riêng gửi kèm tin nhắn) ---------- */
+  function initRequest() {
+    var root = $("[data-request]"), data = null;
+    try { data = b64decode(params().get("r") || ""); } catch (e) { data = null; }
+    var items = data && Array.isArray(data.i) ? data.i.map(function (x) { return { p: findProduct(x[0]), size: String(x[1] || "") }; }).filter(function (x) { return x.p; }) : [];
+    if (!items.length) {
+      root.innerHTML = '<div class="empty" style="margin:30px 0"><h2>Không đọc được yêu cầu</h2><p class="muted">Link có thể bị cắt ngắn khi sao chép. Nhắn Facebook cho shop để được hỗ trợ.</p><div class="empty__actions">' + fbLink("Nhắn Facebook cho shop") + '<a class="btn btn--ghost" href="shop.html">Xem hàng sẵn</a></div></div>';
+      return;
+    }
+    root.innerHTML = '<div class="req-view"><p class="req-view__note">' + I.info + "Đây là tóm tắt yêu cầu mua, <b>không phải trạng thái đơn</b>. Shop xác nhận size, phí ship và tiền cọc trong tin nhắn Facebook.</p>" +
+      "<h1>Yêu cầu " + esc(data.c || "") + "</h1>" +
+      items.map(function (x) {
+        var p = x.p, still = p.sizes.some(function (s) { return s.s === x.size; });
+        return '<div class="cart-item"><a class="cart-item__img" href="' + productUrl(p) + '">' + media(p) + "</a>" +
+          '<div><a class="cart-item__name" href="' + productUrl(p) + '">' + esc(fullName(p)) + "</a>" +
+          '<div class="cart-item__meta">Size ' + esc(x.size) + (still ? " · " + money(itemPrice(p, x.size)) + " (giá trên web lúc xem)" : "") + "</div>" +
+          (still ? "" : '<div class="cart-item__warn">Size này hiện không còn trên web — shop sẽ tư vấn lựa chọn khác.</div>') + "</div></div>";
+      }).join("") +
+      '<dl class="req-view__info">' +
+      (data.n ? "<dt>Tên</dt><dd>" + esc(data.n) + "</dd>" : "") +
+      (data.p ? "<dt>Nhận hàng tại</dt><dd>" + esc(data.p) + "</dd>" : "") +
+      (data.f ? "<dt>Chân dài</dt><dd>" + esc(data.f) + " cm</dd>" : "") +
+      (data.t ? "<dt>Ghi chú</dt><dd>" + esc(data.t) + "</dd>" : "") + "</dl>" +
+      '<div class="empty__actions" style="justify-content:flex-start">' + fbLink("Nhắn Facebook cho shop") + '<button type="button" class="btn btn--ghost" data-req-restore>Thêm các mẫu này vào giỏ</button></div></div>';
+    $("[data-req-restore]", root).addEventListener("click", function () {
+      items.forEach(function (x) { if (x.p.sizes.some(function (s) { return s.s === x.size; })) addToCart(x.p.id, x.size, 1); });
+      openMini();
     });
   }
-  // Giải nén file .zip (VD Canva tải nhiều trang) thành danh sách ảnh, không cần thư viện
-  function unzipImages(file) {
-    return file.arrayBuffer().then(function (ab) {
-      var buf = new Uint8Array(ab), dv = new DataView(ab), eocd = -1;
-      for (var i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) {
-        if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
-      }
-      if (eocd < 0) throw new Error("zip");
-      var count = dv.getUint16(eocd + 10, true), pos = dv.getUint32(eocd + 16, true), jobs = [];
-      for (var n = 0; n < count && dv.getUint32(pos, true) === 0x02014b50; n++) {
-        var method = dv.getUint16(pos + 10, true), size = dv.getUint32(pos + 20, true);
-        var nameLen = dv.getUint16(pos + 28, true), extraLen = dv.getUint16(pos + 30, true), commentLen = dv.getUint16(pos + 32, true);
-        var local = dv.getUint32(pos + 42, true);
-        var name = new TextDecoder().decode(buf.subarray(pos + 46, pos + 46 + nameLen));
-        pos += 46 + nameLen + extraLen + commentLen;
-        var ext = (name.match(/\.(jpe?g|png|webp)$/i) || [])[1];
-        if (!ext || /(^|\/)(__MACOSX|\.)/.test(name)) continue;
-        var start = local + 30 + dv.getUint16(local + 26, true) + dv.getUint16(local + 28, true);
-        var raw = new Blob([buf.subarray(start, start + size)]);
-        var type = "image/" + (/jpe?g/i.test(ext) ? "jpeg" : ext.toLowerCase());
-        jobs.push((method === 0 ? Promise.resolve(raw)
-          : method === 8 && window.DecompressionStream ? new Response(raw.stream().pipeThrough(new DecompressionStream("deflate-raw"))).blob()
-          : Promise.reject(new Error("zip"))).then((function (nm, tp) {
-            return function (b) { return new File([b], nm.split("/").pop(), { type: tp }); };
-          })(name, type)));
-      }
-      return Promise.all(jobs);
-    });
-  }
-  function initImages() {
-    var body = $("[data-img-rows]"), stat = $("[data-img-stat]"), filter = "all", q = "";
-    var list = PRODUCTS.slice().sort(function (a, b) { return (b.inStock - a.inStock) || a.order - b.order; });
-    var status = {}, dir = null, done = 0, found = 0;
-    var canWrite = typeof window.showDirectoryPicker === "function";
-    body.innerHTML = list.map(function (p) {
-      var file = p.code || p.id;
-      return '<tr data-row="' + esc(p.id) + '" data-q="' + esc(p.search + " " + norm(p.id)) + '">' +
-        '<td><div class="thumb">' + media(p) + "</div></td>" +
-        '<td><a href="' + productUrl(p) + '" target="_blank" rel="noopener">' + esc(fullName(p)) + "</a><br><small class=\"muted\">" + esc(p.brand) + (p.inStock ? "" : " · hết size") + "</small></td>" +
-        '<td><code>' + esc(file) + '</code> <button class="btn btn--ghost btn--sm" data-copy="' + esc(p.code || p.id) + '">Chép tên</button></td>' +
-        '<td><label class="drop" data-drop="' + esc(p.id) + '"><input type="file" accept="image/*,.zip" multiple hidden>Kéo ảnh / file zip vào đây<br><small>hoặc bấm để chọn</small></label></td>' +
-        '<td data-status class="muted">Đang kiểm tra…</td></tr>';
-    }).join("");
 
-    function setStatus(p, text, ok) {
-      var cell = $('[data-row="' + p.id + '"] [data-status]', body);
-      cell.className = ok ? "status-ok" : "status-miss";
-      cell.textContent = text;
-    }
-    function showStat() { stat.textContent = "Đã kiểm tra " + done + "/" + list.length + " mẫu · " + found + " mẫu có ảnh"; }
-
-    var queue = list.slice();
-    function worker() {
-      var p = queue.shift();
-      if (!p) return;
-      findImage(imgBase(p)).then(function (u) {
-        if (status[p.id] === undefined) {
-          status[p.id] = !!u; if (u) found++;
-          setStatus(p, u ? "Đã có ảnh (" + u.split("/").pop() + ")" : "Chưa có ảnh", !!u);
-        }
-        done++; showStat(); apply(); worker();
-      });
-    }
-    for (var i = 0; i < 6; i++) worker();
-
-    function apply() {
-      var words = norm(q).split(/\s+/).filter(Boolean);
-      $all("[data-row]", body).forEach(function (tr) {
-        var s = status[tr.dataset.row];
-        var ok = filter === "all" || (filter === "missing" && s === false) || (filter === "has" && s === true);
-        for (var i = 0; i < words.length; i++) if (tr.dataset.q.indexOf(words[i]) < 0) ok = false;
-        tr.hidden = !ok;
-      });
-    }
-    $("[data-img-filter]").addEventListener("change", function (e) { filter = e.target.value; apply(); });
-    $("[data-img-search]").addEventListener("input", function (e) { q = e.target.value; apply(); });
-    body.addEventListener("click", function (e) {
-      var b = e.target.closest("[data-copy]");
-      if (b) copyText(b.dataset.copy).then(function () { toast("Đã chép tên file: " + b.dataset.copy); });
-    });
-
-    // Chọn thư mục images/products một lần để lưu thẳng ảnh vào đó
-    var dirBtn = $("[data-pick-dir]"), dirNote = $("[data-dir-note]");
-    if (!canWrite) {
-      dirBtn.hidden = true;
-      dirNote.innerHTML = "Trình duyệt này không lưu thẳng vào thư mục được: ảnh sẽ được <b>tải về (Downloads) với đúng tên</b>, bạn chép chúng vào <b>images/products</b>. Dùng Chrome hoặc Edge và mở web bằng <b>xem-web.bat</b> để lưu thẳng.";
-    }
-    // Chọn nơi LƯU ảnh: thư mục B-o, B-o\images hay B-o\images\products đều được — tự tìm vào images\products
-    function findProductsDir(h) {
-      function sub(d, name) { return d.getDirectoryHandle(name).catch(function () { return null; }); }
-      var p = h.name === "products" ? Promise.resolve(h)
-        : h.name === "images" ? sub(h, "products")
-        : sub(h, "images").then(function (i) { return i ? sub(i, "products") : null; });
-      // Thư mục ảnh của website có sẵn file README.md — dùng để chắc chắn chọn đúng
-      return p.then(function (d) {
-        return d ? d.getFileHandle("README.md").then(function () { return d; }, function () { return null; }) : null;
-      });
-    }
-    dirBtn.addEventListener("click", function () {
-      window.showDirectoryPicker({ id: "slife-products", mode: "readwrite" }).then(function (h) {
-        return findProductsDir(h).then(function (d) {
-          dir = d;
-          dirNote.innerHTML = d
-            ? "✓ Ảnh sẽ được lưu vào <b>B-o\\images\\products</b>. Giờ kéo ảnh / file zip (để ở ổ nào cũng được) thả vào đúng dòng bên dưới."
-            : "⚠ Thư mục <b>" + esc(h.name) + "</b> không phải thư mục website. Bấm lại và chọn thư mục <b>B-o</b> (nơi bạn tải website về, VD Documents\\B-o).";
-          dirNote.className = d ? "status-ok" : "status-miss";
-        });
-      }).catch(function () { /* người dùng huỷ */ });
-    });
-
-    function exists(name) {
-      if (!dir) return Promise.resolve(false);
-      return Promise.all(IMG_EXT.map(function (ext) {
-        return dir.getFileHandle(name + "." + ext).then(function () { return true; }, function () { return false; });
-      })).then(function (r) { return r.some(Boolean); });
-    }
-    // Tên còn trống: MÃ (nếu chưa có ảnh chính) rồi MÃ-2, MÃ-3… (tối đa MAX_SHOTS)
-    var used = {};
-    function nextName(p) {
-      var stem = p.code || p.id, n = 1;
-      used[p.id] = used[p.id] || {};
-      function tryN() {
-        if (n > MAX_SHOTS) return Promise.resolve(null);
-        var name = n === 1 ? stem : stem + "-" + n;
-        var known = used[p.id][name] || (n === 1 && status[p.id] === true);
-        return (known ? Promise.resolve(true) : exists(name)).then(function (has) {
-          if (has) { n++; return tryN(); }
-          used[p.id][name] = true;
-          return name;
-        });
-      }
-      return tryN();
-    }
-    function save(name, blob) {
-      var ext = blob.type === "image/webp" ? ".webp" : ".jpg";
-      if (dir) {
-        return dir.getFileHandle(name + ext, { create: true }).then(function (fh) {
-          return fh.createWritable().then(function (w) { return w.write(blob).then(function () { return w.close(); }); });
-        });
-      }
-      var a = document.createElement("a");
-      a.href = URL.createObjectURL(blob); a.download = name + ext;
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
-      return Promise.resolve();
-    }
-    function handle(p, dropped) {
-      if (canWrite && !dir) { toast("Bấm “Chọn nơi lưu: thư mục website B-o” trước nhé"); return; }
-      // File .zip (Canva tải nhiều trang) được giải nén thành ảnh
-      Promise.all(Array.prototype.map.call(dropped, function (f) {
-        return /\.zip$/i.test(f.name) || f.type === "application/zip" || f.type === "application/x-zip-compressed" ? unzipImages(f) : [f];
-      })).then(function (groups) {
-        saveAll(p, [].concat.apply([], groups));
-      }, function () { toast("Không mở được file zip này — giải nén rồi kéo ảnh vào"); });
-    }
-    function saveAll(p, files) {
-      // Sắp theo tên file (ảnh điện thoại đặt theo thứ tự chụp, Canva đặt theo số trang): ảnh đầu tiên = ảnh chính
-      files = files.filter(function (f) { return /^image\//.test(f.type) || /\.(jpe?g|png|webp|heic)$/i.test(f.name); })
-        .sort(function (a, b) { return a.name.localeCompare(b.name, undefined, { numeric: true }); });
-      if (!files.length) return;
-      var chain = Promise.resolve(), savedNames = [];
-      files.forEach(function (f) {
-        chain = chain.then(function () {
-          if (/heic$/i.test(f.name)) throw new Error("heic");
-          return Promise.all([shrinkImage(f), nextName(p)]);
-        }).then(function (r) {
-          if (!r[1]) throw new Error("full");
-          return save(r[1], r[0]).then(function () {
-            savedNames.push(r[1] + (r[0].type === "image/webp" ? ".webp" : ".jpg"));
-            if (!status[p.id]) { status[p.id] = true; found++; showStat(); }
-            if (savedNames.length === 1 && r[1] === (p.code || p.id)) {
-              var img = $('[data-row="' + p.id + '"] .thumb img', body);
-              if (img) { img.src = URL.createObjectURL(r[0]); img.classList.add("ok"); }
-            }
-          });
-        });
-      });
-      chain.then(function () {
-        setStatus(p, (dir ? "Đã lưu " : "Đã tải về ") + savedNames.join(", "), true);
-        toast((dir ? "Đã lưu " : "Đã tải về ") + savedNames.length + " ảnh cho " + (p.code || p.name));
-      }).catch(function (err) {
-        var msg = err.message === "heic" ? "Ảnh HEIC (iPhone) chưa đọc được — gửi qua Zalo/Messenger rồi tải về dạng JPG"
-          : err.message === "full" ? "Mẫu này đã đủ " + MAX_SHOTS + " ảnh"
-          : err.message === "unreadable" ? "File này không phải ảnh đọc được" : "Không lưu được ảnh: " + err.message;
-        toast(msg);
-        if (savedNames.length) setStatus(p, (dir ? "Đã lưu " : "Đã tải về ") + savedNames.join(", "), true);
-      });
-    }
-    body.addEventListener("change", function (e) {
-      var zone = e.target.closest("[data-drop]");
-      if (zone && e.target.files) { handle(BY_ID[zone.dataset.drop], e.target.files); e.target.value = ""; }
-    });
-    ["dragover", "drop"].forEach(function (t) { window.addEventListener(t, function (e) { e.preventDefault(); }); });
-    body.addEventListener("dragover", function (e) {
-      var tr = e.target.closest("[data-row]");
-      $all(".drop.is-over", body).forEach(function (z) { z.classList.remove("is-over"); });
-      if (tr) $(".drop", tr).classList.add("is-over");
-    });
-    body.addEventListener("drop", function (e) {
-      var tr = e.target.closest("[data-row]");
-      $all(".drop.is-over", body).forEach(function (z) { z.classList.remove("is-over"); });
-      if (tr && e.dataTransfer && e.dataTransfer.files.length) handle(BY_ID[tr.dataset.row], e.dataTransfer.files);
-    });
+  /* ---------- Trang hướng dẫn size: lưu ý form + bảng size từ data/shop.js ---------- */
+  function initGuide() {
+    var steps = $("[data-measure-steps]");
+    if (steps) steps.innerHTML = MEASURE_STEPS;
+    var rows = $("[data-fit-rows]");
+    if (rows) rows.innerHTML = FIT_NOTES.map(function (f) { return "<tr><td>" + esc(f.line) + "</td><td>" + esc(f.advice) + "</td></tr>"; }).join("");
+    var box = $("[data-size-charts]");
+    if (box) box.innerHTML = Object.keys(SIZE_CHARTS).filter(function (b) { return b !== "Jordan"; }).map(function (b) {
+      return '<details class="chart"' + '><summary>' + I.ruler + "Bảng size " + esc(b) + (b === "Nike" ? " / Jordan" : "") + I.down.replace("<svg", '<svg class="chev"') + "</summary>" +
+        sizeChartHtml({ brand: b, sizes: [] }) + "</details>";
+    }).join("") || '<p class="muted">Shop đang cập nhật bảng size theo hãng.</p>';
   }
 
   /* ---------- Trang thông tin: điền thông tin shop vào chỗ [data-shop] ---------- */
@@ -1430,8 +2218,42 @@
     });
   }
 
+  // Dùng chung cho công cụ ảnh nội bộ (assets/js/anh.js, chỉ tải ở anh.html)
+  window.SLIFE = { "$": $, "$all": $all, BY_ID: BY_ID, IMG_EXT: IMG_EXT, MAX_SHOTS: MAX_SHOTS, PRODUCTS: PRODUCTS, copyText: copyText, esc: esc, findImage: findImage, fullName: fullName, imgBase: imgBase, media: media, norm: norm, productUrl: productUrl, shotsOf: shotsOf, toast: toast };
+
+  /* ---------- Hiệu ứng khi cuộn (chủ shop chọn): nền ba đốm màu shop trôi theo trang, khối nội dung hiện dần ----------
+     Máy bật "giảm chuyển động" hoặc trình duyệt cũ: bỏ qua, nội dung hiện bình thường. */
+  function scrollEffects() {
+    if (REDUCED || !("IntersectionObserver" in window)) return;
+    var ticking = false;
+    function onScroll() {
+      ticking = false;
+      var max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+      document.documentElement.style.setProperty("--sy", (scrollY / max).toFixed(4));
+    }
+    window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+    onScroll();
+    document.body.classList.add("has-aura");
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("is-in"); io.unobserve(en.target); } });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    function watch() {
+      $all(".sec__head, .brand-tile, .needs .need, .line-card, .perk, .grid .card, .consult, .faq details, .follow__in").forEach(function (el) {
+        if (el.classList.contains("rv")) return;
+        var sib = el.parentNode ? Array.prototype.indexOf.call(el.parentNode.children, el) : 0;
+        el.style.setProperty("--i", Math.min(sib, 8));
+        el.classList.add("rv");
+        io.observe(el);
+      });
+    }
+    watch();
+    // Thẻ sản phẩm vẽ thêm khi lọc / sang trang: theo dõi tiếp
+    new MutationObserver(function () { clearTimeout(watch.t); watch.t = setTimeout(watch, 60); }).observe(document.body, { childList: true, subtree: true });
+  }
+
   /* ---------- Khởi động ---------- */
   document.addEventListener("DOMContentLoaded", function () {
+    loadAnalytics();
     renderChrome();
     fillShopInfo();
     var page = document.body.dataset.page;
@@ -1440,6 +2262,8 @@
     if (page === "product") initProduct();
     if (page === "cart") initCart();
     if (page === "checkout") initCheckout();
-    if (page === "images") initImages();
+    if (page === "request") initRequest();
+    if (page === "guide") initGuide();
+    scrollEffects();
   });
 })();

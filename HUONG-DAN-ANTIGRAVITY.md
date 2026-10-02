@@ -2,7 +2,7 @@
 
 > Mở file này dạng dễ đọc: bấm vào file trong cột Explorer rồi nhấn **Ctrl + Shift + V**.
 
-Thư mục web trên máy: `C:\Users\HP\Documents\B-o`
+Thư mục web trên máy: `D:\B-o` (đã chuyển từ `C:\Users\HP\Documents\B-o` vì ổ C đầy)
 
 ---
 
@@ -77,7 +77,7 @@ Cách chép và lưu giống D3.
 
 ### D5. Cập nhật hàng từ Google Sheet (mỗi khi bảng thay đổi)
 1. Google Sheet → **Tệp → Tải xuống → Microsoft Excel (.xlsx)**.
-2. Mở **File Explorer** → `Documents\B-o` → **kéo file .xlsx thả vào `cap-nhat-hang.bat`**.
+2. Mở **File Explorer** → `D:\B-o` → **kéo file .xlsx thả vào `cap-nhat-hang.bat`**.
    (Hoặc nhờ Agent: *"Cập nhật hàng từ file C:\Users\HP\Downloads\<tên file>.xlsx bằng scripts/build_products.py."*)
 3. F5 trình duyệt kiểm tra vài mẫu, rồi Commit + Sync (mục C).
 
@@ -92,6 +92,9 @@ Ví dụ yêu cầu cho Agent:
 - *"Thêm dòng giày 9060 cho New Balance vào menu."* (sửa `LINES` trong `data/shop.js`)
 - *"Trang chủ: đưa khối Onitsuka Tiger lên trước New Balance."*
 - *"Thêm câu hỏi thường gặp vào trang Chính sách: …"*
+
+- *"Đổi mẫu trong chùm ảnh banner đầu trang thành U204LMMC, 553560-132, IG1024."* (sửa `heroPicks` trong `data/shop.js`)
+- *"Thêm logo hãng Vans: file ở D:\Downloads\vans.png."* (đặt `images/brands/vans.png`, thêm vào `BRAND_LOGOS`)
 
 Gửi kèm ảnh chụp màn hình khi muốn sửa một chỗ cụ thể (bấm dấu **+** trong khung Agent để đính ảnh).
 
@@ -108,3 +111,58 @@ Làm theo `HUONG-DAN-TEN-MIEN.md`. Khi đã mua tên miền, nhờ Agent:
 - Không dán mật khẩu, mã OTP, thông tin thẻ vào khung Agent hay vào code.
 - Mỗi lần một việc; xong việc nào **Commit + Sync** việc đó.
 - Nếu vừa sửa trên trang GitHub (tải ảnh bằng web) hoặc nhờ Claude sửa, nhớ **Pull** trước khi làm tiếp trong Antigravity.
+
+---
+
+## F. Khi khách đã cọc một size (cập nhật tồn kho)
+
+Website chỉ hiện **hàng sẵn**, lấy từ bảng hàng Google Sheet. Khi khách đã cọc một đôi:
+
+1. Trên Google Sheet: bỏ đánh dấu size đó (xoá số 1 hoặc bỏ tô xanh) ở dòng mẫu giày.
+2. **Tệp → Tải xuống → Microsoft Excel (.xlsx)** → kéo file vào `cap-nhat-hang.bat`.
+3. Commit + Sync. 1–2 phút sau web không còn hiện size đó.
+
+Hoặc nhắn Agent: *"Khách đã cọc mẫu U204LMMC size 40. Tôi đã sửa Google Sheet và tải file về `D:\Downloads\<tên file>.xlsx` — cập nhật hàng bằng scripts/build_products.py rồi push."*
+
+Không sửa tay `data/products.js`: lần cập nhật sau từ Sheet sẽ ghi đè mất.
+
+---
+
+## G. Chốt giao diện mới (mốc 1 → 9) cùng Antigravity
+
+Giao diện mới làm trên nhánh `thiet-ke-moi`, chủ shop đã duyệt ngày 02/10. Chi tiết từng mốc ở `HANDOFF.md`, quy tắc thiết kế ở `AGENTS.md` (Antigravity tự đọc).
+
+### G1. Kiểm tra lần cuối trên máy thật (khoảng 10 phút)
+
+Dán nguyên đoạn dưới vào khung **Agent**:
+
+```
+Đọc AGENTS.md và HANDOFF.md. Chuyển sang nhánh thiet-ke-moi (git fetch rồi git checkout thiet-ke-moi), pull bản mới nhất,
+chạy xem-web.bat. Mở http://localhost:8080 bằng Chrome và Edge, kiểm tra theo danh sách G2, chụp màn hình chỗ nào lỗi.
+Không sửa data/products.js. Không gộp vào nhánh claude/shoe-shop-website-3dln52 khi tôi chưa đồng ý.
+Báo tôi bằng tiếng Việt: mục nào đạt, mục nào lỗi.
+```
+
+### G2. Danh sách kiểm tra
+
+- [ ] Logo đầu trang: đủ "S&LIFE · Since 2021", màu chảy, không có ô vuông nền.
+- [ ] Banner 5 slide tự chuyển sau 6 giây; rê chuột vào thì dừng; nút ⏸ tạm dừng được.
+- [ ] Dải logo 9 hãng chạy dưới banner (có Puma), bấm logo ra đúng hãng.
+- [ ] "Hàng sẵn, mua ngay" có đủ các hãng.
+- [ ] Chữ: tiêu đề Barlow Condensed, chữ thường IBM Plex Sans, dấu tiếng Việt không chạm nhau.
+- [ ] Trang sản phẩm: chọn size → **Tư vấn qua Facebook** → điện thoại mở app Facebook; máy tính Edge hiện hộp "Sao chép link / Mở luôn".
+- [ ] Giỏ hàng → Gửi yêu cầu → tin nhắn đã chép sẵn đủ mã, size, giá.
+- [ ] Xem dạng điện thoại (F12 → Ctrl + Shift + M): không bị tràn ngang, chữ đọc rõ.
+
+### G3. Đưa lên web thật
+
+Chỉ làm khi G2 đạt hết **và chủ shop đồng ý**. Nhờ Claude hoặc dán vào Agent:
+
+```
+Gộp nhánh thiet-ke-moi vào nhánh claude/shoe-shop-website-3dln52 (merge, không rebase, không force push), push lên GitHub.
+Đợi 2 phút rồi mở https://honggiabaonguyen271200-star.github.io/B-o/ kiểm tra lại danh sách G2.
+```
+
+**Lỡ thấy lỗi sau khi lên web thật:** nhắn Agent *"Hoàn tác commit gộp thiet-ke-moi bằng git revert -m 1 rồi push."* — web quay về bản cũ, không mất gì.
+
+Sau khi gộp, quay về làm việc trên nhánh `claude/shoe-shop-website-3dln52` như mục A (nhớ **Pull**).
