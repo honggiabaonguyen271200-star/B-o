@@ -441,7 +441,9 @@
   }
   /* ---------- Facebook: kênh tư vấn và chốt đơn chính ----------
      Bấm nút là mở Facebook của shop (SHOP.facebookChat) ở nơi khách đã đăng nhập Facebook:
-     - điện thoại: mở thẳng app Facebook (Android: intent tới app; iPhone: fb://), không mở được thì mở link như thường;
+     - điện thoại: mở thẳng app Facebook (Android: intent tới app; iPhone: fb://). Không bao giờ tự chuyển trang web sang
+       facebook.com: trong Zalo, TikTok… app hỏi "Bạn sẽ thoát Zalo…" khá lâu, nếu trang tự chuyển thì khách quay lại chỉ còn
+       trang Facebook trắng/hồng, mất trang web. Chưa mở được app sau vài giây thì hiện hộp chọn, trang web vẫn nguyên;
      - đang ở trong app Facebook / Messenger: mở ngay tại đó;
      - máy tính dùng Chrome: mở tab mới. Máy tính dùng trình duyệt khác (Edge, Cốc Cốc…): trang web không tự bật được
        Chrome, nên hiện hộp chọn "Sao chép link để mở bằng Chrome" hoặc "Mở luôn bằng trình duyệt này".
@@ -474,19 +476,55 @@
     if (d.mobile) {
       if (SHOP.openFacebookApp === false) return;
       var target = d.android
-        ? "intent://" + url.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.facebook.katana;S.browser_fallback_url=" + encodeURIComponent(url) + ";end"
+        ? "intent://" + url.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.facebook.katana;end"
         : d.ios ? (SHOP.facebookId ? "fb://profile/" + SHOP.facebookId : "fb://facewebmodal/f?href=" + encodeURIComponent(url)) : null;
       if (!target) return;
       e.preventDefault();
-      location.href = target;
-      // Không mở được app (chưa cài, trình duyệt trong app khác chặn): mở link như thường
-      setTimeout(function () { if (!document.hidden) location.href = url; }, 1600);
+      tryFacebookApp(target, url);
       return;
     }
     if (d.chrome || SHOP.desktopAskChrome === false || storage("slife_fb_here")) return;
     e.preventDefault();
     chooseBrowser(url, d.name);
   }
+  // Gọi app Facebook. Trang rời màn hình (app đã mở) thì thôi; sau 2,5 giây trang vẫn ở đây thì hiện hộp chọn
+  // (không tự chuyển trang). Khách quay lại web sau khi mở Facebook: hộp tự đóng, trang web dùng tiếp bình thường.
+  var fbSheet = null;
+  function tryFacebookApp(target, url) {
+    var left = false;
+    function onHide() { if (document.visibilityState === "hidden") left = true; }
+    document.addEventListener("visibilitychange", onHide);
+    window.addEventListener("pagehide", onHide);
+    if (fbSheet) fbSheet.close();
+    setTimeout(function () {
+      document.removeEventListener("visibilitychange", onHide);
+      window.removeEventListener("pagehide", onHide);
+      if (!left && document.visibilityState !== "hidden") fbFallback(target, url);
+    }, 2500);
+    location.href = target;
+  }
+  function fbFallback(target, url) {
+    var m = fbSheet = modal(
+      "<h3>Mở Facebook của shop</h3>" +
+      '<p class="muted" style="font-size:14.5px;margin:8px 0 0">Nếu máy đang hỏi <b>mở ứng dụng Facebook</b>, bấm <b>Tiếp tục</b> / <b>Mở</b>. Chưa mở được thì chọn một cách dưới đây — trang web vẫn giữ nguyên.</p>' +
+      '<div class="fb-alt">' +
+      '<button type="button" class="btn btn--fb" data-fba-app data-autofocus>' + I.fbc + "Mở lại bằng app Facebook</button>" +
+      '<button type="button" class="btn btn--ghost" data-fba-link>' + I.copy + "Sao chép link Facebook shop</button>" +
+      (fbPending ? '<button type="button" class="btn btn--ghost" data-fba-msg>' + I.copy + "Sao chép tin nhắn</button>" : "") +
+      '<a class="btn btn--ghost" href="' + esc(url) + '" target="_blank" rel="noopener" data-fba-web>Mở trang Facebook (tab mới)</a></div>'
+    );
+    m.el.addEventListener("click", function (ev) {
+      if (ev.target.closest("[data-fba-app]")) { m.close(); tryFacebookApp(target, url); }
+      if (ev.target.closest("[data-fba-link]")) { copyText(url); toast("Đã chép link — mở app Facebook hoặc trình duyệt, dán vào ô tìm kiếm"); track("copy_fb_link", {}); }
+      if (ev.target.closest("[data-fba-msg]")) { copyText(fbPending); toast("Đã chép tin nhắn — dán vào khung chat Facebook"); }
+      if (ev.target.closest("[data-fba-web]")) setTimeout(m.close, 0);
+    });
+  }
+  // Khách rời web (sang app Facebook) rồi quay lại, hoặc trình duyệt khôi phục trang từ bộ nhớ: đóng hộp chọn còn mở
+  function closeFbSheet() { if (fbSheet && fbSheet.el.isConnected) fbSheet.close(); fbSheet = null; }
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") closeFbSheet(); });
+  window.addEventListener("pageshow", function (e) { if (e.persisted) { closeFbSheet(); document.body.style.overflow = ""; } });
+
   function chooseBrowser(url, name) {
     var m = modal(
       "<h3>Mở Facebook của shop</h3>" +

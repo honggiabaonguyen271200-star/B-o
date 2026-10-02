@@ -1688,3 +1688,7 @@ body.has-aura::after {
 .pd h1, .coll__title, .page-title, .sec__title, .consult h2, .lineup__name b { line-height: 1.1; }
 .hero__type b { line-height: 1; }
 .sec__title, .coll__title, .page-title, .consult h2 { letter-spacing: .01em; }
+
+/* Hộp "Mở Facebook của shop" khi app Facebook chưa mở được trên điện thoại (trang web giữ nguyên) */
+.fb-alt { display: grid; gap: 10px; margin-top: 16px; }
+.fb-alt .btn { width: 100%; }
