@@ -6,7 +6,11 @@ Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách
 
 > Từ mốc 3, kênh tư vấn là **Facebook** (`facebookChat` trong `data/shop.js`). Các chỗ ghi "Messenger" ở mục mốc 2 / 2b bên dưới là lịch sử, không còn đúng.
 
-## Trạng thái: chủ shop đã duyệt toàn bộ (02/10)
+## Trạng thái: ĐÃ LÊN WEB THẬT (02/10)
+
+Chủ shop yêu cầu "gộp lên web thật" ngày 02/10: nhánh `thiet-ke-moi` đã gộp vào `claude/shoe-shop-website-3dln52` (một commit gộp, hoàn tác được bằng `git revert -m 1 <mã commit gộp>`).
+
+### Ghi chú trước khi gộp
 
 Chủ shop chốt tất cả mốc 1 → 9 ngày 02/10. Việc còn lại để lên web thật: kiểm tra lần cuối trên máy thật bằng Antigravity, rồi gộp `thiet-ke-moi` vào `claude/shoe-shop-website-3dln52`. Cả hai bước có hướng dẫn ở mục **G** của `HUONG-DAN-ANTIGRAVITY.md`. Nhánh web thật chưa có commit nào mới kể từ khi tách, nên gộp không bị xung đột.
 
