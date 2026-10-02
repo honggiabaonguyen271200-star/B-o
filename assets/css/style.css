@@ -1,14 +1,12 @@
 /* S&LIFE Sneaker — giao diện. Màu lấy từ logo (xem images/brand/README.md). */
-/* Font dự phòng cho tiêu đề in hoa khi Bricolage chưa tải xong / không tải được:
-   font máy có sẵn, thu nhỏ còn ~72% để bề ngang gần bằng Bricolage bản hẹp → chữ lớn không tràn mép. */
+/* Hai font (mốc 9): Barlow Condensed cho tiêu đề, IBM Plex Sans cho chữ đọc. Cả hai có tiếng Việt, miễn phí (Google Fonts).
+   Font dự phòng cho tiêu đề khi Barlow Condensed chưa tải xong / không tải được: font hẹp có sẵn trên máy. */
 @font-face {
-  font-family: "Bricolage Fallback";
-  src: local("Arial Narrow Bold"), local("ArialNarrow-Bold"), local("Arial Bold"), local("Arial-BoldMT"),
-       local("Helvetica Neue Bold"), local("HelveticaNeue-Bold"), local("Roboto Bold"), local("Roboto-Bold"),
-       local("Liberation Sans Bold"), local("DejaVu Sans Bold");
+  font-family: "Display Fallback";
+  src: local("Arial Narrow Bold"), local("ArialNarrow-Bold"), local("Roboto Condensed Bold"), local("RobotoCondensed-Bold"),
+       local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Narrow Bold"), local("DejaVu Sans Condensed Bold");
   font-weight: 600 900;
-  size-adjust: 72%;
-  ascent-override: 100%;
+  size-adjust: 92%;
 }
 :root {
   --c-cobalt: #004AAD;
@@ -32,9 +30,9 @@
   --r-s: 8px; --r: 12px; --r-l: 20px;
   --shadow-1: 0 1px 2px rgba(22, 18, 43, .05), 0 4px 16px rgba(22, 18, 43, .06);
   --shadow-2: 0 18px 40px rgba(22, 18, 43, .16);
-  /* Một họ chữ: Bricolage Grotesque — nội dung ở độ rộng thường, tiêu đề ở độ rộng hẹp (font-stretch 75%) */
-  --font: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Bricolage Grotesque", "Bricolage Fallback", "Arial Narrow", sans-serif;
+  /* Hai font: chữ đọc IBM Plex Sans, tiêu đề Barlow Condensed (xem khối "Mốc 9" cuối file) */
+  --font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-display: "Barlow Condensed", "Display Fallback", "Arial Narrow", sans-serif;
   --max: 1320px;
   --gut: 16px;
   --hd-h: 116px;           /* chiều cao header dính (điện thoại: 2 hàng) */
@@ -1676,3 +1674,17 @@ body.has-aura::after {
 @media (prefers-reduced-motion: reduce) {
   .logo__img::before { animation: none; height: 100%; background: linear-gradient(160deg, #004AAD, #771CAE 50%, #DB3137); }
 }
+
+/* =========================================================
+   Mốc 9 (02/10): 2 font bắt buộc
+   - Barlow Condensed (tiêu đề, chữ lớn in hoa): banner, tiêu đề khu vực, tên dòng, tên mẫu ở trang sản phẩm, số thứ hạng
+   - IBM Plex Sans (chữ đọc): đoạn văn, menu, nút, ô tìm, tên mẫu trên thẻ, giá, size, mã, giỏ, chính sách
+   Barlow Condensed chỉ có một độ rộng: font-stretch cũ (75%) không còn tác dụng, giữ cũng không sao.
+   ========================================================= */
+/* Giá, size, mã: số đều bề ngang, thẳng hàng giữa các thẻ */
+.card__price, .card__sizes, .card__code, .pd__price, .size, .mini__price, .hero__tag, .hero__type em, .lineup__name small { font-variant-numeric: tabular-nums; }
+/* Tiêu đề in hoa tiếng Việt: chừa chỗ cho dấu chồng (Ầ, Ẫ, Ộ) để dòng dưới không chạm dòng trên */
+.hero__title { line-height: 1.1; letter-spacing: .005em; margin-bottom: 22px; }
+.pd h1, .coll__title, .page-title, .sec__title, .consult h2, .lineup__name b { line-height: 1.1; }
+.hero__type b { line-height: 1; }
+.sec__title, .coll__title, .page-title, .consult h2 { letter-spacing: .01em; }

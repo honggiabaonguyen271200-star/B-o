@@ -1,6 +1,6 @@
 # HANDOFF — Thiết kế mới S&LIFE Sneaker (nhánh `thiet-ke-moi`)
 
-Cập nhật 02/10/2026 · **Mốc 8**: logo đầu trang nét dày + màu chảy, bỏ số ở dải logo, thêm logo Puma, "Hàng sẵn, mua ngay" đủ các hãng (xem mục "Mốc 8"). **Mốc 7**: banner tự chuyển + nhiều hãng + 2 kiểu banner mới, logo liền nền trắng, nút Tìm mới, dải logo chạy (xem mục "Mốc 7"). **Mốc 6**: chữ chạy, chùm ảnh giày, chuyển cảnh, bỏ tím đặc, hiệu ứng cuộn (xem mục "Mốc 6"). **Mốc 5**: sặc sỡ hơn bằng màu shop (xem mục "Mốc 5"). **Mốc 4**: logo hãng + hệ màu mới (xem mục "Mốc 4"). **Mốc 3**: làm theo 8 góp ý của chủ shop (logo, nhãn hãng, menu, Facebook thay Messenger, bỏ "Gửi yêu cầu mua", bảng size, bỏ "Mới về", hết lỗi 404). Nối tiếp mốc 2b và mốc 2 (bên dưới).
+Cập nhật 02/10/2026 · **Mốc 9**: đổi sang 2 font Barlow Condensed (tiêu đề) + IBM Plex Sans (chữ đọc) (xem mục "Mốc 9"). **Mốc 8**: logo đầu trang nét dày + màu chảy, bỏ số ở dải logo, thêm logo Puma, "Hàng sẵn, mua ngay" đủ các hãng (xem mục "Mốc 8"). **Mốc 7**: banner tự chuyển + nhiều hãng + 2 kiểu banner mới, logo liền nền trắng, nút Tìm mới, dải logo chạy (xem mục "Mốc 7"). **Mốc 6**: chữ chạy, chùm ảnh giày, chuyển cảnh, bỏ tím đặc, hiệu ứng cuộn (xem mục "Mốc 6"). **Mốc 5**: sặc sỡ hơn bằng màu shop (xem mục "Mốc 5"). **Mốc 4**: logo hãng + hệ màu mới (xem mục "Mốc 4"). **Mốc 3**: làm theo 8 góp ý của chủ shop (logo, nhãn hãng, menu, Facebook thay Messenger, bỏ "Gửi yêu cầu mua", bảng size, bỏ "Mới về", hết lỗi 404). Nối tiếp mốc 2b và mốc 2 (bên dưới).
 
 Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách đang xem vẫn là bản cũ. Chưa gộp, chưa mua dịch vụ, chưa tạo tài khoản nào, chưa ghi vào Google Sheet thật.
 
@@ -95,6 +95,32 @@ Nhánh chính `claude/shoe-shop-website-3dln52` **chưa bị sửa**: web khách
 - **Ảnh trước/sau mốc 2** (web đang chạy ↔ bản mới): `docs/thiet-ke-moi/so-sanh-moc-2/` — trang chủ, danh mục, sản phẩm, gửi yêu cầu; mỗi trang ở 390px và 1440px.
 - **Ảnh so sánh font:** `docs/thiet-ke-moi/font/so-sanh-font.png` (mở thử: `so-sanh-font.html`).
 - **Ảnh mốc 1** vẫn ở `docs/thiet-ke-moi/so-sanh/`.
+
+## Mốc 9 (02/10) — 2 font chữ
+
+Ảnh: `docs/thiet-ke-moi/font-moc-9/` (01 thử tiếng Việt 31 font · 02–04 ba cặp trên trang chủ · 05–06 đã áp dụng).
+
+**Tiêu chí chọn font:**
+1. Đủ tiếng Việt, dấu đẹp cả ở chữ in hoa (Ầ, Ẫ, Ộ, Ở không dính, không lệch).
+2. Dễ đọc trên điện thoại ở cỡ nhỏ: giá, size "36,5", mã "1183A360-205" phải phân biệt được I / l / 1 và O / 0.
+3. Tiêu đề hẹp ngang, đậm, hợp giày thể thao, để tiêu đề tiếng Việt dài vẫn vừa màn hình điện thoại.
+4. Không "AI hoá": tránh các font web AI hay dùng (Inter, Roboto, Poppins, Montserrat, DM Sans, Space Grotesk, Be Vietnam Pro, Bricolage).
+5. Miễn phí (Google Fonts), nhẹ, chỉ 2 họ font.
+6. Hợp giọng điềm đạm, đáng tin của shop.
+
+**Đã thử:** 13 font tiêu đề + 18 font chữ thường với câu tiếng Việt có dấu. Loại: League Gothic, Anton (dấu chồng chật / lệch), Phudu (chữ Y lạ), Oswald, Montserrat (quá phổ biến). Một số font đẹp nhưng không có tiếng Việt: Bebas Neue, Figtree, Instrument Sans, Sora, Urbanist.
+
+**Đã chọn và áp dụng:**
+
+| Font | Dùng ở đâu | Vì sao |
+| --- | --- | --- |
+| **Barlow Condensed** (600–800) | Tiêu đề lớn in hoa: banner, tiêu đề khu vực, tên dòng trên thẻ, tên mẫu ở trang sản phẩm, số thứ hạng Top 5, tiêu đề menu | Dáng chữ hẹp kiểu số áo / biển báo thể thao, dấu tiếng Việt gọn, tiêu đề dài vẫn vừa điện thoại |
+| **IBM Plex Sans** (400–700) | Mọi chữ còn lại: đoạn văn, menu, nút, ô tìm, tên mẫu trên thẻ, giá, size, mã, giỏ hàng, chính sách | Rất rõ ở cỡ nhỏ, phân biệt I / l / 1 và O / 0 (quan trọng khi khách đọc mã hộp giày), có nét riêng, không giống font web AI |
+
+- Giá, size, mã dùng số đều bề ngang, thẳng hàng giữa các thẻ.
+- Tiêu đề in hoa giãn dòng 1.1 để dấu nặng / dấu mũ không chạm dòng trên dưới.
+- **Phương án khác** (đã chụp ảnh, đổi được trong vài phút nếu bạn thích hơn): Big Shoulders Display + IBM Plex Sans (đường phố, mạnh hơn); Barlow Condensed + Hanken Grotesk (mềm hơn); Archivo hẹp + Reddit Sans.
+- Kiểm tra: 47/47 hành trình, axe 0 lỗi, 0 lỗi 404, Console sạch.
 
 ## Mốc 8 (02/10) — theo góp ý chủ shop
 
