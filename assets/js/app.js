@@ -741,7 +741,7 @@
         }).join("") + "</div></div></div>" +
         '<div class="nav__item" data-mega-item><button type="button" class="nav__link" aria-expanded="false" aria-controls="mega-needs">Theo nhu cầu' + I.down + "</button>" +
         '<div class="mega" id="mega-needs"><div class="container mega__in mega__in--needs">' +
-        needs.map(function (x) { return '<a class="need" href="' + x.href + '"><b>' + esc(x.label) + "</b><span>" + esc(x.sub) + " · " + x.n + " mẫu</span></a>"; }).join("") +
+        needs.map(function (x) { return '<a class="need" href="' + x.href + '"><b>' + esc(x.label) + "</b><span>" + esc(x.sub) + "</span></a>"; }).join("") +
         "</div></div></div>" +
         navLink("size-guide.html", "Chọn size") + navLink("lien-he.html", "Liên hệ") +
         "</nav>" +
@@ -756,7 +756,7 @@
         '<div class="drawer__head"><b>Menu</b><button type="button" class="icon-btn" data-menu-close aria-label="Đóng menu">' + I.close + "</button></div>" +
         '<div class="drawer__body">' +
         '<div class="drawer__title">Giày theo hãng</div>' +
-        '<div class="m-item"><div class="m-row"><a href="shop.html">Tất cả hàng sẵn <small>' + IN_STOCK.length + " mẫu</small></a></div></div>" +
+        '<div class="m-item"><div class="m-row"><a href="shop.html">Tất cả hàng sẵn</a></div></div>' +
         brands.map(function (b) {
           var lines = lineList(b.name);
           return '<div class="m-item"><div class="m-row"><a href="' + brandUrl(b.name) + '">' + esc(b.name) + "</a>" +
@@ -1152,7 +1152,7 @@
         '<div class="hero__kicker"><img src="images/brand/slife-mark-white.svg" alt="" width="22" height="22">S&amp;LIFE Sneaker · Since 2021</div>' +
         '<h2 class="hero__title"><span>Only</span><span>Authentic</span></h2>' +
         '<p class="hero__lead">Giày chính hãng, có sẵn size. Mỗi đôi có mã sản phẩm khớp tem hộp — tra trên trang chủ của hãng ra đúng mẫu, đúng màu.</p>' +
-        '<div class="hero__cta"><a class="btn btn--light btn--run" href="shop.html"><span>Xem ' + IN_STOCK.length + ' mẫu có sẵn</span></a><a class="btn btn--line-light" href="size-guide.html">Hướng dẫn chọn size</a></div></div>' +
+        '<div class="hero__cta"><a class="btn btn--light btn--run" href="shop.html"><span>Khám phá giày sẵn size</span></a><a class="btn btn--line-light" href="size-guide.html">Hướng dẫn chọn size</a></div></div>' +
         // Chùm mẫu nổi bật của nhiều hãng: mẫu có ảnh thật hiện ảnh, mẫu chưa có ảnh hiện thẻ chữ (logo hãng, tên dòng, giá) — không vẽ giày giả
         '<div class="hero__art"><div class="hero__fan">' + heroPicks(photos, tops).map(heroCard).join("") + "</div></div></div></div>",
 
@@ -1160,7 +1160,7 @@
         '<div class="hero__slide hero__slide--bento hero__slide--light"><div class="container hero__in"><div>' +
         '<div class="hero__kicker">Chính hãng · ' + brands.length + ' thương hiệu</div>' +
         '<h2 class="hero__title"><span>Chọn hãng</span><span>bạn thích</span></h2>' +
-        '<p class="hero__lead">' + IN_STOCK.length + " đôi sẵn size từ " + esc(brands.slice().sort(function (a, b) { return b.count - a.count; }).slice(0, 4).map(function (b) { return b.name; }).join(", ")) + "… Bấm logo để xem đúng hãng.</p>" +
+        '<p class="hero__lead">Giày sẵn size từ ' + esc(brands.slice().sort(function (a, b) { return b.count - a.count; }).slice(0, 4).map(function (b) { return b.name; }).join(", ")) + "… Bấm logo để xem đúng hãng.</p>" +
         '<div class="hero__cta"><a class="btn btn--grad" href="shop.html">Xem tất cả hàng sẵn</a></div></div>' +
         '<div class="hero__art"><div class="bento">' + brands.slice().sort(function (a, b) { return b.count - a.count; }).map(function (b, i) {
           return '<a class="bento__tile bento__tile--' + i + '" href="' + brandUrl(b.name) + '" aria-label="' + esc(b.name) + '">' + brandLogo(b.name, "bento__logo", "bento__word") +
@@ -1228,7 +1228,7 @@
     // Hàng sẵn, mua ngay — ngay sau hero
     var picks = $("[data-picks]");
     if (picks) {
-      picks.innerHTML = rail("Hàng sẵn, mua ngay", mixBrands(brands, 12), "shop.html", "Xem tất cả " + IN_STOCK.length + " mẫu có sẵn", "Còn size tại shop · mẫu tiêu biểu của từng hãng");
+      picks.innerHTML = rail("Hàng sẵn, mua ngay", mixBrands(brands, 12), "shop.html", "Xem tất cả giày sẵn size", "Còn size tại shop · mẫu tiêu biểu của từng hãng");
     }
 
     var perksEl = $("[data-perks]");
@@ -1247,10 +1247,10 @@
         return '<a class="brand-tile" href="' + brandUrl(b.name) + '">' + brandLogo(b.name, "brand-tile__logo", "brand-tile__word") +
           '<span class="brand-tile__meta"><b>' + esc(b.name) + "</b></span></a>";
       }).join("") +
-        '<a class="brand-tile brand-tile--all" href="shop.html"><span class="brand-tile__word" aria-hidden="true">' + IN_STOCK.length + '</span><span class="brand-tile__meta"><b>Tất cả hàng sẵn</b><small>Mọi hãng</small></span></a>';
+        '<a class="brand-tile brand-tile--all" href="shop.html"><span class="brand-tile__word" aria-hidden="true">TẤT CẢ</span><span class="brand-tile__meta"><b>Mọi đôi đang chờ bạn</b><small>Xem hết giày sẵn size</small></span></a>';
     }
     var needsEl = $("[data-needs]");
-    if (needsEl) needsEl.innerHTML = needsList().map(function (x) { return '<a class="need need--' + x.tone + '" href="' + x.href + '"><b>' + esc(x.label) + "</b><span>" + esc(x.sub) + " · " + x.n + " mẫu</span></a>"; }).join("");
+    if (needsEl) needsEl.innerHTML = needsList().map(function (x) { return '<a class="need need--' + x.tone + '" href="' + x.href + '"><b>' + esc(x.label) + "</b><span>" + esc(x.sub) + "</span></a>"; }).join("");
 
     // Dòng giày nổi bật: ô lớn
     var linesEl = $("[data-lines]");
@@ -1410,7 +1410,7 @@
       tilesEl.innerHTML = '<a class="chip' + (line ? "" : " is-active") + '" href="' + brandUrl(brand) + '">Tất cả <small>' + IN_STOCK.filter(function (x) { return x.brand === brand; }).length + "</small></a>" +
         lines.map(function (l) { return '<a class="chip' + (l.name === line ? " is-active" : "") + '" href="' + lineUrl(brand, l.name) + '">' + esc(l.name) + "</a>"; }).join("");
     } else if (!brand && !line && !wishMode) {
-      tilesEl.innerHTML = '<a class="chip is-active" href="shop.html">Tất cả <small>' + IN_STOCK.length + "</small></a>" +
+      tilesEl.innerHTML = '<a class="chip is-active" href="shop.html">Tất cả</a>' +
         brands.map(function (b) { return '<a class="chip" href="' + brandUrl(b.name) + '">' + esc(b.name) + "</a>"; }).join("");
     } else {
       tilesEl.hidden = true;
