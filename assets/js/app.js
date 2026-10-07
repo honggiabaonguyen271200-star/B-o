@@ -1137,6 +1137,13 @@
     }, 2600);
   }
 
+  // Dòng nhỏ dưới tên hãng: số mẫu làm tròn xuống, không ghi số lẻ (338 -> "Hơn 300 mẫu có sẵn", 58 -> "Hơn 50", 16 -> "Hơn 10")
+  function stockLine(n) {
+    var st = n >= 100 ? 100 : n >= 50 ? 50 : 10;
+    if (n < 10) return "Có sẵn vài mẫu";
+    var r = Math.floor(n / st) * st;
+    return (r === n ? "" : "Hơn ") + r + " mẫu có sẵn";
+  }
   function annReps(msgs) { return Math.max(2, Math.ceil(3000 / (msgs.join("").length * 7.5 + msgs.length * 70))); }
 
   function initHome() {
@@ -1149,7 +1156,7 @@
       var tops = topLines(brands);
       var slides = [
         '<div class="hero__slide hero__slide--grad"><div class="container hero__in"><div>' +
-        '<div class="hero__kicker"><img src="images/brand/slife-mark-white.svg" alt="" width="22" height="22">S&amp;LIFE Sneaker · Since 2021</div>' +
+        '<div class="hero__kicker hero__kicker--logo"><img src="images/brand/slife-full-white.svg" alt="S&amp;LIFE Since 2021" width="43" height="64"><span>S&amp;LIFE Sneaker<br>Giày chính hãng · Since 2021</span></div>' +
         '<h2 class="hero__title"><span>Only</span><span>Authentic</span></h2>' +
         '<p class="hero__lead">Giày chính hãng, có sẵn size. Mỗi đôi có mã sản phẩm khớp tem hộp — tra trên trang chủ của hãng ra đúng mẫu, đúng màu.</p>' +
         '<div class="hero__cta"><a class="btn btn--light btn--run" href="shop.html"><span>Khám phá giày sẵn size</span></a><a class="btn btn--line-light" href="size-guide.html">Hướng dẫn chọn size</a></div></div>' +
@@ -1245,7 +1252,7 @@
     if (brandEl) {
       brandEl.innerHTML = brands.map(function (b) {
         return '<a class="brand-tile" href="' + brandUrl(b.name) + '">' + brandLogo(b.name, "brand-tile__logo", "brand-tile__word") +
-          '<span class="brand-tile__meta"><b>' + esc(b.name) + "</b></span></a>";
+          '<span class="brand-tile__meta"><b>' + esc(b.name) + "</b><small>" + stockLine(b.count) + "</small></span></a>";
       }).join("") +
         '<a class="brand-tile brand-tile--all" href="shop.html"><span class="brand-tile__word" aria-hidden="true">TẤT CẢ</span><span class="brand-tile__meta"><b>Mọi đôi đang chờ bạn</b><small>Xem hết giày sẵn size</small></span></a>';
     }

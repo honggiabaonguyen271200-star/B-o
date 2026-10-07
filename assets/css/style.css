@@ -1720,3 +1720,12 @@ body.has-aura::after {
   .hero__fan .hero__card--1 { width: 35%; left: 0; top: 16%; }
   .hero__fan .hero__card--2 { width: 35%; left: 65%; top: 16%; }
 }
+
+/* Mốc 11 (07/10): logo đầy đủ ở dòng nhỏ trên "ONLY AUTHENTIC"; tên hãng to hơn + dòng "Hơn … mẫu có sẵn" */
+.hero__kicker--logo { gap: 14px; align-items: center; line-height: 1.35; }
+.hero__kicker--logo img { width: auto; height: 64px; flex: none; }
+@media (max-width: 899px) { .hero__kicker--logo img { height: 52px; } }
+.brand-tile__meta b { font-size: 18px; font-weight: 700; margin-top: 4px; }
+.brand-tile__meta small { display: block; margin-top: 2px; font-size: 13.5px; color: var(--muted); }
+.brand-tile--all .brand-tile__meta small { color: rgba(255, 255, 255, .85); }
+@media (max-width: 899px) { .brand-tile__meta b { font-size: 16px; } .brand-tile__meta small { font-size: 12.5px; } }
