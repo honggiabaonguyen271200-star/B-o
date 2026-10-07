@@ -41,6 +41,10 @@ BRAND_RULES = [
     ("Converse", r"converse|chuck"),
     ("On", r"\bon the roger|\bon cloud|\bcloudmonster|\bcloudtilt"),
     ("Jeep", r"\bjeep\b"),
+    ("Babolat", r"\bbabolat\b"),
+    ("Wilson", r"\bwilson\b"),
+    ("Skechers", r"\bskechers\b"),
+    ("DC Shoes", r"\bdc shoes\b"),
 ]
 
 GENDER_RULES = [
@@ -57,6 +61,7 @@ CODE_PATTERNS = [
     r"\b[0-9]{3,4}[A-Z]{2,4}[0-9]?\b",  # 1906LNS
     r"\b[0-9]{6}\b",  # 416635 (Salomon)
     r"\b[0-9][A-Z]{2}[0-9]{8}\b",  # 3WD10600975 (On)
+    r"\b[0-9][A-Z0-9]{7,9}-[0-9]{4}\b",  # 3A0S25B846-2001, 30S26629B-2036 (Babolat)
 ]
 MODEL_LIKE = re.compile(r"^(\d{3,4}[A-Z]?|\d{3}V\d|[A-Z]{1,2}\d{1,3}|XT-\d+|GT-\d+|FF\d)$", re.I)
 
