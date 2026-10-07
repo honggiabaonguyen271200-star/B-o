@@ -1695,3 +1695,28 @@ body.has-aura::after {
 
 /* Tường logo: tối đa 9 hãng (1 ô lớn + 8 ô) cho kín lưới 4×3; dải logo chạy dưới banner vẫn có đủ các hãng */
 .bento__tile:nth-child(n+10) { display: none; }
+
+/* =========================================================
+   Mốc 10 (07/10): chữ đầu trang chạy liền mạch; banner không giá, chùm mẫu tự đổi chỗ + đổi mẫu;
+   bỏ số mẫu của từng hãng
+   ========================================================= */
+/* Dải chữ: mỗi nửa dải dài hơn màn hình, tốc độ giữ như cũ (~45px/giây) */
+/* Chùm mẫu: thẻ trượt sang vị trí mới mềm mại; thẻ đổi mẫu mờ đi rồi hiện lại */
+.hero__card { transition: left .9s var(--ease), right .9s var(--ease), top .9s var(--ease), bottom .9s var(--ease), width .9s var(--ease), transform .9s var(--ease), opacity .45s, box-shadow .45s; }
+.hero__card.is-swap { opacity: 0; }
+.hero__card .hero__tag { display: none; }
+/* Ô hãng không còn dòng số mẫu: chữ tên hãng đứng giữa */
+.brand-tile__meta b { margin-top: 2px; }
+@media (prefers-reduced-motion: reduce) { .hero__card { transition: none; } }
+/* Vị trí 5 thẻ đều tính bằng left/top để thẻ trượt mượt khi đổi chỗ */
+.hero__fan .hero__card { right: auto; bottom: auto; }
+.hero__fan .hero__card--0 { width: 48%; left: 26%; top: 10%; transform: none; }
+.hero__fan .hero__card--1 { width: 34%; left: 0; top: 0; transform: rotate(-9deg); }
+.hero__fan .hero__card--2 { width: 34%; left: 66%; top: 0; transform: rotate(8deg); }
+.hero__fan .hero__card--3 { width: 30%; left: 3%; top: 61%; transform: rotate(-4deg); }
+.hero__fan .hero__card--4 { width: 30%; left: 67%; top: 61%; transform: rotate(5deg); }
+@media (max-width: 899px) {
+  .hero__fan .hero__card--0 { width: 46%; left: 27%; top: 4%; }
+  .hero__fan .hero__card--1 { width: 35%; left: 0; top: 16%; }
+  .hero__fan .hero__card--2 { width: 35%; left: 65%; top: 16%; }
+}

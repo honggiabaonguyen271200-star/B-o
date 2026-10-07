@@ -256,13 +256,13 @@
       })();
     });
   }
-  // Ảnh thật nếu có; chưa có thì ô trung tính "Ảnh thật đang cập nhật" (không vẽ giày giả)
+  // Ảnh thật nếu có; chưa có thì ô trung tính "Ảnh đang cập nhật" (không vẽ giày giả)
   function media(p, o) {
     o = o || {};
     var shots = shotsOf(p), base = imgBase(p);
-    var probeImg = !shots && !MANIFEST; // có danh sách mà mẫu chưa có ảnh: chỉ hiện ô "Ảnh thật đang cập nhật"
+    var probeImg = !shots && !MANIFEST; // có danh sách mà mẫu chưa có ảnh: chỉ hiện ô "Ảnh đang cập nhật"
     return '<div class="media">' +
-      '<div class="media__ph" aria-hidden="true"><img src="images/brand/slife-mark-gradient.svg" alt="" width="60" height="61"><span>Ảnh thật đang cập nhật</span></div>' +
+      '<div class="media__ph" aria-hidden="true"><img src="images/brand/slife-mark-gradient.svg" alt="" width="60" height="61"><span>Ảnh đang cập nhật</span></div>' +
       // Ảnh banner đầu trang (đã tải trước) hiện ngay, không mờ dần — ảnh hiện sớm hơn
       (shots || probeImg ? '<img class="media__img' + (o.eager && shots ? " ok" : "") + '" alt="' + esc(fullName(p)) + '" src="' + esc(shots ? shots[0] : base + "." + EXTS[0]) + '" data-base="' + esc(base) + '" data-i="' + (shots ? -1 : 0) + '"' +
       (o.eager ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async" onload="__slifeOk(this)" onerror="__slifeImg(this)">' : "") +
@@ -713,10 +713,14 @@
       function navLink(href, text) { return '<div class="nav__item"><a class="nav__link" href="' + href + '"' + (file === href ? ' aria-current="page"' : "") + ">" + text + "</a></div>"; }
       headerEl.outerHTML =
         '<a class="skip" href="#main">Bỏ qua, tới nội dung chính</a>' +
-        // Dòng chữ chạy liên tục trên nền màu chảy (chủ shop chọn); máy bật "giảm chuyển động" thì đứng yên
+        // Dòng chữ chạy liên tục, nối vòng không đứt: mỗi nửa dải lặp lại các câu đủ dài hơn màn hình rộng nhất (~3.000px),
+        // nửa sau giống hệt nửa trước nên khi chạy hết một nửa thì quay về đầu không thấy chỗ nối. Máy "giảm chuyển động" thì đứng yên.
         (msgs.length ? '<div class="announce" role="region" aria-label="Thông tin shop"><div class="announce__in">' +
-          '<div class="announce__track">' + [0, 1].map(function (k) {
-            return '<div class="announce__set"' + (k ? ' aria-hidden="true"' : "") + ">" + msgs.map(function (m) { return "<span>" + esc(m) + '</span><i aria-hidden="true">✦</i>'; }).join("") + "</div>";
+          '<div class="announce__track" style="animation-duration:' + 38 * annReps(msgs) + 's">' + [0, 1].map(function (k) {
+            var reps = annReps(msgs);
+            var once = msgs.map(function (m) { return "<span>" + esc(m) + '</span><i aria-hidden="true">✦</i>'; }).join("");
+            var rest = msgs.map(function (m) { return '<span aria-hidden="true">' + esc(m) + '</span><i aria-hidden="true">✦</i>'; }).join("");
+            return '<div class="announce__set"' + (k ? ' aria-hidden="true"' : "") + ' style="--reps:' + reps + '">' + once + new Array(reps).join(rest) + "</div>";
           }).join("") + "</div>" +
           "</div></div>" : "") +
         '<header class="hd"><div class="container hd__row">' +
@@ -731,8 +735,8 @@
         '<div class="mega" id="mega-brands"><div class="container mega__in">' +
         brands.map(function (b) {
           var lines = lineList(b.name).filter(function (l) { return l.name !== OTHER_LINE; });
-          return '<div class="mega__col"><h4><a href="' + brandUrl(b.name) + '">' + esc(b.name) + "</a><small>" + b.count + " mẫu</small></h4>" +
-            (lines.length ? "<ul>" + lines.map(function (l) { return '<li><a href="' + lineUrl(b.name, l.name) + '">' + esc(l.name) + " <small>" + l.count + "</small></a></li>"; }).join("") + "</ul>" : "") +
+          return '<div class="mega__col"><h4><a href="' + brandUrl(b.name) + '">' + esc(b.name) + "</a></h4>" +
+            (lines.length ? "<ul>" + lines.map(function (l) { return '<li><a href="' + lineUrl(b.name, l.name) + '">' + esc(l.name) + "</a></li>"; }).join("") + "</ul>" : "") +
             "</div>";
         }).join("") + "</div></div></div>" +
         '<div class="nav__item" data-mega-item><button type="button" class="nav__link" aria-expanded="false" aria-controls="mega-needs">Theo nhu cầu' + I.down + "</button>" +
@@ -755,11 +759,11 @@
         '<div class="m-item"><div class="m-row"><a href="shop.html">Tất cả hàng sẵn <small>' + IN_STOCK.length + " mẫu</small></a></div></div>" +
         brands.map(function (b) {
           var lines = lineList(b.name);
-          return '<div class="m-item"><div class="m-row"><a href="' + brandUrl(b.name) + '">' + esc(b.name) + " <small>" + b.count + "</small></a>" +
+          return '<div class="m-item"><div class="m-row"><a href="' + brandUrl(b.name) + '">' + esc(b.name) + "</a>" +
             (lines.length > 1 ? '<button type="button" class="m-toggle" data-menu-sub aria-expanded="false" aria-label="Các dòng ' + esc(b.name) + '">' + I.chev + "</button>" : "") +
             "</div>" +
             (lines.length > 1 ? '<div class="m-sub">' + lines.map(function (l) {
-              return '<a href="' + lineUrl(b.name, l.name) + '">' + esc(l.name) + " <small>" + l.count + "</small></a>";
+              return '<a href="' + lineUrl(b.name, l.name) + '">' + esc(l.name) + "</a>";
             }).join("") + "</div>" : "") +
             "</div>";
         }).join("") +
@@ -972,6 +976,7 @@
         s.setAttribute("aria-hidden", j !== cur); s.inert = j !== cur;
       });
       root.classList.toggle("is-light", slide.classList.contains("hero__slide--light"));
+      if (changed) slide.dispatchEvent(new CustomEvent("hero:show", { bubbles: true }));
       if (changed && !REDUCED) {
         slide.classList.remove("is-reveal"); void slide.offsetWidth; slide.classList.add("is-reveal");
         clearTimeout(go.t);
@@ -1045,13 +1050,13 @@
   function heroCard(p, i) {
     var body;
     if (hasPhoto(p)) {
-      body = media(p, { eager: i === 0 }) + (i === 0 ? '<span class="hero__tag"><b>' + esc(p.name) + "</b><b>" + money(p.minPrice) + "</b></span>" : "");
+      body = media(p, { eager: i === 0 });
     } else {
       // Mẫu chưa có ảnh: thẻ chữ, không giả ảnh
       var word = p.line !== OTHER_LINE ? lineWord(p.brand, p.line) : p.name.replace(new RegExp("^" + p.brand + "\\s+", "i"), "");
       body = '<span class="hero__type">' + brandLogo(p.brand, "hero__type-logo", "hero__type-word") +
         '<b class="' + (word.length > 7 ? "is-long" : "") + '">' + esc(word) + "</b>" +
-        "<small>" + esc(p.name) + "</small><em>" + money(p.minPrice) + "</em></span>";
+        "<small>" + esc(p.name) + "</small></span>";
     }
     return '<a class="hero__card hero__card--' + i + (hasPhoto(p) ? "" : " hero__card--type") + '" href="' + productUrl(p) + '" aria-label="' + esc(fullName(p)) + '">' + body + "</a>";
   }
@@ -1071,6 +1076,68 @@
       queues.forEach(function (q) { if (q[r] && out.length < n) out.push(q[r]); });
     return out;
   }
+
+  // Nhóm dòng giày có từ 3 mẫu có ảnh trở lên, xếp dòng nhiều mẫu trước và xen kẽ hãng (không 2 nhóm cùng hãng liền nhau)
+  function photoLines(photos) {
+    var by = {};
+    photos.forEach(function (p) { if (p.line !== OTHER_LINE) { var k = p.brand + "|" + p.line; (by[k] = by[k] || []).push(p); } });
+    var list = Object.keys(by).filter(function (k) { return by[k].length >= 3; }).sort(function (a, b) { return by[b].length - by[a].length; })
+      .map(function (k) { return { brand: k.split("|")[0], line: k.split("|")[1], items: by[k] }; }).slice(0, 10);
+    var out = [];
+    while (list.length) {
+      var i = 0;
+      while (i < list.length && out.length && list[i].brand === out[out.length - 1].brand) i++;
+      out.push(list.splice(i < list.length ? i : 0, 1)[0]);
+    }
+    return out;
+  }
+  function lineSlideInner(g) {
+    var inLine = IN_STOCK.filter(function (p) { return p.brand === g.brand && p.line === g.line; });
+    var sz = {};
+    inLine.forEach(function (p) { p.sizes.forEach(function (s) { sz[s.s] = 1; }); });
+    var szs = Object.keys(sz).sort(function (a, b) { return sizeNum(a) - sizeNum(b); });
+    var word = lineWord(g.brand, g.line);
+    return "<div>" +
+      '<h2 class="hero__title"><span>' + esc(g.brand) + "</span><span>" + esc(word) + "</span></h2>" +
+      '<p class="hero__lead">' + esc(lineTitle(g.brand, g.line)) + " đang có sẵn tại shop" + (szs.length > 1 ? ", size từ " + esc(szs[0]) + " đến " + esc(szs[szs.length - 1]) : "") + ". Nhắn shop để được tư vấn size theo form.</p>" +
+      '<div class="hero__cta"><a class="btn btn--light" href="' + lineUrl(g.brand, g.line) + '">Xem dòng ' + esc(word) + '</a><a class="btn btn--line-light" href="' + brandUrl(g.brand) + '">Tất cả ' + esc(g.brand) + "</a></div></div>" +
+      '<div class="hero__art"><div class="hero__stack">' + g.items.slice(0, 3).map(function (p) { return '<a href="' + productUrl(p) + '" aria-label="' + esc(fullName(p)) + '">' + media(p) + "</a>"; }).join("") + "</div></div>";
+  }
+  // Chùm mẫu ở banner đầu: cứ 2,6 giây các thẻ đổi chỗ theo vòng (giữa → phải → dưới → trái → giữa),
+  // thẻ sắp vào giữa được thay bằng mẫu khác (lần lượt các hãng). Dừng khi banner tạm dừng / không xem slide này.
+  function fanMotion(fan, pool) {
+    if (REDUCED || !fan) return;
+    var cards = $all(".hero__card", fan);
+    if (cards.length < 3) return;
+    var cycle = [0, 2, 4, 3, 1].filter(function (n) { return n < cards.length; });
+    var pos = cards.map(function (c, i) { return i; });
+    var shown = {}, k = 0;
+    cards.forEach(function (c) { shown[c.getAttribute("href")] = 1; });
+    pool = pool.filter(function (p) { return !shown[productUrl(p)]; });
+    function swap(card) {
+      if (!pool.length) return;
+      var p = pool[k++ % pool.length];
+      card.classList.add("is-swap");
+      setTimeout(function () {
+        card.setAttribute("href", productUrl(p)); card.setAttribute("aria-label", fullName(p));
+        card.classList.remove("hero__card--type");
+        card.innerHTML = media(p, { eager: true });
+        card.classList.remove("is-swap");
+      }, 450);
+    }
+    setInterval(function () {
+      var slide = fan.closest(".hero__slide"), root = fan.closest(".hero");
+      if (!slide.classList.contains("is-active") || root.classList.contains("is-paused") || document.hidden) return;
+      cards.forEach(function (c, i) {
+        var np = cycle[(cycle.indexOf(pos[i]) + 1) % cycle.length];
+        c.classList.remove("hero__card--" + pos[i]); c.classList.add("hero__card--" + np);
+        if (np === cycle[cycle.length - 1]) swap(c); // thẻ vào vị trí chờ (sắp vào giữa) đổi mẫu mới
+        pos[i] = np;
+      });
+    }, 2600);
+  }
+
+  function annReps(msgs) { return Math.max(2, Math.ceil(3000 / (msgs.join("").length * 7.5 + msgs.length * 70))); }
 
   function initHome() {
     var brands = brandList();
@@ -1096,8 +1163,8 @@
         '<p class="hero__lead">' + IN_STOCK.length + " đôi sẵn size từ " + esc(brands.slice().sort(function (a, b) { return b.count - a.count; }).slice(0, 4).map(function (b) { return b.name; }).join(", ")) + "… Bấm logo để xem đúng hãng.</p>" +
         '<div class="hero__cta"><a class="btn btn--grad" href="shop.html">Xem tất cả hàng sẵn</a></div></div>' +
         '<div class="hero__art"><div class="bento">' + brands.slice().sort(function (a, b) { return b.count - a.count; }).map(function (b, i) {
-          return '<a class="bento__tile bento__tile--' + i + '" href="' + brandUrl(b.name) + '" aria-label="' + esc(b.name) + ", " + b.count + ' mẫu">' + brandLogo(b.name, "bento__logo", "bento__word") +
-            "<small>" + (i ? "" : '<span class="bento__name">' + esc(b.name) + " · </span>") + b.count + " mẫu</small></a>";
+          return '<a class="bento__tile bento__tile--' + i + '" href="' + brandUrl(b.name) + '" aria-label="' + esc(b.name) + '">' + brandLogo(b.name, "bento__logo", "bento__word") +
+            (i ? "" : '<small><span class="bento__name">' + esc(b.name) + "</span></small>") + "</a>";
         }).join("") + "</div></div></div></div>",
       ];
       // Bảng xếp hạng: 5 dòng có nhiều mẫu sẵn nhất, mỗi hãng một dòng (đếm từ bảng hàng, không bịa "bán chạy")
@@ -1110,29 +1177,14 @@
           '<div class="hero__cta"><a class="btn btn--light" href="shop.html">Xem hàng sẵn</a></div></div>' +
           '<div class="hero__art"><ol class="lineup">' + tops.slice(0, 5).map(function (t, i) {
             return '<li><a href="' + lineUrl(t.brand, t.line) + '"><span class="lineup__n">0' + (i + 1) + "</span>" + brandLogo(t.brand, "lineup__logo", "lineup__word") +
-              '<span class="lineup__name"><b>' + esc(lineWord(t.brand, t.line)) + "</b><small>" + t.count + " mẫu · từ " + money(t.from) + "</small></span>" + I.arrow + "</a></li>";
+              '<span class="lineup__name"><b>' + esc(lineWord(t.brand, t.line)) + "</b><small>" + esc(t.brand) + "</small></span>" + I.arrow + "</a></li>";
           }).join("") + "</ol></div></div></div>"
         );
       }
-      // Dòng giày có nhiều ảnh thật nhất
-      var byLine = {};
-      photos.forEach(function (p) { var k = p.brand + "|" + p.line; if (p.line !== OTHER_LINE) (byLine[k] = byLine[k] || []).push(p); });
-      var topLine = Object.keys(byLine).sort(function (a, b) { return byLine[b].length - byLine[a].length; })[0];
-      if (topLine && byLine[topLine].length >= 3) {
-        var tb = topLine.split("|")[0], tl = topLine.split("|")[1];
-        var inLine = IN_STOCK.filter(function (p) { return p.brand === tb && p.line === tl; });
-        var sz = {};
-        inLine.forEach(function (p) { p.sizes.forEach(function (s) { sz[s.s] = 1; }); });
-        var szs = Object.keys(sz).sort(function (a, b) { return sizeNum(a) - sizeNum(b); });
-        slides.push(
-          '<div class="hero__slide hero__slide--ink"><div class="container hero__in"><div>' +
-          '<div class="hero__kicker">Dòng giày có ảnh chụp thật</div>' +
-          '<h2 class="hero__title"><span>' + esc(tb) + "</span><span>" + esc(tl) + "</span></h2>" +
-          '<p class="hero__lead">' + inLine.length + " mẫu " + esc(lineTitle(tb, tl)) + " đang có sẵn tại shop" + (szs.length > 1 ? ", size từ " + esc(szs[0]) + " đến " + esc(szs[szs.length - 1]) : "") + ". Ảnh chụp thật từng đôi.</p>" +
-          '<div class="hero__cta"><a class="btn btn--light" href="' + lineUrl(tb, tl) + '">Xem dòng ' + esc(tl) + '</a><a class="btn btn--line-light" href="' + brandUrl(tb) + '">Tất cả ' + esc(tb) + "</a></div></div>" +
-          '<div class="hero__art"><div class="hero__stack">' + byLine[topLine].slice(0, 3).map(function (p) { return '<a href="' + productUrl(p) + '" aria-label="' + esc(p.name) + '">' + media(p) + "</a>"; }).join("") + "</div></div>" +
-          "</div></div>"
-        );
+      // Dòng giày có ảnh: mỗi lần slide hiện ra là một nhóm (dòng giày) khác, xen kẽ các hãng
+      var lineGroups = photoLines(photos);
+      if (lineGroups.length) {
+        slides.push('<div class="hero__slide hero__slide--ink" data-line-slide><div class="container hero__in">' + lineSlideInner(lineGroups[0]) + "</div></div>");
       }
       slides.push(
         '<div class="hero__slide hero__slide--ink hero__slide--ask"><div class="container hero__in"><div>' +
@@ -1144,6 +1196,13 @@
         "</div></div>"
       );
       var h = hero(heroEl, slides);
+      var lineIdx = 0;
+      heroEl.addEventListener("hero:show", function (e) {
+        if (!e.target.hasAttribute("data-line-slide") || lineGroups.length < 2) return;
+        lineIdx = (lineIdx + 1) % lineGroups.length;
+        $(".hero__in", e.target).innerHTML = lineSlideInner(lineGroups[lineIdx]);
+      });
+      fanMotion($(".hero__fan", heroEl), (SHOP.heroPicks || []).length ? [] : mixBrands(brands, 60).filter(hasPhoto));
       // Banner ảnh shop tự tải lên: images/banners/banner-1.jpg … thêm vào cuối hero
       (SITE_IMAGES ? Promise.resolve(listedImages("banners", /^banner-\d+\.(jpe?g|png|webp)$/i).slice(0, 6)) : findSeries("images/banners/banner-", 1, 6, ["jpg", "webp"])).then(function (urls) {
         urls.forEach(function (u, i) {
@@ -1156,7 +1215,7 @@
     var runEl = $("[data-logo-run]");
     if (runEl && brands.length) {
       var runItem = function (b, hide) {
-        return '<a class="logo-run__item" href="' + brandUrl(b.name) + '"' + (hide ? ' tabindex="-1" aria-hidden="true"' : ' aria-label="' + esc(b.name) + ", " + b.count + ' mẫu"') + ">" +
+        return '<a class="logo-run__item" href="' + brandUrl(b.name) + '"' + (hide ? ' tabindex="-1" aria-hidden="true"' : ' aria-label="' + esc(b.name) + '"') + ">" +
           brandLogo(b.name, "logo-run__logo", "logo-run__word") + "</a>";
       };
       var reps = Math.max(1, Math.ceil(16 / brands.length)), half = [];
@@ -1186,7 +1245,7 @@
     if (brandEl) {
       brandEl.innerHTML = brands.map(function (b) {
         return '<a class="brand-tile" href="' + brandUrl(b.name) + '">' + brandLogo(b.name, "brand-tile__logo", "brand-tile__word") +
-          '<span class="brand-tile__meta"><b>' + esc(b.name) + "</b><small>" + b.count + " mẫu có sẵn</small></span></a>";
+          '<span class="brand-tile__meta"><b>' + esc(b.name) + "</b></span></a>";
       }).join("") +
         '<a class="brand-tile brand-tile--all" href="shop.html"><span class="brand-tile__word" aria-hidden="true">' + IN_STOCK.length + '</span><span class="brand-tile__meta"><b>Tất cả hàng sẵn</b><small>Mọi hãng</small></span></a>';
     }
@@ -1211,11 +1270,11 @@
         var word = x.line.replace(/^Giày /, "").replace(new RegExp("^" + x.brand + "\\s+", "i"), "");
         if (hasPhoto(p)) {
           return '<a class="line-card" href="' + lineUrl(x.brand, x.line) + '">' + media(p) +
-            '<span class="line-card__txt"><b>' + esc(title) + "</b><small>" + x.count + " mẫu</small></span></a>";
+            '<span class="line-card__txt"><b>' + esc(title) + "</b></span></a>";
         }
         // Chưa có ảnh thật: chỉ ghi tên dòng một lần (tên hãng nhỏ phía trên), không lặp nhãn ở đáy
-        return '<a class="line-card line-card--text" href="' + lineUrl(x.brand, x.line) + '" aria-label="' + esc(title) + ", " + x.count + ' mẫu">' +
-          '<span class="line-card__plain"><small>' + esc(x.brand) + '</small><b class="' + (word.length > 9 ? "is-long" : word.length > 5 ? "is-mid" : "") + '">' + esc(word) + "</b><em>" + x.count + " mẫu</em></span></a>";
+        return '<a class="line-card line-card--text" href="' + lineUrl(x.brand, x.line) + '" aria-label="' + esc(title) + '">' +
+          '<span class="line-card__plain"><small>' + esc(x.brand) + '</small><b class="' + (word.length > 9 ? "is-long" : word.length > 5 ? "is-mid" : "") + '">' + esc(word) + "</b></span></a>";
       }).join("");
     }
 
@@ -1236,7 +1295,7 @@
       var tabBrands = brands.filter(function (b) { return b.count >= 4; });
       var tabs = $(".tabs-row", byBrand), body = $("[data-by-brand-body]", byBrand);
       tabs.innerHTML = tabBrands.map(function (b, i) {
-        return '<button type="button" class="chip' + (i ? "" : " is-active") + '" role="tab" aria-selected="' + !i + '" data-tab-brand="' + esc(b.name) + '">' + esc(b.name) + " <small>" + b.count + "</small></button>";
+        return '<button type="button" class="chip' + (i ? "" : " is-active") + '" role="tab" aria-selected="' + !i + '" data-tab-brand="' + esc(b.name) + '">' + esc(b.name) + "</button>";
       }).join("");
       function showBrand(name) {
         var list = IN_STOCK.filter(function (p) { return p.brand === name; }).sort(rank).slice(0, 12);
@@ -1278,7 +1337,7 @@
         SHOP.tiktok ? [SHOP.tiktok, I.tt, "TikTok", handle(SHOP.tiktok)] : null,
       ].filter(Boolean);
       follow.innerHTML = '<div class="container follow__in"><div><h2>Theo dõi S&amp;LIFE</h2>' +
-        "<p>Hàng mới về, ảnh thật từng đôi và mẹo chọn size — shop đăng trên các kênh dưới đây.</p></div>" +
+        "<p>Hàng mới về và mẹo chọn size — shop đăng trên các kênh dưới đây.</p></div>" +
         '<div class="follow__links">' + links.map(function (l) {
           return '<a href="' + esc(l[0]) + '" target="_blank" rel="noopener"' + (l[0] === SHOP.facebookChat ? " data-fb" : "") + ">" + l[1] + "<span><b>" + l[2] + "</b><small>" + esc(l[3]) + "</small></span></a>";
         }).join("") + "</div></div>";
@@ -1349,10 +1408,10 @@
     var tilesEl = $("[data-tiles]");
     if (brand && lines.length > 1) {
       tilesEl.innerHTML = '<a class="chip' + (line ? "" : " is-active") + '" href="' + brandUrl(brand) + '">Tất cả <small>' + IN_STOCK.filter(function (x) { return x.brand === brand; }).length + "</small></a>" +
-        lines.map(function (l) { return '<a class="chip' + (l.name === line ? " is-active" : "") + '" href="' + lineUrl(brand, l.name) + '">' + esc(l.name) + " <small>" + l.count + "</small></a>"; }).join("");
+        lines.map(function (l) { return '<a class="chip' + (l.name === line ? " is-active" : "") + '" href="' + lineUrl(brand, l.name) + '">' + esc(l.name) + "</a>"; }).join("");
     } else if (!brand && !line && !wishMode) {
       tilesEl.innerHTML = '<a class="chip is-active" href="shop.html">Tất cả <small>' + IN_STOCK.length + "</small></a>" +
-        brands.map(function (b) { return '<a class="chip" href="' + brandUrl(b.name) + '">' + esc(b.name) + " <small>" + b.count + "</small></a>"; }).join("");
+        brands.map(function (b) { return '<a class="chip" href="' + brandUrl(b.name) + '">' + esc(b.name) + "</a>"; }).join("");
     } else {
       tilesEl.hidden = true;
     }
