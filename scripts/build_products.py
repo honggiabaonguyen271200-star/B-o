@@ -40,6 +40,7 @@ BRAND_RULES = [
     ("Vans", r"vans|knu-skool|old skool"),
     ("Converse", r"converse|chuck"),
     ("On", r"\bon the roger|\bon cloud|\bcloudmonster|\bcloudtilt"),
+    ("Jeep", r"\bjeep\b"),
 ]
 
 GENDER_RULES = [
@@ -128,7 +129,7 @@ def display_name(raw, code):
     name = re.sub(r"\s*/\s*/\s*", " / ", name)
     name = re.sub(r"\bcode (nam|nữ)\b", "", name, flags=re.I)
     name = re.sub(r"\s+(dành )?cho (nam nữ|nam|nữ)\b", "", name, flags=re.I)
-    name = re.sub(r"\s+", " ", name).strip(" -/,.")
+    name = re.sub(r"\s+", " ", name).strip(" -/,.|")
     return name
 
 

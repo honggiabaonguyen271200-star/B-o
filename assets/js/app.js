@@ -22,7 +22,7 @@
   var SIZE_CHARTS = window.SIZE_CHARTS || {};
 
   var GENDER_LABEL = { nam: "Nam", nu: "Nữ", gs: "GS", kid: "Kid", unisex: "Unisex" };
-  var BRAND_ORDER = ["New Balance", "Asics", "Onitsuka Tiger", "Jordan", "Nike", "Adidas", "Puma", "Salomon", "On", "Vans", "Converse"];
+  var BRAND_ORDER = ["New Balance", "Asics", "Onitsuka Tiger", "Jordan", "Nike", "Adidas", "Puma", "Salomon", "On", "Jeep", "Vans", "Converse"];
   var PRICE_QUICK = [
     { label: "Dưới 2 triệu", min: 0, max: 1999 },
     { label: "2 – 3 triệu", min: 2000, max: 2999 },

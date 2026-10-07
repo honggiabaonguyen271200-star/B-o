@@ -1692,3 +1692,6 @@ body.has-aura::after {
 /* Hộp "Mở Facebook của shop" khi app Facebook chưa mở được trên điện thoại (trang web giữ nguyên) */
 .fb-alt { display: grid; gap: 10px; margin-top: 16px; }
 .fb-alt .btn { width: 100%; }
+
+/* Tường logo: tối đa 9 hãng (1 ô lớn + 8 ô) cho kín lưới 4×3; dải logo chạy dưới banner vẫn có đủ các hãng */
+.bento__tile:nth-child(n+10) { display: none; }
