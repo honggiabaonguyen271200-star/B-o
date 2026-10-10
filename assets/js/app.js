@@ -17,6 +17,38 @@
   // Khi đã có danh sách, mẫu ngoài danh sách chỉ dò 2 đuôi phổ biến để bớt tải lỗi
   var EXTS = MANIFEST ? ["webp", "jpg"] : IMG_EXT;
   var REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var HOVER = !window.matchMedia || matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  // Chạm 1 lần là mở (điện thoại). Safari và trình duyệt trong app (Zalo, Facebook…) trên iPhone có lúc coi lần chạm đầu
+  // là "rê chuột": ô chỉ đổi màu, phải chạm lần hai mới mở (lỗi chủ shop quay video 10/10). Ở đây: chạm nhanh, không kéo,
+  // không phải lúc trang đang trôi, vào một link mở cùng tab → bỏ bước "rê chuột" của máy và mở link ngay.
+  (function oneTap() {
+    var start = null, lastScroll = 0;
+    window.addEventListener("scroll", function () { lastScroll = Date.now(); }, { passive: true });
+    document.addEventListener("touchstart", function (e) {
+      if (e.touches.length !== 1) { start = null; return; }
+      var t = e.touches[0];
+      start = { x: t.clientX, y: t.clientY, t: Date.now(), coasting: Date.now() - lastScroll < 150 };
+    }, { passive: true });
+    document.addEventListener("touchmove", function (e) {
+      if (!start) return;
+      var t = e.touches[0];
+      if (Math.abs(t.clientX - start.x) > 10 || Math.abs(t.clientY - start.y) > 10) start = null;
+    }, { passive: true });
+    document.addEventListener("touchcancel", function () { start = null; }, { passive: true });
+    document.addEventListener("touchend", function (e) {
+      var st = start; start = null;
+      if (!st || st.coasting || Date.now() - st.t > 600 || e.defaultPrevented) return; // kéo, đang trôi, hoặc giữ lâu (menu của máy)
+      var el = e.target.nodeType === 1 ? e.target : e.target.parentElement;
+      var a = el && el.closest("a[href]");
+      if (!a || el.closest("button, input, select, textarea, label, summary, [contenteditable]")) return;
+      if ((a.target && a.target !== "_self") || a.hasAttribute("download") || a.hasAttribute("data-fb")) return;
+      var href = a.getAttribute("href") || "";
+      if (!href || href.charAt(0) === "#" || /^[a-z][a-z0-9+.-]*:/i.test(href) && !/^https?:/i.test(href)) return;
+      e.preventDefault(); // không để máy giả lập "rê chuột" trước
+      a.click();          // chạy đúng các xử lý bấm của web, rồi mở link
+    }, { passive: false });
+  })();
   var WISH = !!(SHOP.features && SHOP.features.wishlist); // nút Yêu thích: tắt/bật trong data/shop.js
   var ALIASES = SHOP.aliases || {};
   var SIZE_CHARTS = window.SIZE_CHARTS || {};
@@ -859,8 +891,9 @@
       if (mini && mini.classList.contains("is-open")) openLayer(mini, false);
       closeMegas();
     });
-    // Ảnh thứ hai khi rê chuột lên thẻ (chỉ tải khi cần)
+    // Ảnh thứ hai khi rê chuột lên thẻ (chỉ tải khi cần; chỉ máy có chuột — trên điện thoại không đổi gì khi chạm)
     document.addEventListener("mouseover", function (e) {
+      if (!HOVER) return;
       var c = e.target.closest && e.target.closest(".card");
       if (!c) return;
       var a = $(".media__alt[data-src]", c);

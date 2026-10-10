@@ -47,6 +47,7 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 
 ## Giao diện
 
+- **Chạm 1 lần là mở (10/10):** iPhone từng phải chạm 2 lần mới mở ô/link (lần đầu Safari coi là "rê chuột"). `oneTap()` đầu `app.js` mở link ngay khi chạm nhanh, không vuốt; không đổi nội dung trang khi rê chuột trên máy cảm ứng (dùng hằng `HOVER`). Thêm hiệu ứng rê chuột mới thì giữ quy tắc này.
 - **Mốc 10 (07/10, mới nhất):** chủ shop không muốn "khoe" số lượng: không hiện tổng số mẫu (nút banner "Khám phá giày sẵn size", ô "Tất cả – Mọi đôi đang chờ bạn"), không hiện số mẫu ở "Theo nhu cầu", không hiện số mẫu của từng hãng / dòng (menu, tường logo, top 5, thẻ dòng, tab) — riêng ô hãng ở "Theo thương hiệu" có dòng làm tròn "Hơn 200 mẫu có sẵn" (`stockLine`, mốc 11); dòng nhỏ trên "ONLY AUTHENTIC" dùng logo đầy đủ `slife-full-white.svg`; banner không hiện giá; không dùng câu "ảnh chụp thật" cho ảnh trên web (ảnh lấy từ bảng hàng); ô chưa có ảnh ghi "Ảnh đang cập nhật"; dải chữ đầu trang lặp đủ dài để chạy liền mạch.
 - **Mốc 9:** đổi sang 2 font Barlow Condensed + IBM Plex Sans (xem dòng "Font" bên dưới).
 - **Mốc 8:** logo đầu trang nét dày hơn, to hơn, màu bên trong chảy liên tục (mặt nạ `images/brand/slife-logo-mask.svg` + dải màu CSS; tạo lại mặt nạ từ `slife-full-gradient.svg` nếu đổi logo). Dải logo hãng không ghi số. "Hàng sẵn, mua ngay" trộn lần lượt mỗi hãng một mẫu (`mixBrands`), không ưu tiên mẫu có ảnh.
