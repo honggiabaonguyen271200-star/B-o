@@ -123,8 +123,10 @@ def _mask_box(im, bg, thresh):
     scale = 1
     if max(m.size) > 600:
         scale = max(m.size) / 600
-        m = m.resize((round(m.width / scale), round(m.height / scale)), Image.BILINEAR).point(lambda v: 255 if v > 96 else 0)
-    m = m.filter(ImageFilter.MedianFilter(5))  # bỏ chấm nhiễu
+        # thu nhỏ kiểu "có là giữ": đường viền mảnh (đế trắng, dây giày) không bị mất
+        m = m.resize((round(m.width / scale), round(m.height / scale)), Image.BOX).point(lambda v: 255 if v > 8 else 0)
+    # Không lọc nhiễu kiểu trung vị: nó xoá luôn đường viền mảnh của giày trắng (đáy đế, mép cổ giày).
+    # Chấm nhiễu, đường kẻ viền, chữ tách rời do main_part bỏ đi (tách khỏi giày bằng khoảng trống, ít điểm).
     box = main_part(m)
     if not box:
         return None
@@ -134,18 +136,9 @@ def _mask_box(im, bg, thresh):
 
 
 def content_box(im, bg):
-    """Khung chứa giày. Ngưỡng rõ (30) bỏ qua bóng mờ; nếu giày màu rất nhạt (kem, trắng ngà) thì khung
-    theo ngưỡng rõ chỉ bắt được đế → dùng ngưỡng nhạt (12) để không cắt mất thân giày."""
-    core = _mask_box(im, bg, 30)
-    light = _mask_box(im, bg, 12)
-    if not core:
-        return light
-    if light:
-        cw, ch = core[2] - core[0], core[3] - core[1]
-        lw, lh = light[2] - light[0], light[3] - light[1]
-        if ch < 0.75 * lh or cw < 0.75 * lw:
-            return light
-    return core
+    """Khung chứa giày, tính cả chỗ rất nhạt (dây giày, cổ giày trắng trên nền trắng) để không cắt mất phần nào;
+    chấm nhiễu, đường kẻ viền, chữ nhỏ tách rời được bỏ qua (main_part)."""
+    return _mask_box(im, bg, 10) or _mask_box(im, bg, 30)
 
 
 def region_white(im, bg, near=40, far=56, step=6, model=None):
@@ -221,9 +214,14 @@ def bg_model(im, bg, size=96):
     small.thumbnail((size, size))
     w, h = small.size
     px = small.load()
+    # Ngưỡng "là nền" theo độ loang thật của nền: nền đều (trắng, xám phẳng) thì chặt, để chỗ giày chạm mép ảnh
+    # (kể cả giày kem, trắng ngà) không bị tính là nền; nền loang dần thì nới ra
+    ring = [px[x, 0] for x in range(w)] + [px[x, h - 1] for x in range(w)] + [px[0, y] for y in range(h)] + [px[w - 1, y] for y in range(h)]
+    dists = sorted(max(abs(c[i] - bg[i]) for i in range(3)) for c in ring)
+    tol = max(6, min(30, dists[int(len(dists) * 0.6)] * 1.5 + 4))
 
     def clean(seq):
-        ok = [max(abs(c[i] - bg[i]) for i in range(3)) <= 30 for c in seq]
+        ok = [max(abs(c[i] - bg[i]) for i in range(3)) <= tol for c in seq]
         if not any(ok):
             return [bg] * len(seq)
         out = list(seq)
@@ -287,19 +285,102 @@ def whiten(im):
     neutral = max(bg) - min(bg) <= 12
     if close < 0.5 or not neutral or min(bg) < 185:
         return im, bg, "mau"
-    if min(bg) >= 252:
-        return im, WHITE, "trang"
+    if min(bg) >= 252 and all(min(p) >= 250 for p in px):
+        return im, WHITE, "trang"  # nền trắng sạch quanh mép: giữ nguyên
     model = bg_model(im, bg)
+    if min(min(p) for p in (model.get_flattened_data() if hasattr(model, "get_flattened_data") else model.getdata())) >= 250:
+        return im, WHITE, "trang"  # nền thực chất đã trắng đều (giày chạm mép ảnh): giữ nguyên
     if lighter_than_bg(im, bg) <= 0.35:
         # Nền còn loang nhẹ quanh giày → trắng hẳn (chỉ phần nối liền mép ảnh, không đụng vào giày)
         out, how = region_white(divide(im, model), WHITE, near=6, far=9, step=3), "keo"
     else:
         out, how = region_white(im, bg, near=10, far=22, step=4, model=model), "vung"
-    # Nền có vân (giấy, vải, ảnh chụp ngoài): làm trắng không sạch, loang lổ → giữ nguyên nền
-    left = sum(1 for p in border_pixels(out) if min(p) < 245) / len(px)
+    # Nền có vân (giấy, vải, ảnh chụp ngoài): làm trắng không sạch, loang lổ → giữ nguyên nền.
+    # Chỉ xét những điểm ở mép vốn là nền (chỗ giày chạm mép ảnh không tính).
+    was_bg = [max(abs(p[i] - bg[i]) for i in range(3)) <= 14 for p in px]
+    after = border_pixels(out)
+    left = sum(1 for k, p in zip(was_bg, after) if k and min(p) < 245) / max(1, sum(was_bg))
     if left > 0.12:
         return im, bg, "mau"
     return out, WHITE, how
+
+
+def stop_at_gap(im, fill, box, crop):
+    """Phần lề quanh khung giày: giữ chi tiết dính liền với giày (dây, quai thò ra), nhưng dừng trước thứ nằm tách
+    riêng sau một khoảng trống (logo, chữ của ảnh gốc) để không còn mẩu vụn của chúng ở mép ảnh."""
+    diff = ImageChops.difference(im, Image.new("RGB", im.size, fill))
+    r, g, b = diff.split()
+    m = ImageChops.lighter(ImageChops.lighter(r, g), b).point(lambda v: 255 if v > 10 else 0)
+    x0, y0, x1, y1 = box
+    c0, r0, c1, r1 = crop
+    gap = max(3, round(0.03 * max(x1 - x0, y1 - y0)))
+
+    def scan(lines):
+        empty = None
+        for i, strip in enumerate(lines):
+            if m.crop(strip).getbbox():
+                if empty is not None and i - empty >= gap:
+                    return empty + gap // 2
+            elif empty is None:
+                empty = i
+            continue
+        return None
+
+    t = scan([(x0, y, x1, y + 1) for y in range(y0 - 1, r0 - 1, -1)])
+    if t is not None:
+        r0 = y0 - t
+    t = scan([(x0, y, x1, y + 1) for y in range(y1, r1)])
+    if t is not None:
+        r1 = y1 + t
+    t = scan([(x, y0, x + 1, y1) for x in range(x0 - 1, c0 - 1, -1)])
+    if t is not None:
+        c0 = x0 - t
+    t = scan([(x, y0, x + 1, y1) for x in range(x1, c1)])
+    if t is not None:
+        c1 = x1 + t
+    return c0, r0, c1, r1
+
+
+def feather(size, sides):
+    """Mặt nạ mờ dần ở các mép có lề (mép vùng cắt nằm trong ảnh), để chỗ cắt hoà vào nền, không thành đường kẻ.
+    sides = độ rộng lề trái, trên, phải, dưới (0 = mép ảnh gốc, không làm mờ)."""
+    w, h = size
+    left, top, right, bottom = sides
+
+    def ramp(n, a, b):
+        out = []
+        for i in range(n):
+            v = 1.0
+            if a:
+                v = min(v, (i + 0.5) / a)
+            if b:
+                v = min(v, (n - i - 0.5) / b)
+            out.append(max(0, min(255, round(255 * v))))
+        return out
+    hx = Image.new("L", (w, 1))
+    hx.putdata(ramp(w, left, right))
+    vy = Image.new("L", (1, h))
+    vy.putdata(ramp(h, top, bottom))
+    return ImageChops.darker(hx.resize((w, h), Image.NEAREST), vy.resize((w, h), Image.NEAREST))
+
+
+def unframe(im):
+    """Ảnh chụp nền xám dán lên khung trắng (ô xám có mép cứng): bỏ khung trắng để phần nền xám được làm trắng đều."""
+    diff = ImageChops.difference(im, Image.new("RGB", im.size, WHITE))
+    r, g, b = diff.split()
+    m = ImageChops.lighter(ImageChops.lighter(r, g), b).point(lambda v: 255 if v > 6 else 0).filter(ImageFilter.MedianFilter(5))
+    box = m.getbbox()
+    if not box or box == (0, 0) + im.size:
+        return im
+    inner = im.crop(box)
+    if inner.width * inner.height < 0.3 * im.width * im.height:
+        return im
+    px = border_pixels(inner)
+    bg = tuple(median([p[i] for p in px]) for i in range(3))
+    close = sum(1 for p in px if max(abs(p[i] - bg[i]) for i in range(3)) <= 10) / len(px)
+    if close >= 0.8 and max(bg) - min(bg) <= 12 and 185 <= min(bg) <= 250:
+        return inner
+    return im
 
 
 def normalize(im, keep_bg=False):
@@ -307,25 +388,40 @@ def normalize(im, keep_bg=False):
     im = flatten(im)
     if keep_bg:
         px = border_pixels(im)
-        im, fill, how = im, tuple(median([p[i] for p in px]) for i in range(3)), "mau"
+        fill, how = tuple(median([p[i] for p in px]) for i in range(3)), "mau"
     else:
+        im = unframe(im)
         im, fill, how = whiten(im)
-    plain = how != "mau"
     box = content_box(im, fill)
     if not box:
         return None, None
-    shoe = im.crop(box)
     if fill == WHITE and not keep_bg:
-        # Ảnh gốc là ảnh nền xám dán lên nền trắng: phần quanh giày sau khi cắt vẫn còn ô xám → làm trắng nốt
-        shoe = whiten(shoe)[0]
-    bw, bh = shoe.size
+        # Ảnh nền xám dán lên nền trắng: phần quanh giày trong khung vẫn còn ô xám → làm trắng nốt rồi đo lại khung
+        sub, _, how2 = whiten(im.crop(box))
+        if how2 in ("keo", "vung"):
+            im = im.copy()
+            im.paste(sub, box[:2])
+            box = content_box(im, fill) or box
+    x0, y0, x1, y1 = box
+    bw, bh = x1 - x0, y1 - y0
+    # Cắt có chừa lề quanh giày; mép vùng cắt mờ dần về màu nền
+    pad = max(3, round(0.05 * max(bw, bh)))
+    c0, r0, c1, r1 = max(0, x0 - pad), max(0, y0 - pad), min(im.width, x1 + pad), min(im.height, y1 + pad)
+    c0, r0, c1, r1 = stop_at_gap(im, fill, box, (c0, r0, c1, r1))
+    part = im.crop((c0, r0, c1, r1))
+    mask = feather(part.size, (x0 - c0 if c0 > 0 else 0, y0 - r0 if r0 > 0 else 0,
+                               c1 - x1 if c1 < im.width else 0, r1 - y1 if r1 < im.height else 0))
     side = min(MAX_SIDE, math.ceil(max(bw / BOX_W, bh / BOX_H)))
     k = min(BOX_W * side / bw, BOX_H * side / bh, 1)
     if k < 1:
-        shoe = shoe.resize((max(1, round(bw * k)), max(1, round(bh * k))), Image.LANCZOS)
+        size = (max(1, round(part.width * k)), max(1, round(part.height * k)))
+        part, mask = part.resize(size, Image.LANCZOS), mask.resize(size, Image.BILINEAR)
     out = Image.new("RGB", (side, side), fill)
-    out.paste(shoe, ((side - shoe.width) // 2, (side - shoe.height) // 2))
-    return out, ("trang" if plain else "mau")
+    # Đặt tâm khung giày vào giữa ảnh
+    ox = round(side / 2 - ((x0 + x1) / 2 - c0) * k)
+    oy = round(side / 2 - ((y0 + y1) / 2 - r0) * k)
+    out.paste(part, (ox, oy), mask)
+    return out, ("trang" if how != "mau" else "mau")
 
 
 def run(redo=False, quiet=False):
