@@ -1,0 +1,2 @@
+# Mã mẫu giữ nguyên nền ảnh bìa (scripts/chuan_hoa_anh.py không làm trắng nền), mỗi dòng một mã
+P661W13315  # ảnh chụp trên nền giấy có vân

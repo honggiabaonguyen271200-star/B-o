@@ -6,7 +6,8 @@
 - giày được cắt sát rồi đặt giữa ảnh, cùng một cỡ: rộng tối đa 86%, cao tối đa 68% khung;
 - không phóng to ảnh nhỏ (giữ nét như ảnh gốc), ảnh lớn thu về tối đa 1200px.
 
-Ảnh nền màu đậm / ảnh chụp ngoài trời: giữ nguyên nền, chỉ đưa về ảnh vuông cùng cỡ.
+Ảnh nền màu đậm / ảnh chụp ngoài trời: giữ nguyên nền, chỉ đưa về ảnh vuông cùng cỡ. Mẫu nào làm trắng tự động
+không đẹp: ghi mã vào scripts/anh-giu-nen.txt (mỗi dòng một mã) rồi chạy --lam-lai.
 Chỉ xử lý ảnh bìa <MÃ>.webp (ảnh đầu tiên của mẫu trong danh-sach.js), ảnh phụ -2, -3… giữ nguyên.
 Ảnh gốc được chép sang images/goc/ (không đưa lên GitHub) trước khi thay.
 Ảnh đã chuẩn hoá được ghi vào scripts/anh-da-chuan-hoa.json để lần sau bỏ qua; thay ảnh mới
@@ -34,6 +35,7 @@ ROOT = Path(__file__).resolve().parent.parent
 IMG_DIR = ROOT / "images" / "products"
 BACKUP = ROOT / "images" / "goc"
 RECORD = Path(__file__).resolve().parent / "anh-da-chuan-hoa.json"
+KEEP = Path(__file__).resolve().parent / "anh-giu-nen.txt"  # mã mẫu giữ nguyên nền (làm trắng tự động không đẹp)
 
 BOX_W, BOX_H = 0.86, 0.68   # khung chứa giày trong ảnh vuông
 MAX_SIDE = 1200
@@ -146,7 +148,7 @@ def content_box(im, bg):
     return core
 
 
-def region_white(im, bg, near=40, far=56, step=6):
+def region_white(im, bg, near=40, far=56, step=6, model=None):
     """Nền xám vừa (giày trắng dễ bị bạc nếu kéo sáng cả ảnh): chỉ làm trắng vùng nền nối liền với mép ảnh.
     Loang từ mép vào theo điểm ảnh liền kề gần màu nhau (nền loang dần vẫn theo được), dừng ở viền giày;
     bóng đổ nhạt dần thành trắng, không bị cắt cứng."""
@@ -156,14 +158,25 @@ def region_white(im, bg, near=40, far=56, step=6):
         small.thumbnail((500, 500))
     w, h = small.size
     px = small.load()
-    dist = lambda p: max(abs(p[0] - bg[0]), abs(p[1] - bg[1]), abs(p[2] - bg[2]))
+    if model is not None:
+        mp = model.resize((w, h), Image.BILINEAR).load()
+        dist = None
+    else:
+        dist = lambda p: max(abs(p[0] - bg[0]), abs(p[1] - bg[1]), abs(p[2] - bg[2]))  # noqa: E731
+
+    def far_from(x, y):
+        p = px[x, y]
+        if dist:
+            return dist(p)
+        q = mp[x, y]
+        return max(abs(p[0] - q[0]), abs(p[1] - q[1]), abs(p[2] - q[2]))
     seen = bytearray(w * h)
     stack = []
     for x in range(w):
         stack += [(x, 0), (x, h - 1)]
     for y in range(h):
         stack += [(0, y), (w - 1, y)]
-    stack = [(x, y) for x, y in stack if dist(px[x, y]) <= near]
+    stack = [(x, y) for x, y in stack if far_from(x, y) <= near]
     for x, y in stack:
         seen[y * w + x] = 1
     while stack:
@@ -172,7 +185,7 @@ def region_white(im, bg, near=40, far=56, step=6):
         for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
             if 0 <= nx < w and 0 <= ny < h and not seen[ny * w + nx]:
                 q = px[nx, ny]
-                if dist(q) <= far and max(abs(q[0] - p[0]), abs(q[1] - p[1]), abs(q[2] - p[2])) <= step:
+                if far_from(nx, ny) <= far and max(abs(q[0] - p[0]), abs(q[1] - p[1]), abs(q[2] - p[2])) <= step:
                     seen[ny * w + nx] = 1
                     stack.append((nx, ny))
     alpha = Image.new("L", (w, h), 0)
@@ -180,7 +193,7 @@ def region_white(im, bg, near=40, far=56, step=6):
     for y in range(h):
         for x in range(w):
             if seen[y * w + x]:
-                d = dist(px[x, y])
+                d = far_from(x, y)
                 ap[x, y] = 255 if d <= near else max(0, round(255 * (far - d) / (far - near)))
     if alpha.size != im.size:
         alpha = alpha.resize(im.size, Image.BILINEAR)
@@ -201,54 +214,110 @@ def lighter_than_bg(im, bg):
     return lit / hit if hit else 0
 
 
-def normalize(im):
-    """Trả về (ảnh vuông đã chuẩn hoá, loại nền: 'trang' | 'mau')."""
+def bg_model(im, bg, size=96):
+    """Màu nền ước theo từng vị trí (nền chụp thường sáng tối dần từ trên xuống / từ giữa ra): nội suy từ 4 mép ảnh,
+    bỏ qua chỗ giày chạm mép."""
+    small = im.copy()
+    small.thumbnail((size, size))
+    w, h = small.size
+    px = small.load()
+
+    def clean(seq):
+        ok = [max(abs(c[i] - bg[i]) for i in range(3)) <= 30 for c in seq]
+        if not any(ok):
+            return [bg] * len(seq)
+        out = list(seq)
+        idx = [i for i, k in enumerate(ok) if k]
+        for i in range(len(seq)):
+            if not ok[i]:
+                a = max([j for j in idx if j < i], default=None)
+                b = min([j for j in idx if j > i], default=None)
+                if a is None or b is None:
+                    out[i] = seq[a if b is None else b]
+                else:
+                    t = (i - a) / (b - a)
+                    out[i] = tuple(seq[a][c] * (1 - t) + seq[b][c] * t for c in range(3))
+        r = 2  # làm mượt
+        return [tuple(sum(out[j][c] for j in range(max(0, i - r), min(len(out), i + r + 1))) / (min(len(out), i + r + 1) - max(0, i - r)) for c in range(3)) for i in range(len(out))]
+
+    top = clean([px[x, 0] for x in range(w)])
+    bottom = clean([px[x, h - 1] for x in range(w)])
+    left = clean([px[0, y] for y in range(h)])
+    right = clean([px[w - 1, y] for y in range(h)])
+    model = Image.new("RGB", (w, h))
+    mp = model.load()
+    for y in range(h):
+        v = y / (h - 1) if h > 1 else 0
+        for x in range(w):
+            u = x / (w - 1) if w > 1 else 0
+            mp[x, y] = tuple(max(1, min(255, round(
+                (1 - v) * top[x][c] + v * bottom[x][c] + (1 - u) * left[y][c] + u * right[y][c]
+                - ((1 - u) * (1 - v) * top[0][c] + u * (1 - v) * top[-1][c] + (1 - u) * v * bottom[0][c] + u * v * bottom[-1][c]))))
+                for c in range(3))
+    return model
+
+
+def divide(im, model):
+    """Làm sáng theo nền: mỗi điểm ảnh nhân 255 / màu nền tại chỗ đó — nền thành trắng, giày giữ nguyên độ tương phản."""
+    big = model.resize(im.size, Image.BILINEAR)
+    bands = []
+    for a, b in zip(im.split(), big.split()):
+        out = bytes(min(255, x * 255 // y) for x, y in zip(a.tobytes(), b.tobytes()))
+        bands.append(Image.frombytes("L", a.size, out))
+    return Image.merge("RGB", bands)
+
+
+def flatten(im):
     im = ImageOps.exif_transpose(im)
     if im.mode in ("RGBA", "LA", "P"):
         im = im.convert("RGBA")
         flat = Image.new("RGB", im.size, WHITE)
         flat.paste(im, mask=im.split()[3])
-        im = flat
-    else:
-        im = im.convert("RGB")
+        return flat
+    return im.convert("RGB")
 
+
+def whiten(im):
+    """Đưa nền về trắng. Trả về (ảnh, màu nền cuối, cách làm: 'trang' | 'keo' | 'vung' | 'mau').
+    - 'keo': giày tối hơn hoặc gần màu nền → làm sáng toàn ảnh theo màu nền từng chỗ (không mất chi tiết giày);
+    - 'vung': giày sáng hơn nền (giày trắng trên nền xám) → chỉ làm trắng phần nền nối liền mép ảnh, ngưỡng chặt."""
     px = border_pixels(im)
     bg = tuple(median([p[i] for p in px]) for i in range(3))
     close = sum(1 for p in px if max(abs(p[i] - bg[i]) for i in range(3)) <= 14) / len(px)
     neutral = max(bg) - min(bg) <= 12
-    plain = close >= 0.5 and neutral and min(bg) >= 232
-    grey = close >= 0.5 and neutral and 185 <= min(bg) < 232
-
-    if plain and min(bg) < 252 and lighter_than_bg(im, bg) > 0.35:
-        grey = True  # giày sáng hơn nền: kéo sáng cả ảnh sẽ làm mất giày → chỉ làm trắng phần nền
-
-    if grey:
-        im = region_white(im, bg)
-        fill = WHITE
-        plain = True
-    elif plain:
-        if min(bg) < 252:
-            # Nền xám nhạt → trắng: kéo màu nền về 255 (giày sáng lên rất ít, tối đa ~10%)
-            lut = []
-            for c in bg:
-                lut += [min(255, round(v * 255 / c)) for v in range(256)]
-            im = im.point(lut)
-            # Nền còn loang nhẹ quanh giày → trắng hẳn (chỉ phần nối liền mép ảnh, không đụng vào giày)
-            im = region_white(im, WHITE, near=6, far=9, step=3)
-        fill = WHITE
+    if close < 0.5 or not neutral or min(bg) < 185:
+        return im, bg, "mau"
+    if min(bg) >= 252:
+        return im, WHITE, "trang"
+    model = bg_model(im, bg)
+    if lighter_than_bg(im, bg) <= 0.35:
+        # Nền còn loang nhẹ quanh giày → trắng hẳn (chỉ phần nối liền mép ảnh, không đụng vào giày)
+        out, how = region_white(divide(im, model), WHITE, near=6, far=9, step=3), "keo"
     else:
-        fill = bg
+        out, how = region_white(im, bg, near=10, far=22, step=4, model=model), "vung"
+    # Nền có vân (giấy, vải, ảnh chụp ngoài): làm trắng không sạch, loang lổ → giữ nguyên nền
+    left = sum(1 for p in border_pixels(out) if min(p) < 245) / len(px)
+    if left > 0.12:
+        return im, bg, "mau"
+    return out, WHITE, how
 
+
+def normalize(im, keep_bg=False):
+    """Trả về (ảnh vuông đã chuẩn hoá, loại nền: 'trang' | 'mau')."""
+    im = flatten(im)
+    if keep_bg:
+        px = border_pixels(im)
+        im, fill, how = im, tuple(median([p[i] for p in px]) for i in range(3)), "mau"
+    else:
+        im, fill, how = whiten(im)
+    plain = how != "mau"
     box = content_box(im, fill)
     if not box:
         return None, None
     shoe = im.crop(box)
-    if fill == WHITE:
+    if fill == WHITE and not keep_bg:
         # Ảnh gốc là ảnh nền xám dán lên nền trắng: phần quanh giày sau khi cắt vẫn còn ô xám → làm trắng nốt
-        px = border_pixels(shoe)
-        bg2 = tuple(median([p[i] for p in px]) for i in range(3))
-        if 185 <= min(bg2) < 250 and max(bg2) - min(bg2) <= 12:
-            shoe = region_white(shoe, bg2, near=14, far=26, step=4)
+        shoe = whiten(shoe)[0]
     bw, bh = shoe.size
     side = min(MAX_SIDE, math.ceil(max(bw / BOX_W, bh / BOX_H)))
     k = min(BOX_W * side / bw, BOX_H * side / bh, 1)
@@ -264,6 +333,9 @@ def run(redo=False, quiet=False):
         print("Bỏ qua chuẩn hoá ảnh bìa: chưa cài Pillow (pip install pillow)")
         return 0
     record = json.loads(RECORD.read_text(encoding="utf-8")) if RECORD.exists() else {}
+    keep = set()
+    if KEEP.exists():
+        keep = {ln.split("#")[0].strip().upper() for ln in KEEP.read_text(encoding="utf-8").splitlines()} - {""}
     done = kinds_mau = 0
     for name in covers():
         path = IMG_DIR / name
@@ -278,7 +350,7 @@ def run(redo=False, quiet=False):
             src = path
         try:
             with Image.open(src) as im:
-                out, kind = normalize(im)
+                out, kind = normalize(im, keep_bg=name.rsplit(".", 1)[0].upper() in keep)
         except Exception as e:  # ảnh hỏng: để nguyên
             print(f"  Không đọc được {name}: {e}")
             continue
