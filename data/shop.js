@@ -55,6 +55,12 @@ window.SHOP = {
   orderEndpoint: "",
   // Đo lượt xem và hành trình mua (không bắt buộc): mã Google Analytics 4 dạng "G-XXXXXXX". Để trống thì không gửi dữ liệu đi đâu.
   ga4Id: "",
+  // Bản đồ nhiệt Microsoft Clarity (không bắt buộc, miễn phí): mã dự án dạng "abcd1234ef" (clarity.microsoft.com → Settings → Setup). Để trống thì không tải.
+  clarityId: "",
+  // Meta Pixel (không bắt buộc, để sau này chạy quảng cáo lại người đã xem web): ID số dạng "123456789012345" (Trình quản lý sự kiện của Meta). Để trống thì không tải.
+  metaPixelId: "",
+  // Xác minh Google Search Console, cách "Thẻ HTML": chỉ dán phần trong content="…" (VD "AbC12_xyz…"), rồi mở xem-web.bat một lần để chèn vào trang chủ.
+  googleVerify: "",
   announcement: "S&LIFE SNEAKER — ONLY AUTHENTIC · GIÀY CHÍNH HÃNG, HÀNG SẴN",
   // Dòng chữ đầu trang (máy tính hiện cả 3, điện thoại hiện câu đầu). Chỉ ghi điều shop thực sự áp dụng.
   announcements: [

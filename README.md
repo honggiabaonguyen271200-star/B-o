@@ -29,6 +29,7 @@ Cần cài **Python** (https://python.org, nhớ tích ô *Add Python to PATH*) 
 | [HUONG-DAN-CAP-NHAT-ANH.md](HUONG-DAN-CAP-NHAT-ANH.md) | Tải ảnh sản phẩm, banner, ảnh khách hàng |
 | [HUONG-DAN-DON-HANG.md](HUONG-DAN-DON-HANG.md) | Sổ yêu cầu mua trên Google Sheet (không bắt buộc) |
 | [HUONG-DAN-TEN-MIEN.md](HUONG-DAN-TEN-MIEN.md) | Tên miền .vn, thủ tục pháp lý, SEO |
+| [HUONG-DAN-TRUYEN-THONG.md](HUONG-DAN-TRUYEN-THONG.md) | Google Analytics, Search Console, Clarity, Meta Pixel, Merchant Center, link riêng từng kênh, mã QR |
 | [AGENTS.md](AGENTS.md) | Quy tắc cho trợ lý AI (Antigravity, Claude Code…). Mở đầu mỗi cuộc trò chuyện: *"Đọc file AGENTS.md và làm theo quy tắc trong đó."* |
 
 ---

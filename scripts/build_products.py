@@ -338,6 +338,31 @@ def find_image(code):
     return None
 
 
+ARRIVALS = ROOT / "data" / "ngay-ve.json"
+
+
+def mark_arrivals(products, today=None):
+    """Ghi ngày mẫu lên web (cho trang "Hàng mới về"): mẫu mới có trong bảng, hoặc vừa hết hàng nay có lại,
+    nhận ngày hôm nay. Lần chạy đầu (chưa có data/ngay-ve.json) coi mọi mẫu đang có là hàng cũ."""
+    import datetime
+    today = today or datetime.date.today().isoformat()
+    first = not ARRIVALS.exists()
+    book = {} if first else json.loads(ARRIVALS.read_text(encoding="utf-8"))
+    now = {p["id"] for p in products if p.get("sizes")}
+    for pid in now:
+        rec = book.get(pid)
+        if rec is None or not rec.get("on"):
+            book[pid] = {"since": "" if first else today, "on": True}
+    for pid, rec in book.items():
+        if pid not in now:
+            rec["on"] = False
+    ARRIVALS.write_text("{\n" + ",\n".join(json.dumps(k) + ": " + json.dumps(v, separators=(",", ":")) for k, v in sorted(book.items())) + "\n}\n", encoding="utf-8")
+    for p in products:
+        since = book.get(p["id"], {}).get("since")
+        if since and p["id"] in now:
+            p["since"] = since
+
+
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
@@ -367,6 +392,7 @@ def main():
         for k in [k for k, v in p.items() if v is None]:
             del p[k]
 
+    mark_arrivals(products)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     body = json.dumps(products, ensure_ascii=False, separators=(",", ":"))
     body = body.replace("},{", "},\n{")

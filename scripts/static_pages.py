@@ -10,6 +10,7 @@
 - 404.html       link sp/ của mẫu đã hết hàng vẫn mở được trang sản phẩm (GitHub Pages)
 - sitemap.xml    chỉ trang chính + mẫu còn hàng, lastmod = ngày chạy
 - robots.txt
+- merchant-feed.xml  danh sách hàng sẵn cho Google Merchant Center (tab Mua sắm của Google, miễn phí)
 - index.html     dòng tải trước ảnh giày ở banner đầu trang (giữa hai dòng đánh dấu hero-preload)
 
 Tự chạy sau build_products.py, import_image_zip.py, extract_images.py và mỗi lần mở xem-web.bat. Chạy tay:
@@ -22,6 +23,7 @@ import json
 import re
 from pathlib import Path
 import sys
+import unicodedata
 from urllib.parse import quote
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -40,6 +42,7 @@ IMG_DIR = ROOT / "images" / "products"
 LOGO = "images/brand/slife-logo-square-1200.jpg"
 MAIN_PAGES = ["", "shop.html", "size-guide.html", "policy.html", "gioi-thieu.html", "lien-he.html", "chinh-sach-bao-mat.html"]
 PRELOAD_RE = re.compile(r"<!-- hero-preload -->.*?<!-- /hero-preload -->", re.S)
+VERIFY_RE = re.compile(r"<!-- google-verify -->.*?<!-- /google-verify -->", re.S)
 
 
 def read_js(path, var):
@@ -109,7 +112,7 @@ def share_page(p, base, img):
     meta = [
         '<meta charset="utf-8">',
         '<meta name="viewport" content="width=device-width, initial-scale=1">',
-        "<title>%s — S&amp;LIFE Sneaker</title>" % e(title),
+        "<title>%s chính hãng, có sẵn — S&amp;LIFE Sneaker</title>" % e(title),
         '<meta name="description" content="%s">' % e(desc),
         '<link rel="canonical" href="%s">' % e(product),
         '<meta property="og:type" content="product">',
@@ -130,8 +133,9 @@ def share_page(p, base, img):
     meta += [
         '<meta name="twitter:card" content="summary_large_image">',
         '<link rel="icon" type="image/png" sizes="32x32" href="../images/brand/favicon-32.png">',
-        # Chỉ chuyển bằng JavaScript: Facebook không chạy JS nên vẫn đọc được các thẻ og ở trên
-        "<script>location.replace(%s + location.hash);</script>" % json.dumps("../product.html?id=" + pid),
+        # Chỉ chuyển bằng JavaScript: Facebook không chạy JS nên vẫn đọc được các thẻ og ở trên.
+        # Giữ ?utm_source=… của link chia sẻ để Analytics biết khách đến từ kênh nào.
+        "<script>location.replace(%s + location.search.replace(/^\\?/, '&') + location.hash);</script>" % json.dumps("../product.html?id=" + pid),
         "<style>body{margin:48px 16px;font:16px/1.5 system-ui,sans-serif;color:#16122B;text-align:center}a{color:#004AAD}</style>",
     ]
     body = '<p>Đang mở trang sản phẩm…</p>\n<p><a href="../product.html?id=%s">%s</a></p>' % (e(pid), e(title))
@@ -197,9 +201,122 @@ def write_preload(star):
         idx.write_text(new, encoding="utf-8")
 
 
+def slug(s):
+    """Giống slug() trong app.js: bỏ dấu, chữ thường, nối bằng gạch ngang."""
+    s = unicodedata.normalize("NFD", str(s).lower())
+    s = "".join(c for c in s if unicodedata.category(c) != "Mn").replace("đ", "d")
+    return re.sub(r"[^a-z0-9]+", "-", s).strip("-")
+
+
+def read_lines():
+    """Dòng giày từng hãng (window.LINES trong data/shop.js): {hãng: [(tên dòng, regex), …]}."""
+    text = (ROOT / "data" / "shop.js").read_text(encoding="utf-8")
+    m = re.search(r"window\.LINES\s*=\s*\{(.*?)\n\};", text, re.S)
+    out, brand = {}, None
+    if not m:
+        return out
+    for t in re.finditer(r'^\s*"([^"]+)":\s*\[|\[\s*"([^"]+)"\s*,\s*/((?:\\/|[^/\n])+)/([a-z]*)\s*\]', m.group(1), re.M):
+        if t.group(1):
+            brand = t.group(1)
+            out[brand] = []
+        elif brand:
+            try:
+                out[brand].append((t.group(2), re.compile(t.group(3).replace("\\/", "/"), re.I if "i" in t.group(4) else 0)))
+            except re.error:
+                pass
+    return out
+
+
+def category_urls(in_stock):
+    """Trang hãng và trang dòng giày đang có hàng (Google tìm "giày new balance 530 có sẵn" ra đúng trang)."""
+    lines, urls, seen = read_lines(), [], set()
+    for p in in_stock:
+        b = p.get("brand")
+        if not b:
+            continue
+        u = "shop.html?brand=" + slug(b)
+        if u not in seen:
+            seen.add(u)
+            urls.append(u)
+        for name, rx in lines.get(b, []):
+            if rx.search(p.get("name", "")):
+                u2 = u + "&line=" + slug(name)
+                if u2 not in seen:
+                    seen.add(u2)
+                    urls.append(u2)
+                break
+    return urls
+
+
+def write_verify():
+    """Thẻ xác minh Google Search Console (googleVerify trong data/shop.js) vào trang chủ."""
+    m = re.search(r'googleVerify:\s*"((?:\\.|[^"\\])*)"', (ROOT / "data" / "shop.js").read_text(encoding="utf-8"))
+    code = re.sub(r"\\(.)", r"\1", m.group(1)).strip() if m else ""
+    code = re.sub(r'^.*content="([^"]+)".*$', r"\1", code)  # lỡ dán cả thẻ <meta …>
+    tag = '<meta name="google-site-verification" content="%s">' % html.escape(code, quote=True) if code else ""
+    index = ROOT / "index.html"
+    text = index.read_text(encoding="utf-8")
+    new = VERIFY_RE.sub(lambda _: "<!-- google-verify -->" + tag + "<!-- /google-verify -->", text)
+    if new != text:
+        index.write_text(new, encoding="utf-8")
+
+
+def write_feed(base, in_stock, manifest, share_imgs):
+    """merchant-feed.xml: danh sách hàng sẵn cho Google Merchant Center (hiển thị miễn phí trên tab Mua sắm).
+    Mỗi mẫu còn hàng có ảnh = một dòng; giá thấp nhất trong các size, đúng như trang sản phẩm."""
+    e = lambda s: html.escape(str(s), quote=False)  # noqa: E731
+    returns = re.search(r"returnDays:\s*(\d+)", (ROOT / "data" / "shop.js").read_text(encoding="utf-8"))
+    days = returns.group(1) if returns else "3"
+    lines = read_lines()
+    gender = {"nu": ("female", "adult"), "nam": ("male", "adult"), "unisex": ("unisex", "adult"), "gs": ("unisex", "kids"), "kid": ("unisex", "kids")}
+    items = []
+    for p in in_stock:
+        code = p.get("code") or p["id"]
+        img = share_imgs.get(code)
+        if not img:
+            continue
+        prices = [s.get("p") or p.get("price") for s in p["sizes"]]
+        prices = [x for x in prices if x]
+        if not prices:
+            continue
+        sizes = ", ".join(s["s"] for s in p["sizes"])
+        line = next((n for n, rx in lines.get(p.get("brand"), []) if rx.search(p.get("name", ""))), "")
+        g, age = gender.get(p.get("gender"), ("unisex", "adult"))
+        extra = ["images/products/" + f for f in (manifest.get(code) or [])[1:11]]
+        title = ("Giày " + p["name"] + (" " + p["code"] if p.get("code") else ""))[:150]
+        desc = "%s%s chính hãng. Size còn (EU): %s. Tư vấn size theo form từng dòng, đổi size %s ngày nếu còn nguyên hộp, tem." % (
+            p["name"], " (" + p["code"] + ")" if p.get("code") else "", sizes, days)
+        row = [
+            "<g:id>%s</g:id>" % e(code),
+            "<g:title>%s</g:title>" % e(title),
+            "<g:description>%s</g:description>" % e(desc),
+            "<g:link>%s</g:link>" % e(base + "product.html?id=" + quote(p["id"])),
+            "<g:image_link>%s</g:image_link>" % e(base + img),
+        ] + ["<g:additional_image_link>%s</g:additional_image_link>" % e(base + quote(x)) for x in extra] + [
+            "<g:availability>in_stock</g:availability>",
+            "<g:price>%d VND</g:price>" % (min(prices) * 1000),
+            "<g:condition>new</g:condition>",
+            "<g:brand>%s</g:brand>" % e(p.get("brand") or "S&LIFE Sneaker"),
+        ] + (["<g:mpn>%s</g:mpn>" % e(p["code"])] if p.get("code") else ["<g:identifier_exists>no</g:identifier_exists>"]) + [
+            "<g:google_product_category>187</g:google_product_category>",
+            "<g:product_type>%s</g:product_type>" % e(" > ".join(x for x in ["Giày", p.get("brand"), line] if x)),
+            "<g:gender>%s</g:gender>" % g,
+            "<g:age_group>%s</g:age_group>" % age,
+        ]
+        items.append("<item>\n  " + "\n  ".join(row) + "\n</item>")
+    text = ('<?xml version="1.0" encoding="UTF-8"?>\n<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">\n<channel>\n'
+            "<title>S&amp;LIFE Sneaker — hàng sẵn</title>\n<link>%s</link>\n<description>Giày chính hãng, hàng sẵn size</description>\n" % e(base)
+            + "\n".join(items) + "\n</channel>\n</rss>\n")
+    out = ROOT / "merchant-feed.xml"
+    if not out.exists() or out.read_text(encoding="utf-8") != text:
+        out.write_text(text, encoding="utf-8")
+    return len(items)
+
+
 def write_sitemap(base, in_stock):
     today = datetime.date.today().isoformat()
-    urls = MAIN_PAGES + ["product.html?id=" + quote(p["id"]) for p in in_stock]
+    fresh = [p for p in in_stock if p.get("since") and (datetime.date.today() - datetime.date.fromisoformat(p["since"])).days < 14]
+    urls = MAIN_PAGES + (["shop.html?moi=1"] if fresh else []) + category_urls(in_stock) + ["product.html?id=" + quote(p["id"]) for p in in_stock]
     body = "\n".join("  <url><loc>%s</loc><lastmod>%s</lastmod></url>" % (html.escape(base + u), today) for u in urls)
     (ROOT / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
@@ -223,11 +340,12 @@ def main():
     in_stock = [p for p in products if p.get("sizes")]
 
     SP_DIR.mkdir(exist_ok=True)
-    keep_html, keep_img, with_photo = set(), set(), 0
+    keep_html, keep_img, with_photo, share_imgs = set(), set(), 0, {}
     for p in in_stock:
         img = share_image(p.get("code") or p["id"], manifest.get(p.get("code") or p["id"]))
         if img:
             keep_img.add(Path(img[0]).name)
+            share_imgs[p.get("code") or p["id"]] = img[0]
             with_photo += 1
         name = p["id"] + ".html"
         keep_html.add(name)
@@ -247,7 +365,9 @@ def main():
     (ROOT / "404.html").write_text(page_404(base), encoding="utf-8")
     n = write_sitemap(base, in_stock)
     write_preload(hero_star(in_stock, manifest))
-    print(f"Trang chia sẻ sp/: {len(keep_html)} mẫu còn hàng ({with_photo} có ảnh thật, còn lại dùng logo); sitemap.xml: {n} link")
+    write_verify()
+    feed = write_feed(base, in_stock, manifest, share_imgs)
+    print(f"Trang chia sẻ sp/: {len(keep_html)} mẫu còn hàng ({with_photo} có ảnh thật, còn lại dùng logo); sitemap.xml: {n} link; merchant-feed.xml: {feed} mẫu")
 
 
 if __name__ == "__main__":

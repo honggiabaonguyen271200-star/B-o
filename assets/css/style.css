@@ -114,6 +114,7 @@ p { margin: 0 0 1em; }
 .pill--out, .pill.is-out { background: var(--out-bg); color: var(--out); }
 .pill--info { background: #FFF1E0; color: #9A4A00; }
 .pill--g { background: #FBE9F0; color: #A3245A; }
+.pill--new { background: #E6EEFA; color: #004AAD; }
 .pill--sm { height: 22px; padding: 0 8px; font-size: 11.5px; }
 
 /* ---------- Thanh thông báo ---------- */

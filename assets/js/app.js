@@ -118,6 +118,19 @@
   }
   function lineUrl(b, l) { return (b ? "shop.html?brand=" + slug(b) + "&line=" : "shop.html?line=") + slug(l); }
   function absUrl(path) { return new URL(path, SHOP.siteUrl || location.href).href; }
+  // SEO: link chuẩn của trang (Google gộp các link lọc / link chia sẻ về một địa chỉ) và dữ liệu có cấu trúc schema.org
+  function setCanonical(path) {
+    var l = $('link[rel="canonical"]');
+    if (!l) { l = document.createElement("link"); l.rel = "canonical"; document.head.appendChild(l); }
+    l.href = absUrl(path);
+  }
+  function setDesc(text) { var m = $('meta[name="description"]'); if (m) m.content = text; }
+  function jsonLd(data) {
+    var el = document.createElement("script");
+    el.type = "application/ld+json";
+    el.textContent = JSON.stringify(data);
+    document.head.appendChild(el);
+  }
   // Link gửi đi (Facebook): trang chia sẻ sp/<mã>.html có ảnh xem trước, tự mở trang sản phẩm
   function shareUrl(p) { return absUrl(p.inStock ? "sp/" + encodeURIComponent(p.id) + ".html" : productUrl(p)); }
   function initials(b) {
@@ -155,6 +168,15 @@
     return BY_ID[id] || BY_ID[String(id).toLowerCase()] || BY_CODE[compact(id)] || null;
   }
   var IN_STOCK = PRODUCTS.filter(function (p) { return p.inStock; });
+  // Hàng mới về: mẫu lên web trong NEW_DAYS ngày qua (ngày ghi trong data/ngay-ve.json khi cập nhật bảng hàng)
+  var NEW_DAYS = 14;
+  function isNew(p) {
+    if (!p.since || !p.inStock) return false;
+    var d = (Date.now() - Date.parse(p.since + "T00:00:00+07:00")) / 864e5;
+    return d >= 0 && d < NEW_DAYS;
+  }
+  function byNewest(a, b) { return (b.since || "").localeCompare(a.since || "") || (a.order - b.order); }
+  var NEW_LIST = IN_STOCK.filter(isNew).sort(byNewest);
 
   function brandList() {
     var counts = {};
@@ -456,22 +478,50 @@
     if (first) first.focus();
     return { el: wrap, close: close };
   }
-  // Đo hành trình mua: mọi sự kiện đi qua một hàm. Chỉ gửi đi khi đã điền ga4Id trong data/shop.js.
+  // Đo hành trình mua: mọi sự kiện đi qua một hàm. Chỉ gửi đi khi đã điền mã trong data/shop.js
+  // (ga4Id: Google Analytics, metaPixelId: Meta Pixel). Link có ?utm_source=… thì Analytics tự tách khách theo kênh.
   window.slifeEvents = window.slifeEvents || [];
+  var PIXEL_EVENTS = { view_item: "ViewContent", add_to_cart: "AddToCart", open_facebook: "Contact", request_sent: "Lead", search: "Search" };
   function track(name, data) {
     var ev = Object.assign({ event: name, page: document.body.dataset.page, time: Date.now() }, data || {});
     window.slifeEvents.push(ev);
     if (typeof window.gtag === "function") window.gtag("event", name, data || {});
+    if (typeof window.fbq === "function" && PIXEL_EVENTS[name]) {
+      var d = data || {}, px = { currency: "VND" };
+      if (d.code) { px.content_ids = [d.code]; px.content_type = "product"; }
+      if (d.price) px.value = d.price;
+      if (d.q) px.search_string = d.q;
+      window.fbq("track", PIXEL_EVENTS[name], px);
+    }
+  }
+  function addScript(src) {
+    var s = document.createElement("script");
+    s.async = true; s.src = src;
+    document.head.appendChild(s);
   }
   function loadAnalytics() {
-    if (!SHOP.ga4Id || !/^G-[A-Z0-9]+$/.test(SHOP.ga4Id)) return;
-    var s = document.createElement("script");
-    s.async = true; s.src = "https://www.googletagmanager.com/gtag/js?id=" + SHOP.ga4Id;
-    document.head.appendChild(s);
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function () { window.dataLayer.push(arguments); };
-    window.gtag("js", new Date());
-    window.gtag("config", SHOP.ga4Id);
+    if (SHOP.ga4Id && /^G-[A-Z0-9]+$/.test(SHOP.ga4Id)) {
+      addScript("https://www.googletagmanager.com/gtag/js?id=" + SHOP.ga4Id);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag("js", new Date());
+      window.gtag("config", SHOP.ga4Id);
+    }
+    // Microsoft Clarity: bản đồ nhiệt, xem khách bấm và cuộn ra sao (ô khách điền được che: data-clarity-mask)
+    if (SHOP.clarityId && /^[a-z0-9]{6,20}$/i.test(SHOP.clarityId)) {
+      window.clarity = window.clarity || function () { (window.clarity.q = window.clarity.q || []).push(arguments); };
+      addScript("https://www.clarity.ms/tag/" + SHOP.clarityId);
+    }
+    // Meta Pixel: để sau này quảng cáo lại người đã xem web. Tắt tự dò nút / ô nhập, chỉ gửi các sự kiện ở PIXEL_EVENTS.
+    if (SHOP.metaPixelId && /^\d{8,20}$/.test(SHOP.metaPixelId)) {
+      var f = window.fbq = function () { f.callMethod ? f.callMethod.apply(f, arguments) : f.queue.push(arguments); };
+      if (!window._fbq) window._fbq = f;
+      f.push = f; f.loaded = true; f.version = "2.0"; f.queue = [];
+      addScript("https://connect.facebook.net/en_US/fbevents.js");
+      window.fbq("set", "autoConfig", false, SHOP.metaPixelId);
+      window.fbq("init", SHOP.metaPixelId);
+      window.fbq("track", "PageView");
+    }
   }
   /* ---------- Facebook: kênh tư vấn và chốt đơn chính ----------
      Bấm nút là mở Facebook của shop (SHOP.facebookChat) ở nơi khách đã đăng nhập Facebook:
@@ -624,6 +674,7 @@
   function pill(kind, text, sm) { return '<span class="pill pill--' + kind + (sm ? " pill--sm" : "") + '">' + esc(text) + "</span>"; }
   function card(p) {
     var tags = [];
+    if (isNew(p)) tags.push(pill("new", "Mới về", 1));
     if (p.inStock && p.sizes.length === 1) tags.push(pill("info", "Còn 1 size", 1));
     if (p.sale) tags.push(pill("out", "Xả kho", 1));
     if (p.gender === "nu") tags.push(pill("g", "Code nữ", 1));
@@ -768,6 +819,7 @@
         '<button type="submit" class="search__go">Tìm</button><div class="search__pop" id="search-pop" role="listbox" aria-label="Gợi ý tìm kiếm" hidden></div></form>' +
         '<nav class="nav" aria-label="Menu chính">' +
         navLink("shop.html", "Hàng sẵn") +
+        (NEW_LIST.length ? navLink("shop.html?moi=1", "Mới về") : "") +
         '<div class="nav__item" data-mega-item><button type="button" class="nav__link" aria-expanded="false" aria-controls="mega-brands">Thương hiệu' + I.down + "</button>" +
         '<div class="mega" id="mega-brands"><div class="container mega__in">' +
         brands.map(function (b) {
@@ -794,6 +846,7 @@
         '<div class="drawer__body">' +
         '<div class="drawer__title">Giày theo hãng</div>' +
         '<div class="m-item"><div class="m-row"><a href="shop.html">Tất cả hàng sẵn</a></div></div>' +
+        (NEW_LIST.length ? '<div class="m-item"><div class="m-row"><a href="shop.html?moi=1">Hàng mới về</a></div></div>' : "") +
         brands.map(function (b) {
           var lines = lineList(b.name);
           return '<div class="m-item"><div class="m-row"><a href="' + brandUrl(b.name) + '">' + esc(b.name) + "</a>" +
@@ -1263,6 +1316,18 @@
 
   function initHome() {
     var brands = brandList();
+    // Google: thông tin cửa hàng + ô tìm kiếm của web
+    var phone = String(SHOP.phone || "").replace(/\D/g, "");
+    var store = {
+      "@context": "https://schema.org", "@type": "OnlineStore", name: SHOP.name, url: absUrl("./"),
+      logo: absUrl("images/brand/slife-logo-square-1200.jpg"),
+      sameAs: [SHOP.facebook, SHOP.instagramSneaker || SHOP.instagram, SHOP.tiktok].filter(Boolean),
+    };
+    if (phone) store.telephone = "+84" + phone.replace(/^0/, "");
+    if (SHOP.email) store.email = SHOP.email;
+    jsonLd(store);
+    jsonLd({ "@context": "https://schema.org", "@type": "WebSite", name: SHOP.name, url: absUrl("./"),
+      potentialAction: { "@type": "SearchAction", target: absUrl("shop.html") + "?q={search_term_string}", "query-input": "required name=search_term_string" } });
     var photos = IN_STOCK.filter(hasPhoto).sort(rank);
 
     // Hero: 5 slide — chùm mẫu nổi bật nhiều hãng · tường logo các hãng · top dòng giày · dòng có nhiều ảnh thật · hỏi size
@@ -1352,6 +1417,13 @@
     if (picks) {
       picks.innerHTML = rail("Hàng sẵn, mua ngay", mixBrands(brands, 12), "shop.html", "Xem tất cả giày sẵn size", "Còn size tại shop · mẫu tiêu biểu của từng hãng");
       picksMotion(picks);
+      // Hàng mới về (từ 4 mẫu): ngay dưới "Hàng sẵn, mua ngay" để khách quay lại thấy mẫu mới
+      if (NEW_LIST.length >= 4) {
+        var fresh = document.createElement("div");
+        fresh.setAttribute("data-fresh", "");
+        fresh.innerHTML = rail("Hàng mới về", NEW_LIST.slice(0, 12), "shop.html?moi=1", "Xem tất cả hàng mới về", "Mẫu lên web trong " + NEW_DAYS + " ngày qua");
+        picks.parentNode.insertBefore(fresh, picks.nextSibling);
+      }
     }
 
     var perksEl = $("[data-perks]");
@@ -1485,6 +1557,7 @@
       }
     }
     var wishMode = WISH && p.get("wish") === "1";
+    var newMode = !wishMode && p.get("moi") === "1";
 
     var state = {
       q: p.get("q") || "",
@@ -1500,12 +1573,19 @@
       page: Math.max(1, +p.get("page") || 1),
     };
 
-    var title = wishMode ? "Yêu thích" : line ? lineTitle(brand, line) : brand ? "Giày " + brand : state.q ? "Kết quả cho “" + state.q + "”" : "Giày chính hãng";
+    var title = wishMode ? "Yêu thích" : newMode ? "Hàng mới về" : line ? lineTitle(brand, line) : brand ? "Giày " + brand : state.q ? "Kết quả cho “" + state.q + "”" : "Giày chính hãng";
     var titleEl = $("[data-title]");
     titleEl.innerHTML = brand && !line ? 'Giày <span class="grad-text">' + esc(brand) + "</span>" : esc(title);
     if (brand && !line) titleEl.insertAdjacentHTML("beforebegin", brandLogo(brand, "coll__brandlogo").replace(/role="img" aria-label="[^"]*"/, 'aria-hidden="true"'));
-    document.title = title + " — " + SHOP.name;
-    var trail = [["Trang chủ", "index.html"], ["Hàng sẵn", brand || line || state.q || wishMode ? "shop.html" : ""]];
+    document.title = title + (brand || line ? " chính hãng, có sẵn" : "") + " — " + SHOP.name;
+    if (brand || line) {
+      var tops = lineList(brand).filter(function (l) { return l.name !== OTHER_LINE; }).slice(0, 4).map(function (l) { return l.name; });
+      setDesc(title + " chính hãng, có sẵn size tại " + SHOP.name + (tops.length && !line ? ": " + tops.join(", ") : "") + ". Xem size còn, giá và hỏi size qua Facebook.");
+    }
+    if (newMode) setDesc("Giày chính hãng mới lên web tại " + SHOP.name + " trong " + NEW_DAYS + " ngày qua. Xem size còn, giá và hỏi size qua Facebook.");
+    if (!wishMode && !state.q) setCanonical(newMode ? "shop.html?moi=1" : line ? lineUrl(brand, line) : brand ? brandUrl(brand) : "shop.html");
+    var trail = [["Trang chủ", "index.html"], ["Hàng sẵn", brand || line || state.q || wishMode || newMode ? "shop.html" : ""]];
+    if (newMode) trail.push(["Hàng mới về", ""]);
     if (brand) trail.push(["Giày " + brand, line ? brandUrl(brand) : ""]);
     if (line) trail.push([line, ""]);
     if (state.q && !brand) trail.push(["Tìm kiếm", ""]);
@@ -1532,7 +1612,7 @@
     if (brand && lines.length > 1) {
       tilesEl.innerHTML = '<a class="chip' + (line ? "" : " is-active") + '" href="' + brandUrl(brand) + '">Tất cả <small>' + IN_STOCK.filter(function (x) { return x.brand === brand; }).length + "</small></a>" +
         lines.map(function (l) { return '<a class="chip' + (l.name === line ? " is-active" : "") + '" href="' + lineUrl(brand, l.name) + '">' + esc(l.name) + "</a>"; }).join("");
-    } else if (!brand && !line && !wishMode) {
+    } else if (!brand && !line && !wishMode && !newMode) {
       tilesEl.innerHTML = '<a class="chip is-active" href="shop.html">Tất cả</a>' +
         brands.map(function (b) { return '<a class="chip" href="' + brandUrl(b.name) + '">' + esc(b.name) + "</a>"; }).join("");
     } else {
@@ -1543,6 +1623,7 @@
     var wishIds = wishes();
     var pool = IN_STOCK.filter(function (x) {
       if (wishMode) return wishIds.indexOf(x.id) >= 0;
+      if (newMode && !isNew(x)) return false;
       return (!brand || x.brand === brand) && (!line || x.line === line);
     });
     var sizeSet = {}, colorCount = {}, brandCount = {}, prices = [];
@@ -1621,6 +1702,7 @@
     function writeUrl() {
       var u = new URLSearchParams();
       if (wishMode) u.set("wish", "1");
+      if (newMode) u.set("moi", "1");
       if (brand) u.set("brand", slug(brand));
       if (line) u.set("line", slug(line));
       if (state.q) u.set("q", state.q);
@@ -1654,7 +1736,7 @@
       }[state.sort];
       return list.sort(function (a, b) {
         if (a.inStock !== b.inStock) return a.inStock ? -1 : 1;
-        return cmp ? cmp(a, b) : rank(a, b);
+        return cmp ? cmp(a, b) : newMode ? byNewest(a, b) : rank(a, b);
       });
     }
 
@@ -1699,6 +1781,8 @@
       countEl.textContent = list.length + " mẫu có sẵn";
       if (list.length) {
         gridEl.innerHTML = list.slice(start, start + PAGE_SIZE).map(card).join("");
+      } else if (newMode && !chips.length) {
+        gridEl.innerHTML = '<div class="empty"><h2>Chưa có mẫu mới trong ' + NEW_DAYS + ' ngày qua</h2><p class="muted">Mẫu mới lên web sẽ hiện ở đây. Xem toàn bộ hàng đang có sẵn trong lúc chờ nhé.</p><div class="empty__actions"><a class="btn btn--grad" href="shop.html">Xem hàng sẵn</a></div></div>';
       } else if (wishMode && !chips.length) {
         gridEl.innerHTML = '<div class="empty"><h2>Chưa có mẫu yêu thích</h2><p class="muted">Bấm biểu tượng trái tim trên mẫu giày để lưu lại, xem lại sau ở đây (lưu trên trình duyệt này).</p><div class="empty__actions"><a class="btn btn--grad" href="shop.html">Xem hàng sẵn</a></div></div>';
       } else {
@@ -1912,31 +1996,43 @@
       return;
     }
     var name = fullName(p);
-    document.title = name + " — " + SHOP.name;
-    var meta = $('meta[name="description"]');
-    if (meta) meta.content = name + " chính hãng tại " + SHOP.name + ". " + (p.inStock ? "Size còn: " + p.sizes.map(function (s) { return s.s; }).join(", ") + ". " : "") + "Tư vấn size theo form, đổi size " + SHOP.returnDays + " ngày.";
+    // Tiêu đề, mô tả theo cách khách gõ tìm: tên mẫu + mã + màu + "chính hãng, có sẵn" + tên shop
+    var stockWords = p.inStock ? " chính hãng, có sẵn" : " chính hãng";
+    document.title = name + stockWords + " — " + SHOP.name;
+    var priceList = p.sizes.map(function (s) { return s.p || p.price; }).filter(Boolean);
+    var lowP = priceList.length ? Math.min.apply(null, priceList) : p.price, highP = priceList.length ? Math.max.apply(null, priceList) : p.price;
+    var desc = name + stockWords + " tại " + SHOP.name + ". " +
+      (p.inStock ? (lowP ? "Giá " + (highP > lowP ? "từ " : "") + money(lowP) + ". " : "") + "Size còn: " + p.sizes.map(function (s) { return s.s; }).join(", ") + ". " : "") +
+      "Tư vấn size theo form, đổi size " + SHOP.returnDays + " ngày.";
+    setDesc(desc);
+    setCanonical(productUrl(p));
+    // Dữ liệu có cấu trúc cho Google (giá, tình trạng còn hàng) — chỉ dữ liệu thật
+    var ld = {
+      "@context": "https://schema.org", "@type": "Product", name: p.name, sku: p.code || p.id,
+      brand: { "@type": "Brand", name: p.brand }, description: desc, url: absUrl(productUrl(p)),
+    };
+    if (p.code) ld.mpn = p.code;
+    var ldImgs = (shotsOf(p) || []).slice(0, 6).map(absUrl);
+    if (ldImgs.length) ld.image = ldImgs;
+    if (lowP) {
+      var avail = "https://schema.org/" + (p.inStock ? "InStock" : "OutOfStock");
+      ld.offers = highP > lowP
+        ? { "@type": "AggregateOffer", priceCurrency: "VND", lowPrice: lowP * 1000, highPrice: highP * 1000, offerCount: p.sizes.length, availability: avail, url: ld.url }
+        : { "@type": "Offer", priceCurrency: "VND", price: lowP * 1000, availability: avail, itemCondition: "https://schema.org/NewCondition", url: ld.url, seller: { "@type": "Organization", name: SHOP.name } };
+    }
+    jsonLd(ld);
     var fit = fitNote(p);
     var selected = p.sizes.length === 1 ? p.sizes[0].s : null;
     fbContext = function (size) { return consultMsg(p, size || selected); }; // nút Facebook: chép sẵn mẫu + size đang chọn
     track("view_item", { id: p.id, code: p.code, brand: p.brand, price: p.minPrice * 1000 });
     var sizeText = p.sizes.map(function (s) { return s.s; }).join(", ");
     var hasLines = (LINES[p.brand] || []).length > 0;
-    var pageUrl = absUrl(productUrl(p)), linkUrl = shareUrl(p);
+    var linkUrl = shareUrl(p);
     var trail = [["Trang chủ", "index.html"], [p.brand, brandUrl(p.brand)]];
     if (hasLines && p.line !== OTHER_LINE) trail.push([p.line, lineUrl(p.brand, p.line)]);
     trail.push([p.name, ""]);
     var known = shotsOf(p);
 
-    // Dữ liệu có cấu trúc cho Google (giá, tình trạng còn hàng) — chỉ dữ liệu thật
-    var ld = document.createElement("script");
-    ld.type = "application/ld+json";
-    ld.textContent = JSON.stringify({
-      "@context": "https://schema.org", "@type": "Product", name: name, sku: p.code || p.id, mpn: p.code || undefined,
-      brand: { "@type": "Brand", name: p.brand }, image: known ? known.map(absUrl) : undefined,
-      offers: { "@type": "Offer", priceCurrency: "VND", price: (p.minPrice || 0) * 1000, url: pageUrl, itemCondition: "https://schema.org/NewCondition",
-        availability: p.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" },
-    });
-    document.head.appendChild(ld);
 
     // Dải size theo hãng: size đang có đậm, size đã hết làm mờ (bấm để nhắn shop tư vấn)
     var range = [];
