@@ -1180,6 +1180,78 @@
     }, 2600);
   }
 
+  // "Hàng sẵn, mua ngay": mỗi ô cứ 3 giây đổi sang một mẫu khác cùng hãng (chủ shop yêu cầu 17/10), các ô đổi lần lượt
+  // trái → phải. Đứng yên khi rê chuột / chạm / dùng bàn phím trong khối, khi vừa vuốt dãy thẻ, khi khối khuất màn hình,
+  // khi máy bật "giảm chuyển động". Ảnh mẫu mới tải xong mới đổi, không hiện ô trống.
+  function picksMotion(sec) {
+    var track = sec && $("[data-rail-track]", sec);
+    if (REDUCED || !track) return;
+    var cards = $all(".card", track);
+    if (!cards.length) return;
+    var hold = { hover: false, focus: false, until: 0, off: false };
+    function held() { return hold.hover || hold.focus || hold.off || document.hidden || Date.now() < hold.until; }
+    function wait(ms) { hold.until = Math.max(hold.until, Date.now() + ms); }
+    sec.addEventListener("mouseenter", function () { hold.hover = true; });
+    sec.addEventListener("mouseleave", function () { hold.hover = false; });
+    sec.addEventListener("focusin", function () { hold.focus = true; });
+    sec.addEventListener("focusout", function (e) { if (!sec.contains(e.relatedTarget)) hold.focus = false; });
+    sec.addEventListener("touchstart", function () { wait(6000); }, { passive: true });
+    track.addEventListener("scroll", function () { wait(3000); }, { passive: true });
+    if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { hold.off = !es[0].isIntersecting; }).observe(sec);
+
+    var idOf = function (c) { var a = $(".card__name a", c); return a ? a.getAttribute("href") : ""; };
+    var pools = {}, next = {};
+    function pool(brand) {
+      if (!pools[brand]) {
+        var all = IN_STOCK.filter(function (p) { return p.brand === brand; });
+        var ph = all.filter(hasPhoto);
+        pools[brand] = (ph.length > 1 ? ph : all).slice().sort(function () { return Math.random() - 0.5; });
+        next[brand] = 0;
+      }
+      return pools[brand];
+    }
+    var brandOf = cards.map(function (c) { var p = BY_ID[decodeURIComponent((idOf(c).split("id=")[1] || ""))]; return p ? p.brand : ""; });
+    function pick(brand) {
+      var list = pool(brand), shown = {};
+      $all(".card", track).forEach(function (c) { shown[idOf(c)] = 1; });
+      for (var t = 0; t < list.length; t++) {
+        var p = list[next[brand]++ % list.length];
+        if (!shown[productUrl(p)]) return p;
+      }
+      return null;
+    }
+    function visible(c) {
+      var r = c.getBoundingClientRect(), tr = track.getBoundingClientRect();
+      return r.right > tr.left + 4 && r.left < tr.right - 4;
+    }
+    function swap(i) {
+      var old = cards[i], p = brandOf[i] && pick(brandOf[i]);
+      if (!p || held() || !visible(old)) return;
+      var src = (shotsOf(p) || [])[0];
+      var go = function () {
+        if (held()) return;
+        old.classList.add("is-swap");
+        setTimeout(function () {
+          var box = document.createElement("div");
+          box.innerHTML = card(p);
+          var neu = box.firstChild;
+          neu.classList.add("is-swap");
+          old.replaceWith(neu);
+          cards[i] = neu;
+          requestAnimationFrame(function () { requestAnimationFrame(function () { neu.classList.remove("is-swap"); }); });
+        }, 280);
+      };
+      if (!src) return go();
+      var im = new Image();
+      im.onload = go;
+      im.src = src;
+    }
+    setInterval(function () {
+      if (held()) return;
+      cards.forEach(function (c, i) { setTimeout(function () { swap(i); }, i * 140); });
+    }, 3000);
+  }
+
   // Dòng nhỏ dưới tên hãng: số mẫu làm tròn xuống, không ghi số lẻ (338 -> "Hơn 300 mẫu có sẵn", 58 -> "Hơn 50", 16 -> "Hơn 10")
   function stockLine(n) {
     var st = n >= 100 ? 100 : n >= 50 ? 50 : 10;
@@ -1279,6 +1351,7 @@
     var picks = $("[data-picks]");
     if (picks) {
       picks.innerHTML = rail("Hàng sẵn, mua ngay", mixBrands(brands, 12), "shop.html", "Xem tất cả giày sẵn size", "Còn size tại shop · mẫu tiêu biểu của từng hãng");
+      picksMotion(picks);
     }
 
     var perksEl = $("[data-perks]");

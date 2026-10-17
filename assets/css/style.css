@@ -1734,3 +1734,8 @@ body.has-aura::after {
 .hd__left { grid-area: menu; justify-self: start; display: flex; align-items: center; margin-left: -10px; }
 .hd__left .hd__menu { margin-left: 0; }
 @media (min-width: 1180px) { .hd__left { display: none; } }
+
+/* "Hàng sẵn, mua ngay": thẻ đổi mẫu mỗi 3 giây (picksMotion) — mờ dần ra rồi hiện lại */
+[data-picks] .rail .card { transition: opacity .28s ease, transform .28s ease; }
+[data-picks] .rail .card.is-swap { opacity: 0; transform: translateY(6px); }
+@media (prefers-reduced-motion: reduce) { [data-picks] .rail .card { transition: none; } }
