@@ -26,7 +26,8 @@ Danh sách việc cần làm để website "chuẩn chỉnh" — đúng luật, 
    - Cá nhân đăng ký được, cần CCCD; chủ tên miền phải **xác thực thông tin** theo hướng dẫn của nhà đăng ký.
    - Nên đăng ký bằng **tên và thông tin thật của chủ shop**, bật tự động gia hạn, lưu lại tài khoản quản lý tên miền.
    - Chi phí: phí đăng ký năm đầu + phí duy trì hằng năm, thường vài trăm nghìn đến khoảng 1 triệu đồng/năm tuỳ đuôi và nhà đăng ký.
-3. **Trỏ tên miền về website** (trong trang quản lý DNS của nhà đăng ký):
+3. **Xác minh tên miền với GitHub trước** (để không ai khác gắn được tên miền của bạn vào web của họ): GitHub → ảnh đại diện → **Settings → Pages → Add a domain** → nhập tên miền → GitHub đưa một bản ghi **TXT** → thêm bản ghi đó trong trang quản lý DNS của nhà đăng ký → quay lại bấm **Verify**.
+4. **Trỏ tên miền về website** (trong trang quản lý DNS của nhà đăng ký; xoá các bản ghi A / CNAME mặc định của nhà đăng ký cho `@` và `www` nếu có):
 
    | Loại | Tên (Host) | Giá trị |
    | --- | --- | --- |
@@ -36,17 +37,19 @@ Danh sách việc cần làm để website "chuẩn chỉnh" — đúng luật, 
    | A | @ | 185.199.111.153 |
    | CNAME | www | honggiabaonguyen271200-star.github.io |
 
-4. Vào GitHub → repo → **Settings → Pages → Custom domain**, nhập tên miền, **Save**. Đợi kiểm tra DNS (vài phút đến vài giờ), sau đó tích **Enforce HTTPS** để có ổ khoá bảo mật.
-5. **Báo lại tên miền cho người làm web** để: thêm file `CNAME`, đổi `siteUrl` trong `data/shop.js`, tạo lại `sitemap.xml`.
-6. (Nên làm) GitHub → ảnh đại diện → **Settings → Pages → Add a domain** để xác minh tên miền thuộc tài khoản của bạn.
+5. **Chờ tên miền "thông"** (vài phút đến vài giờ). Kiểm tra: vào https://dnschecker.org, gõ tên miền, chọn loại **A** → thấy các số `185.199.…` ở hầu hết các nước là đã trỏ đúng (gõ tên miền trên trình duyệt lúc này thấy trang báo lỗi của GitHub hoặc cảnh báo bảo mật là bình thường). Còn thấy số khác, hoặc trang quảng cáo của nhà đăng ký, là chưa thông. **Chưa thấy thì chưa làm bước 6** — làm sớm thì link cũ tự chuyển sang tên miền chưa chạy, khách vào không được.
+6. GitHub → repo **B-o** → **Settings → Pages → Custom domain**: nhập tên miền, **Save**. Đợi dấu tích xanh "DNS check successful", rồi tích **Enforce HTTPS** (ổ khoá bảo mật; nếu ô này mờ thì chờ thêm, GitHub đang cấp chứng chỉ, có thể đến 24 giờ).
+7. **Báo tên miền cho trợ lý** để: đổi `siteUrl` trong `data/shop.js` rồi chạy `python scripts/static_pages.py` (tự đổi link chia sẻ `sp/`, `sitemap.xml`, `robots.txt`, `merchant-feed.xml`, ảnh xem trước, link chuẩn ở mọi trang), tạo lại mã QR (`docs/truyen-thong/`), cập nhật bảng link riêng từng kênh (`HUONG-DAN-TRUYEN-THONG.md`). File `CNAME` do GitHub tự thêm ở bước 6 — **pull về trước khi sửa tiếp**, đừng xoá file này.
+
+**Link cũ có hỏng không?** Không: link `…github.io/B-o/…` đã gửi khách, đã đăng Facebook vẫn mở được, GitHub tự chuyển sang tên miền mới. Hai thứ không tự chuyển: giỏ hàng khách đang để dở trên link cũ (lưu theo từng địa chỉ web), và biểu tượng app trên điện thoại của bạn — xoá biểu tượng cũ, cài lại từ tên miền mới.
 
 ## 4. Sau khi có tên miền
 
-- [ ] **Google Search Console** (https://search.google.com/search-console): thêm tên miền, gửi `https://tên-miền/sitemap.xml` để Google lập chỉ mục sản phẩm.
-- [ ] **Google Business Profile**: tạo hồ sơ cửa hàng để hiện trên Google Maps (nếu có điểm bán / nhận hàng).
+- [ ] **Google Search Console, Analytics, Clarity, Meta Pixel, Merchant Center**: làm theo `HUONG-DAN-TRUYEN-THONG.md` (dùng tên miền mới ngay từ đầu, không phải làm lại).
+- [ ] **Thông báo Bộ Công Thương** (mục 2) bằng tên miền mới.
+- [ ] Google Business Profile (Google Maps): bỏ qua khi chỉ bán online, không có điểm bán cho khách ghé.
 - [ ] **Email theo tên miền** (VD `lienhe@slifesneakers.vn`): Zoho Mail (có gói miễn phí) hoặc Google Workspace.
 - [ ] Cập nhật link website vào bio Instagram, TikTok, Facebook.
-- [ ] (Tuỳ chọn) Google Analytics / Meta Pixel để đo lượt xem, chạy quảng cáo.
 
 ## 5. Khi nào nên chuyển sang nền tảng bán hàng (Haravan, Sapo…)?
 

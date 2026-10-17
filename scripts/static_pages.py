@@ -248,6 +248,31 @@ def category_urls(in_stock):
     return urls
 
 
+HTML_PAGES = ["index.html", "shop.html", "product.html", "cart.html", "dat-hang.html", "yeu-cau.html", "gioi-thieu.html",
+              "lien-he.html", "policy.html", "chinh-sach-bao-mat.html", "size-guide.html", "anh.html"]
+CANONICAL = {"index.html": "", "gioi-thieu.html": "gioi-thieu.html", "lien-he.html": "lien-he.html", "policy.html": "policy.html",
+             "chinh-sach-bao-mat.html": "chinh-sach-bao-mat.html", "size-guide.html": "size-guide.html"}
+OG_IMAGE_RE = re.compile(r'(<meta property="og:image" content=")[^"]*?(images/brand/[^"]+")')
+CANON_RE = re.compile(r'<link rel="canonical" href="[^"]*">\n?')
+
+
+def write_site_meta(base):
+    """Địa chỉ tuyệt đối trong <head> các trang (ảnh xem trước og:image, link chuẩn canonical) lấy theo siteUrl:
+    đổi tên miền chỉ cần sửa siteUrl rồi chạy lại file này. Trang sản phẩm / danh mục: canonical do app.js đặt."""
+    for name in HTML_PAGES:
+        path = ROOT / name
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8")
+        new = OG_IMAGE_RE.sub(lambda m: m.group(1) + base + m.group(2), text)
+        if name in CANONICAL:
+            tag = '<link rel="canonical" href="%s">\n' % html.escape(base + CANONICAL[name], quote=True)
+            new = CANON_RE.sub("", new)
+            new = new.replace('<meta property="og:type" content="website">\n', '<meta property="og:type" content="website">\n' + tag, 1)
+        if new != text:
+            path.write_text(new, encoding="utf-8")
+
+
 def write_verify():
     """Thẻ xác minh Google Search Console (googleVerify trong data/shop.js) vào trang chủ."""
     m = re.search(r'googleVerify:\s*"((?:\\.|[^"\\])*)"', (ROOT / "data" / "shop.js").read_text(encoding="utf-8"))
@@ -366,6 +391,7 @@ def main():
     n = write_sitemap(base, in_stock)
     write_preload(hero_star(in_stock, manifest))
     write_verify()
+    write_site_meta(base)
     feed = write_feed(base, in_stock, manifest, share_imgs)
     print(f"Trang chia sẻ sp/: {len(keep_html)} mẫu còn hàng ({with_photo} có ảnh thật, còn lại dùng logo); sitemap.xml: {n} link; merchant-feed.xml: {feed} mẫu")
 
