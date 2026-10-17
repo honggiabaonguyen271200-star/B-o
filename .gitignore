@@ -11,3 +11,6 @@ desktop.ini
 # File tạm
 *.tmp
 *.log
+
+# Ảnh bìa gốc trước khi chuẩn hoá (scripts/chuan_hoa_anh.py) — chỉ giữ trên máy
+images/goc/

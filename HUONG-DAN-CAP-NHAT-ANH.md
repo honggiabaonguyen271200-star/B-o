@@ -5,6 +5,8 @@ Mỗi mẫu **tối đa 12 ảnh**: `U204LMMC.webp` (ảnh chính) rồi `U204LM
 Các công cụ bên dưới tự lưu ảnh dạng **WebP** (nhẹ hơn JPG khoảng một nửa); file .jpg / .png đặt tay vẫn dùng được.
 Có 3 cách, làm theo thứ tự — cách 1 làm trước vì hoàn toàn tự động.
 
+**Ảnh bìa tự đồng đều (từ 17/10):** ảnh chính của mỗi mẫu (`<MÃ>.webp`) được tự đưa về **ảnh vuông, nền trắng, giày đặt giữa cùng một cỡ** — nền xám nhạt của ảnh hãng được làm trắng. Việc này tự chạy khi mở `xem-web.bat`, sau khi kéo file bảng hàng / zip ảnh (chạy tay: `python scripts/chuan_hoa_anh.py`). Thêm ảnh bằng `anh.html` thì mở lại `xem-web.bat` một lần trước khi đưa lên web. Ảnh gốc được giữ trên máy trong `images/goc/`. Ảnh phụ `-2`, `-3`… giữ nguyên. Ảnh nền màu đậm hoặc ảnh chụp ngoài trời: giữ nền, chỉ đưa về ảnh vuông cùng cỡ — muốn nền trắng thì thay bằng ảnh nền trắng.
+
 ---
 
 ## Cách 1 — Lấy ảnh có sẵn trong Google Sheet (tự động, vài phút)

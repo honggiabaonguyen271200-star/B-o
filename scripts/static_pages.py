@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Sinh các file tĩnh đi kèm website từ data/products.js (không cần file .xlsx):
 
+- ảnh bìa images/products/<MÃ>.webp  chuẩn hoá cho đồng đều (scripts/chuan_hoa_anh.py: vuông, nền trắng, giày cùng cỡ)
 - images/products/danh-sach.js  danh sách ảnh sản phẩm (web chỉ hiện ảnh có trong danh sách, không dò tên file → không lỗi 404)
 - images/anh-khac.js           danh sách banner (images/banners/) và ảnh khách (images/khach-hang/)
 - sp/<mã>.html   trang chia sẻ nhẹ cho từng mẫu còn hàng: có og:title, og:image, og:description để
@@ -25,6 +26,7 @@ from urllib.parse import quote
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import image_manifest  # noqa: E402
+import chuan_hoa_anh  # noqa: E402
 
 try:
     from PIL import Image
@@ -210,6 +212,7 @@ def write_sitemap(base, in_stock):
 
 def main():
     image_manifest.write()  # ảnh chép tay vào images/products cũng được đưa vào danh sách
+    chuan_hoa_anh.run()     # ảnh bìa mới / vừa thay: đưa về ảnh vuông nền trắng, giày cùng cỡ
     write_site_images()
     base = site_url()
     products = read_js(ROOT / "data" / "products.js", "PRODUCTS")

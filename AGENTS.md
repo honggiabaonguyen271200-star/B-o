@@ -24,6 +24,7 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 | `scripts/static_pages.py` | **Tự sinh** từ `products.js` + `danh-sach.js` + `siteUrl`: `sp/<id>.html` (link chia sẻ có og:image, tự chuyển sang `product.html?id=`), `sp/anh/<MÃ>.jpg`, `404.html`, `sitemap.xml` (trang chính + mẫu còn hàng), `robots.txt`, dòng preload ảnh hero trong `index.html`. Chạy lại sau khi đổi ảnh/`siteUrl` (`xem-web.bat` và các script ảnh tự chạy) |
 | `sp/`, `404.html` | **Tự sinh — không sửa tay.** Tin nhắn soạn sẵn và nút chia sẻ dùng link `sp/<id>.html` |
 | `scripts/import_image_zip.py` | Nhập ảnh hàng loạt từ zip lớn (mỗi mẫu = zip nhỏ/thư mục đặt tên theo mã hoặc tên trong bảng) → `images/products/`; `--ghi-de` thay bộ cũ |
+| `scripts/chuan_hoa_anh.py` | Ảnh bìa `<MÃ>.webp` (ảnh đầu trong `danh-sach.js`) → ảnh vuông nền trắng, giày cắt sát rồi đặt giữa trong khung 86% × 68% (chủ shop yêu cầu 17/10: ảnh bìa đồng đều). Nền xám nhạt → trắng; nền màu đậm / ảnh chụp giữ nền. Tự chạy trong `static_pages.py`; đã xử lý ghi ở `scripts/anh-da-chuan-hoa.json` (không làm lại); ảnh gốc giữ ở `images/goc/` (không đưa lên GitHub); `--lam-lai` làm lại từ ảnh gốc. Chỉ cần Pillow |
 | `scripts/extract_images.py` | Lấy ảnh chèn trong bảng .xlsx (cùng dòng với sản phẩm) → `images/products/<MÃ>.webp`; `--ghi-de` để thay ảnh đã có |
 | `images/products/danh-sach.js`, `images/anh-khac.js` | **Tự sinh** — danh sách ảnh sản phẩm / banner + ảnh khách đang có (`static_pages.py`, anh.html, script ảnh tự ghi). Web chỉ hiện ảnh trong danh sách; thiếu file danh sách thì tự dò như cũ |
 | `images/brands/` | Logo các hãng (PNG nền trong suốt, một màu; web tô màu bằng CSS mask). Tên file = slug hãng (`new-balance.png`…). Hãng chưa có logo → hiện tên in hoa. Thêm logo: sửa danh sách `BRAND_LOGOS` trong `app.js` |
@@ -37,7 +38,7 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 
 1. **Không sửa tay `data/products.js`.** Cập nhật hàng: `pip install openpyxl` rồi `python scripts/build_products.py <file.xlsx>` (file tải từ Google Sheet: Tệp → Tải xuống → .xlsx).
 2. Giá trong dữ liệu tính theo **nghìn đồng** (`2600` = 2.600.000₫). Hiển thị qua hàm `money()`.
-3. Ảnh đặt tên theo mã sản phẩm. Web chỉ hiện ảnh có trong `images/products/danh-sach.js` (banner, ảnh khách: `images/anh-khac.js`) nên không có lỗi 404; hai danh sách tự cập nhật khi mở `xem-web.bat`, dùng anh.html hoặc các script ảnh (chạy tay: `python scripts/static_pages.py`). Không đổi quy ước đặt tên.
+3. Ảnh đặt tên theo mã sản phẩm; ảnh bìa luôn qua `scripts/chuan_hoa_anh.py` (chạy `python scripts/static_pages.py` trước khi commit ảnh mới). Web chỉ hiện ảnh có trong `images/products/danh-sach.js` (banner, ảnh khách: `images/anh-khac.js`) nên không có lỗi 404; hai danh sách tự cập nhật khi mở `xem-web.bat`, dùng anh.html hoặc các script ảnh (chạy tay: `python scripts/static_pages.py`). Không đổi quy ước đặt tên.
 4. Shop **chỉ bán giày**; không thêm quần áo, phụ kiện.
 5. Giọng văn: điềm đạm, đáng tin, không "SALE SỐC", không đồng hồ đếm ngược giả, không giá gạch ngang khi không có giá gốc thật.
 6. Thông tin pháp lý, liên hệ chỉ sửa trong `data/shop.js`; ô để trống sẽ tự ẩn.
