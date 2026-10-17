@@ -114,6 +114,15 @@ Chi tiết: [HUONG-DAN-CAP-NHAT-ANH.md](HUONG-DAN-CAP-NHAT-ANH.md).
 3. Sau 1–2 phút web chạy tại https://honggiabaonguyen271200-star.github.io/B-o/
 4. Có tên miền riêng (VD `slifesneakers.vn`): điền vào **Custom domain** trong trang Pages, trỏ DNS theo hướng dẫn của GitHub, rồi sửa `siteUrl` trong `data/shop.js`. Xem [HUONG-DAN-TEN-MIEN.md](HUONG-DAN-TEN-MIEN.md).
 
+## Cài web thành app trên điện thoại
+
+Web có sẵn biểu tượng app (`manifest.webmanifest`, icon trong `images/brand/`), không cần App Store, không tốn phí.
+
+- **iPhone (Safari):** mở https://honggiabaonguyen271200-star.github.io/B-o/ → nút **Chia sẻ** (ô vuông có mũi tên lên) → **Thêm vào MH chính** → bật **Mở dưới dạng ứng dụng web** (nếu có) → **Thêm**.
+- **Android (Chrome):** mở link trên → nút **⋮** → **Thêm vào màn hình chính** / **Cài đặt ứng dụng**.
+
+Mở từ biểu tượng: web chạy toàn màn hình như app, có nút **‹ Quay lại** cạnh nút menu (app không có nút lùi của trình duyệt). Rời app hơn 30 phút rồi mở lại thì trang tự tải lại để thấy hàng mới nhất. Cập nhật hàng / ảnh như cũ, app tự thấy bản mới, không cần cài lại.
+
 ## Quy tắc khi sửa web
 
 1. **Pull** bản mới nhất trước khi sửa.

@@ -28,6 +28,7 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 | `images/products/danh-sach.js`, `images/anh-khac.js` | **Tự sinh** — danh sách ảnh sản phẩm / banner + ảnh khách đang có (`static_pages.py`, anh.html, script ảnh tự ghi). Web chỉ hiện ảnh trong danh sách; thiếu file danh sách thì tự dò như cũ |
 | `images/brands/` | Logo các hãng (PNG nền trong suốt, một màu; web tô màu bằng CSS mask). Tên file = slug hãng (`new-balance.png`…). Hãng chưa có logo → hiện tên in hoa. Thêm logo: sửa danh sách `BRAND_LOGOS` trong `app.js` |
 | `images/brand/` | Logo S&LIFE (SVG/PNG), favicon, icon; màu thương hiệu trong `images/brand/README.md` |
+| `manifest.webmanifest` | Cài web thành app trên điện thoại ("Thêm vào MH chính"). Icon `images/brand/icon-192.png`, `icon-512.png`, `icon-maskable-512.png`. Mỗi trang có `<link rel="manifest">` + thẻ `apple-mobile-web-app-*`; thêm trang mới thì chép theo. Không dùng service worker (tránh app giữ bảng hàng cũ) |
 | `images/products/` | Ảnh sản phẩm, tên file = mã sản phẩm: `U204LMMC.webp`, ảnh phụ `U204LMMC-2.webp` … `-12` (tối đa 12, `MAX_SHOTS`). Ưu tiên WebP ≤1200px; không chép ảnh gốc điện thoại |
 | `xem-web.bat`, `cap-nhat-hang.bat`, `nhap-anh-zip.bat` | Windows: bấm đúp để xem web trên máy; kéo thả file .xlsx vào để cập nhật hàng; kéo thả zip ảnh lớn để nhập ảnh hàng loạt |
 | `images/banners/`, `images/khach-hang/` | Banner (`banner-1.jpg`…, `new-balance.jpg`…), ảnh khách (`1.jpg`…) |
@@ -47,6 +48,7 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 
 ## Giao diện
 
+- **Chế độ app (17/10):** mở từ biểu tượng trên màn hình chính (`APP` trong `app.js`) thì đầu trang có nút "Quay lại" cạnh nút menu (trừ trang chủ); rời app hơn 30 phút thì tự tải lại trang. Trình duyệt thường không đổi gì.
 - **Chạm 1 lần là mở (10/10):** iPhone từng phải chạm 2 lần mới mở ô/link (lần đầu Safari coi là "rê chuột"). `oneTap()` đầu `app.js` mở link ngay khi chạm nhanh, không vuốt; không đổi nội dung trang khi rê chuột trên máy cảm ứng (dùng hằng `HOVER`). Thêm hiệu ứng rê chuột mới thì giữ quy tắc này.
 - **Mốc 10 (07/10, mới nhất):** chủ shop không muốn "khoe" số lượng: không hiện tổng số mẫu (nút banner "Khám phá giày sẵn size", ô "Tất cả – Mọi đôi đang chờ bạn"), không hiện số mẫu ở "Theo nhu cầu", không hiện số mẫu của từng hãng / dòng (menu, tường logo, top 5, thẻ dòng, tab) — riêng ô hãng ở "Theo thương hiệu" có dòng làm tròn "Hơn 200 mẫu có sẵn" (`stockLine`, mốc 11); dòng nhỏ trên "ONLY AUTHENTIC" dùng logo đầy đủ `slife-full-white.svg`; banner không hiện giá; không dùng câu "ảnh chụp thật" cho ảnh trên web (ảnh lấy từ bảng hàng); ô chưa có ảnh ghi "Ảnh đang cập nhật"; dải chữ đầu trang lặp đủ dài để chạy liền mạch.
 - **Mốc 9:** đổi sang 2 font Barlow Condensed + IBM Plex Sans (xem dòng "Font" bên dưới).

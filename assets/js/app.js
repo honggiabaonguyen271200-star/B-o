@@ -18,6 +18,8 @@
   var EXTS = MANIFEST ? ["webp", "jpg"] : IMG_EXT;
   var REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var HOVER = !window.matchMedia || matchMedia("(hover: hover) and (pointer: fine)").matches;
+  // Mở từ biểu tượng trên màn hình điện thoại ("Thêm vào MH chính"): không có thanh địa chỉ, nút quay lại của trình duyệt
+  var APP = navigator.standalone === true || !!(window.matchMedia && matchMedia("(display-mode: standalone), (display-mode: fullscreen)").matches);
 
   // Chạm 1 lần là mở (điện thoại). Safari và trình duyệt trong app (Zalo, Facebook…) trên iPhone có lúc coi lần chạm đầu
   // là "rê chuột": ô chỉ đổi màu, phải chạm lần hai mới mở (lỗi chủ shop quay video 10/10). Ở đây: chạm nhanh, không kéo,
@@ -756,7 +758,10 @@
           }).join("") + "</div>" +
           "</div></div>" : "") +
         '<header class="hd"><div class="container hd__row">' +
+        // Chế độ app: thêm nút quay lại cạnh nút menu (trang chủ không cần)
+        (APP && file !== "index.html" ? '<div class="hd__left"><button type="button" class="icon-btn hd__back" data-app-back aria-label="Quay lại">' + I.left + "</button>" : "") +
         '<button type="button" class="icon-btn hd__menu" data-menu-open aria-label="Mở menu" aria-controls="menu" aria-expanded="false">' + I.menu + "</button>" +
+        (APP && file !== "index.html" ? "</div>" : "") +
         '<a class="logo" href="index.html" aria-label="' + esc(SHOP.name) + ' — Trang chủ"><span class="logo__img" role="img" aria-label="S&amp;LIFE Since 2021"></span></a>' +
         '<form class="search" action="shop.html" role="search" data-search>' + '<svg class="search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>' +
         '<input type="search" name="q" value="' + esc(q) + '" placeholder="Tìm tên, mã hoặc biệt danh, VD: 204L, AF1" aria-label="Tìm giày theo tên, mã hoặc biệt danh" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-pop">' +
@@ -869,6 +874,11 @@
       if (t.closest("[data-menu-open]")) { openLayer(menu, true); $("[data-menu-open]").setAttribute("aria-expanded", "true"); }
       if (t.closest("[data-menu-close]")) { openLayer(menu, false); $("[data-menu-open]").setAttribute("aria-expanded", "false"); }
       if (t.closest("[data-mini-close]")) openLayer($("#mini"), false);
+      if (t.closest("[data-app-back]")) {
+        // Có trang trước trong app thì lùi lại; mở thẳng (link chia sẻ…) thì về trang chủ
+        var ref = document.referrer;
+        if (ref && ref.indexOf(location.origin + "/") === 0 && history.length > 1) history.back(); else location.href = "index.html";
+      }
       var sub = t.closest("[data-menu-sub]");
       if (sub) { var it = sub.closest(".m-item"); it.classList.toggle("is-open"); sub.setAttribute("aria-expanded", it.classList.contains("is-open")); }
       var megaBtn = t.closest("[data-mega-item] > .nav__link");
@@ -2386,6 +2396,15 @@
     watch();
     // Thẻ sản phẩm vẽ thêm khi lọc / sang trang: theo dõi tiếp
     new MutationObserver(function () { clearTimeout(watch.t); watch.t = setTimeout(watch, 60); }).observe(document.body, { childList: true, subtree: true });
+  }
+
+  // Chế độ app: mở lại sau hơn 30 phút thì tải lại trang cho thấy hàng mới nhất (app không có nút tải lại)
+  if (APP) {
+    var awayAt = 0;
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) awayAt = Date.now();
+      else if (awayAt && Date.now() - awayAt > 30 * 60 * 1000) location.reload();
+    });
   }
 
   /* ---------- Khởi động ---------- */

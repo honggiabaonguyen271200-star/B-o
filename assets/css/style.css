@@ -1729,3 +1729,8 @@ body.has-aura::after {
 .brand-tile__meta small { display: block; margin-top: 2px; font-size: 13.5px; color: var(--muted); }
 .brand-tile--all .brand-tile__meta small { color: rgba(255, 255, 255, .85); }
 @media (max-width: 899px) { .brand-tile__meta b { font-size: 16px; } .brand-tile__meta small { font-size: 12.5px; } }
+
+/* ===== Chế độ app (mở từ biểu tượng trên màn hình chính, 17/10): nút quay lại cạnh nút menu ===== */
+.hd__left { grid-area: menu; justify-self: start; display: flex; align-items: center; margin-left: -10px; }
+.hd__left .hd__menu { margin-left: 0; }
+@media (min-width: 1180px) { .hd__left { display: none; } }
