@@ -2,50 +2,50 @@
 
 Danh sách tự lấy từ `data/products.js` (bảng hàng chủ shop gửi gần nhất). Sửa trong Google Sheet, tải .xlsx rồi kéo vào `cap-nhat-hang.bat` như mọi lần; lần cập nhật sau, mẫu đã sửa tự hết khỏi danh sách nếu nhờ trợ lý soát lại.
 
-## 1. Tên chỉ có tên hãng (38 mẫu)
+## 1. Tên chỉ có tên hãng (38 mẫu) — đã tra gợi ý tên đầy đủ
 
-Trên web và trên Google, mẫu chỉ hiện "Nike", "Wilson"… nên khách khó nhận ra, Google khó tìm. Thêm tên dòng + màu, VD "Nike Air Force 1 '07 Triple White".
+Tra theo mã sản phẩm trên trang hãng / cửa hàng lớn (17/10), đối chiếu với ảnh của shop. Dán cột "Tên gợi ý" vào ô tên trong bảng hàng. `(W)` = mẫu nữ, `(GS)` = giày trẻ em: web tự gắn nhãn "Code nữ" / "GS" và bỏ phần trong ngoặc khỏi tên hiển thị. Cùng nội dung ở dạng bảng tính: `docs/ten-goi-y.csv`.
 
-| Mã | Tên đang ghi | Size còn |
-| --- | --- | --- |
-| U704SG2 | New Balance | 40, 41,5, 42, 42,5, 43, 44, 44,5 |
-| 1201A019-107 | Asics | 41,5, 44,5 |
-| 1202A164-114 | Asics | 37, 37,5, 38, 39, 40 |
-| 1203A383-112 | Asics | 42,5 |
-| WRS00766001 | Wilson | 36, 36,5 |
-| WRS00850001 | Wilson | 40,5, 41, 42, 42,5, 43, 44 |
-| WRS336750 | Wilson | 36, 37, 38, 38,5, 39 |
-| WRS341800 | Wilson | 36, 36,5, 37, 38, 39 |
-| KH6415 | Adidas | 36,5, 38, 39, 40,5, 42, 43, 44,5, 46 |
-| KH6736 | Adidas | 39, 40,5, 42, 43 |
-| KI0056 | Adidas | 35,5, 36,5, 38, 39 |
-| KI0059 | Adidas | 39, 40,5, 42, 43 |
-| KI1415 | Adidas | 36, 36,5, 37,5, 38, 38,5, 39, 40, 41, 42, 42,5, 43 |
-| FQ8903-004 | Nike | 44,5 |
-| HF0263-001 | Nike | 40, 40,5, 41, 42, 42,5 |
-| HF0263-002 | Nike | 42, 42,5, 43, 44, 44,5 |
-| HF4268-113 | Nike | 36,5, 37,5, 38, 39 |
-| HQ3490-099 | Nike | 40, 40,5, 41, 42, 42,5, 43, 44 |
-| HV5060-005 | Nike | 40, 41, 42,5 |
-| HV5060-100 | Nike | 40, 41, 42,5, 44 |
-| IB4504-237 | Nike | 44, 44,5, 45 |
-| IF1764-100 | Nike | 36, 36,5, 37,5, 38,5, 39 |
-| DN1791-002 | Nike Cortez | 36,5, 37,5, 38 |
-| DN1791-003 | Nike Cortez | 36, 36,5, 37,5, 38, 38,5 |
-| DN1791-107 | Nike Cortez | 36 |
-| DN1791-108 | Nike Cortez | 36, 36,5, 37,5, 38, 38,5 |
-| CD5463-102 | Nike Court | 40, 44 |
-| CD5463-105 | Nike Court | 43 |
-| DR9885-101 | Nike Court | 36,5 |
-| FJ0685-010 | Nike Court | 40,5, 41, 42, 42,5, 43, 44, 44,5 |
-| FQ7628-100 | Nike Court | 36,5, 37,5, 38, 38,5 |
-| HF1068-133 | Nike Court | 40, 40,5, 41, 42, 42,5, 43, 44, 44,5, 45 |
-| HF1744-100 | Nike Court | 41, 42, 42,5, 43, 44 |
-| HM9862-001 | Nike Court | 36, 36,5, 37,5, 40, 40,5, 41, 42, 42,5, 43, 44, 44,5 |
-| HV2530-100 | Nike Court | 40, 41, 42, 42,5, 43 |
-| HV4506-100 | Nike Court | 40, 42, 43, 44, 44,5 |
-| IR5462-100 | Nike Court | 36, 37,5, 38,5, 40 |
-| IV5820-100 | Nike Court | 36, 36,5, 37,5, 38, 38,5, 39, 40 |
+| Mã | Tên gợi ý | Chắc chắn | Ghi chú |
+| --- | --- | --- | --- |
+| U704SG2 | [New Balance 740 Castlerock Silver](https://www.fwrd.com/product-new-balance-u740sg2-in-castlerock-slate-gray-silver-metallic/NBAL-MZ221/) | Vừa | Mã trong bảng có thể gõ nhầm: mã thật của mẫu 740 này là U740SG2. Kiểm tra tem hộp |
+| 1201A019-107 | [Asics Gel-Kayano 14 White Slate Grey](https://www.nicekicks.com/asics-gel-kayano-14-1201a019-107/) | Cao |  |
+| 1202A164-114 | [Asics Gel-1130 White Malachite Green (W)](https://www.asics.com/au/en-au/gel-1130/p/AOP_1202A164-114.html) | Cao | Mẫu nữ |
+| 1203A383-112 | [Asics Gel-NYC Cream Fossil](https://www.goat.com/en-de/sneakers/gel-nyc-cream-fossil-1203a383-112) | Cao |  |
+| WRS00766001 | [Wilson Intrigue Pro (W)](https://www.wilson.com/en-us/product/intrigue-pro-wrs00766) | Vừa | Mẫu nữ; tên màu chưa tra được |
+| WRS00850001 | [Wilson Rush Lite 5](https://www.wilson.com/en-us/product/rush-lite-5-wrs00850) | Vừa | Tên màu chưa tra được |
+| WRS336750 | [Wilson Intrigue Tour Tofu Infrared (W)](https://mas.wilson.com/collections/shoes-1) | Vừa | Mẫu nữ; chỉ 1 cửa hàng ghi mã này |
+| WRS341800 | — | Chưa tra được | Không tìm thấy mã trên mạng. Nhờ bạn xem tên dòng trên hộp / lưỡi gà |
+| KH6415 | [Adidas Purechill Slide Trace Brown Core Black](https://www.adidas.com.my/en/purechill-slides/KH6415.html) | Cao | Dép |
+| KH6736 | [Adidas Purechill Slide Hi-Res Yellow](https://www.adidas.com/us/purechill-slides/KH6736.html) | Cao | Dép |
+| KI0056 | [Adidas Purechill Slide Clear Pink](https://www.adidas.com.sg/purechill-slides/KI0056.html) | Cao | Dép |
+| KI0059 | [Adidas Purechill Slide Grey](https://www.ebay.com.au/b/adidas-Synthetic-Slippers-for-Men/11505/bn_35404500) | Vừa | Dép; chỉ thấy trên chợ mạng, chưa có trang adidas |
+| KI1415 | [Adidas Handball Spezial Wonder White Core Black Gum](https://gs.abc-mart.net/feature/29155/) | Vừa | Bản riêng của ABC-Mart Nhật |
+| FQ8903-004 | [Nike Killshot 2 Football Grey White](https://www.walmart.com/ip/Nike-Killshot-2-Football-Grey-White-FQ8903-004-Men-s-Size-8/17166262028) | Cao |  |
+| HF0263-001 | [Nike Cortez Textile Black White](https://www.walmart.com/ip/18777154204) | Cao |  |
+| HF0263-002 | [Nike Cortez Textile Flat Silver White](https://www.nike.sa/en/cortez-textile-mens-shoes/NKHF0263-002.html) | Cao |  |
+| HF4268-113 | [Nike Cortez Coconut Milk Teal Nebula (W)](https://www.nike.com/id/t/cortez-shoes-fc340H/HF4268-113) | Cao | Mẫu nữ |
+| HQ3490-099 | [Nike Cortez Leather SE Metallic Cool Grey Black](https://search.kakaku.com/HQ3490-099/) | Vừa | Chỉ 1 cửa hàng Nhật ghi mã này |
+| HV5060-005 | [Nike ReactX Rejuven8 Spruce Aura](https://www.nike.com/t/reactx-rejuven8-mens-shoes-d9QTC07e/HV5060-005) | Cao | Dép sục |
+| HV5060-100 | [Nike ReactX Rejuven8 Light Orewood Brown](https://www.ebay.com/itm/397001761844) | Cao | Dép sục |
+| IB4504-237 | [Nike Killshot 2 Leather Baroque Brown](https://stockx.com/nike-killshot-2-leather-baroque-brown-light-british-tan-sesame-cacao-wow) | Cao |  |
+| IF1764-100 | [Nike Cortez Sail Arctic Orange (W)](https://www.nike.com/il/t/cortez-shoes-Wl1b28/IF1764-100) | Cao | Mẫu nữ |
+| DN1791-002 | [Nike Cortez Leather Phantom Coconut Milk (W)](https://kith.com/products/nkdn1791-002) | Cao | Mẫu nữ (bảng đã ghi nữ) |
+| DN1791-003 | [Nike Cortez Leather Phantom Red Sepia (W)](https://www.nike.com/tw/t/cortez-皮革-svdKM9/DN1791-003) | Cao | Mẫu nữ |
+| DN1791-107 | [Nike Cortez Leather White Black (W)](https://stockx.com/es-mx/nike-cortez-leather-white-black-womens) | Cao | Mẫu nữ |
+| DN1791-108 | [Nike Cortez 'Forrest Gump' (W)](https://www.sneakerjagers.com/s/nike-cortez-wmns-forrest-gump-dn1791-108/580111) | Cao | Mẫu nữ |
+| CD5463-102 | [Nike Court Vision Low White University Red](https://www.kickscrew.com/products/nike-court-vision-low-white-university-red-cd5463-102) | Cao |  |
+| CD5463-105 | [Nike Court Vision Low White Gum](https://www.nike.com/t/court-vision-low-mens-shoes-FpEqIQ3A/CD5463-105) | Cao |  |
+| DR9885-101 | [Nike Court Vision Low Next Nature White Sea Coral (W)](https://www.plutosport.com/nike-court-vision-low-sneakers-women-dr9885-101) | Cao | Mẫu nữ |
+| FJ0685-010 | [Nike Court Vision Low Next Nature 'Bred'](https://www.nike.com/t/court-vision-low-mens-shoes-M967RF/FJ0685-010) | Cao |  |
+| FQ7628-100 | [Nike Court Vision Low Valentine's Day (W)](https://stockx.com/nike-court-vision-low-valentines-day-2024-womens) | Cao | Mẫu nữ |
+| HF1068-133 | [Nike Court Vision Low Sail Midnight Navy Gum](https://stockx.com/nike-court-vision-low-sail-midnight-navy-gum) | Cao |  |
+| HF1744-100 | [Nike Court Vision Low Next Nature White University Gold](https://novelship.com/nike-court-vision-low-next-nature-white-university-gold-hf-1744-100) | Cao |  |
+| HM9862-001 | [Nike Court Vision Low Next Nature Black White](https://www.cimri.com/erkek-gunluk-ayakkabilari/en-ucuz-nike-hm9862-001-beyaz-court-vision-low-erkek-gunluk-ayakkabi-fiyatlari,2401755309) | Cao |  |
+| HV2530-100 | [Nike Court Vision Low Sail Light Smoke Grey](https://www.nike.com/ca/t/nike-court-vision-low-mens-shoes-BLtTYg46/HV2530-100) | Cao |  |
+| HV4506-100 | [Nike Court Vision Low Sail Campfire Orange Gum](https://www.nike.sa/en/court-vision-low-mens-shoes/NKHV4506-100.html) | Cao |  |
+| IR5462-100 | [Nike Court Borough Low White Chalk Shimmer (GS)](https://www.nike.com/t/court-borough-low-big-kids-shoes-6KpmT0Gg/IR5462-100) | Cao | Giày trẻ em / size GS |
+| IV5820-100 | [Nike Court Borough Low White Football Blue (GS)](https://intersport.com.au/products/nike-court-borough-low-juniors-sportswear-shoes-white) | Cao | Giày trẻ em / size GS |
 
 ## 2. Chưa có giá (18 mẫu)
 
