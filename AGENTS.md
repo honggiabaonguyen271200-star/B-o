@@ -20,6 +20,7 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 | `assets/css/style.css` | Giao diện |
 | `data/shop.js` | **Thông tin shop** (`facebookChat` — kênh chính, `openFacebookApp`, `facebookId`, `desktopAskChrome`, pháp lý, siteUrl, `features.wishlist`, `heroPicks` (mẫu trong chùm banner), `announcements`, `faq`, biệt danh tìm kiếm `aliases`, `orderEndpoint`, `ga4Id`, `clarityId`, `metaPixelId`, `googleVerify` — các mã đo lường, để trống thì không tải), lưu ý form (`FIT_NOTES`), dòng giày từng hãng (`LINES`), bảng size theo hãng (`SIZE_CHARTS`: mỗi hãng nhiều bảng Nam / Nữ / Trẻ em, chép từ bảng size chính thức chủ shop gửi, cột đầu là EU) |
 | `data/products.js` | **Tự sinh — không sửa tay.** Tạo bằng `scripts/build_products.py` |
+| `data/ten-mau.csv` | Tên đặt riêng theo mã (cột Mã, Tên trên web), thay tên trong bảng hàng khi build — dùng cho mẫu bảng chỉ ghi tên hãng (18/10: 37 mẫu, tra theo mã, chủ shop đồng ý). `(W)` / `(GS)` trong tên đổi nhãn nữ / trẻ em. Áp lại không cần bảng: `python scripts/build_products.py --ten`. Xoá dòng thì lần cập nhật sau dùng lại tên trong bảng |
 | `data/ngay-ve.json` | **Tự sinh** — sổ ngày mẫu lên web (mẫu mới / hết rồi có lại nhận ngày cập nhật bảng). `products.js` có `since` → trang "Hàng mới về" `shop.html?moi=1` (14 ngày, `NEW_DAYS`), nhãn "Mới về", khối trang chủ khi ≥ 4 mẫu, link menu khi có mẫu mới. Lần đầu (17/10) mọi mẫu đang có coi là hàng cũ |
 | `scripts/build_products.py` | Đọc bảng hàng Google Sheet (.xlsx) → `data/products.js`, rồi tự chạy `static_pages.py` |
 | `scripts/static_pages.py` | **Tự sinh** từ `products.js` + `danh-sach.js` + `siteUrl`: `sp/<id>.html` (link chia sẻ có og:image, tự chuyển sang `product.html?id=`), `sp/anh/<MÃ>.jpg`, `404.html`, `sitemap.xml` (trang chính + trang hãng/dòng + mẫu còn hàng), `robots.txt`, `merchant-feed.xml` (danh sách hàng sẵn cho Google Merchant Center), thẻ xác minh Search Console (`googleVerify`) trong `index.html`, og:image + canonical trong `<head>` các trang (`write_site_meta`: đổi tên miền chỉ cần sửa `siteUrl` rồi chạy lại), dòng preload ảnh hero trong `index.html`. Chạy lại sau khi đổi ảnh/`siteUrl` (`xem-web.bat` và các script ảnh tự chạy) |
@@ -37,7 +38,7 @@ Website bán giày chính hãng **S&LIFE Sneakers**. Chủ shop không phải l�
 
 ## Quy tắc quan trọng
 
-1. **Không sửa tay `data/products.js`.** Cập nhật hàng: `pip install openpyxl` rồi `python scripts/build_products.py <file.xlsx>` (file tải từ Google Sheet: Tệp → Tải xuống → .xlsx).
+1. **Không sửa tay `data/products.js`** (đổi tên mẫu: sửa trong bảng hàng hoặc `data/ten-mau.csv`). Cập nhật hàng: `pip install openpyxl` rồi `python scripts/build_products.py <file.xlsx>` (file tải từ Google Sheet: Tệp → Tải xuống → .xlsx).
 2. Giá trong dữ liệu tính theo **nghìn đồng** (`2600` = 2.600.000₫). Hiển thị qua hàm `money()`.
 3. Ảnh đặt tên theo mã sản phẩm; ảnh bìa luôn qua `scripts/chuan_hoa_anh.py` (chạy `python scripts/static_pages.py` trước khi commit ảnh mới). Web chỉ hiện ảnh có trong `images/products/danh-sach.js` (banner, ảnh khách: `images/anh-khac.js`) nên không có lỗi 404; hai danh sách tự cập nhật khi mở `xem-web.bat`, dùng anh.html hoặc các script ảnh (chạy tay: `python scripts/static_pages.py`). Không đổi quy ước đặt tên.
 4. Shop **chỉ bán giày**; không thêm quần áo, phụ kiện.

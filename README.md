@@ -84,6 +84,8 @@ Làm mỗi khi bảng Google Sheet thay đổi:
    ```
 3. Commit và Sync (push) tất cả file thay đổi: `data/products.js`, thư mục `sp/`, `sitemap.xml`, `robots.txt`, `index.html`.
 
+Mẫu nào bảng chỉ ghi tên hãng (VD "Nike"): tên đầy đủ đặt riêng theo mã trong `data/ten-mau.csv` (mở bằng Excel), mỗi lần cập nhật hàng tự áp.
+
 Script đọc bảng theo quy ước đang dùng:
 - Mỗi trang tính là một thương hiệu / dòng giày; dòng tiêu đề bắt đầu bằng ô **Tên**.
 - Ô size có số `1` **hoặc tô màu xanh lá** = còn size. Ô trống = hết.

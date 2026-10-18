@@ -10,9 +10,13 @@ Mỗi trang tính là một thương hiệu / dòng giày. Dòng tiêu đề b�
 các cột size nằm giữa cột "Hình ảnh" và cột "GIÁ BÁN". Ô có số 1 hoặc tô màu xanh lá
 nghĩa là size đó còn hàng.
 
+Tên đặt riêng theo mã (mẫu bảng chỉ ghi tên hãng…): data/ten-mau.csv, tự áp mỗi lần chạy. Chỉ áp lại tên, không cần bảng:
+    python3 scripts/build_products.py --ten
+
 Ảnh sản phẩm: đặt file vào images/products/ và đặt tên theo mã sản phẩm,
 ví dụ images/products/U204LMMC.jpg. Script tự gắn ảnh khi chạy lại.
 """
+import csv
 import json
 import re
 import sys
@@ -339,6 +343,52 @@ def find_image(code):
 
 
 ARRIVALS = ROOT / "data" / "ngay-ve.json"
+NAMES = ROOT / "data" / "ten-mau.csv"
+
+
+def apply_names(products):
+    """Tên đặt riêng theo mã (data/ten-mau.csv: cột Mã, Tên trên web) thay cho tên trong bảng hàng, VD mẫu bảng
+    chỉ ghi "Nike". Ghi (W) / (GS) / (code nữ)… trong tên thì đổi luôn nhãn nam / nữ / trẻ em và bỏ phần trong ngoặc.
+    Xoá dòng trong file thì lần cập nhật hàng sau lại dùng tên trong bảng."""
+    if not NAMES.exists():
+        return 0
+    names = {}
+    with NAMES.open(encoding="utf-8-sig", newline="") as f:
+        for row in csv.reader(f):
+            if len(row) >= 2 and row[0].strip() and row[1].strip() and row[0].strip() != "Mã":
+                names[row[0].strip().upper()] = row[1].strip()
+    done = 0
+    for p in products:
+        name = names.get((p.get("code") or "").upper())
+        if not name:
+            continue
+        if PARENS_TAGS.search(name):
+            p["gender"] = detect(GENDER_RULES, name, p.get("gender") or "unisex")
+        p["name"] = re.sub(r"\s+", " ", PARENS_TAGS.sub(" ", name)).strip()
+        done += 1
+    return done
+
+
+def write_products(products):
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    body = json.dumps(products, ensure_ascii=False, separators=(",", ":"))
+    body = body.replace("},{", "},\n{")
+    OUT.write_text(
+        "// File tự sinh bởi scripts/build_products.py — không sửa tay.\n"
+        "window.PRODUCTS = " + body + ";\n",
+        encoding="utf-8",
+    )
+
+
+def names_only():
+    """python scripts/build_products.py --ten : chỉ áp lại data/ten-mau.csv vào data/products.js đang có
+    (không cần file bảng hàng), rồi tạo lại các trang tĩnh."""
+    text = OUT.read_text(encoding="utf-8")
+    products = json.loads(re.search(r"window\.PRODUCTS\s*=\s*(.*);\s*$", text, re.S).group(1))
+    n = apply_names(products)
+    write_products(products)
+    static_pages.main()
+    print(f"Đã đặt tên riêng cho {n} mẫu theo {NAMES.relative_to(ROOT)}")
 
 
 def mark_arrivals(products, today=None):
@@ -366,6 +416,8 @@ def mark_arrivals(products, today=None):
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
+    if sys.argv[1] == "--ten":
+        return names_only()
     src = sys.argv[1]
     tables = rows_from_xlsx(src) if src.lower().endswith((".xlsx", ".xlsm")) else rows_from_markdown(src)
 
@@ -392,21 +444,16 @@ def main():
         for k in [k for k, v in p.items() if v is None]:
             del p[k]
 
+    named = apply_names(products)
     mark_arrivals(products)
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    body = json.dumps(products, ensure_ascii=False, separators=(",", ":"))
-    body = body.replace("},{", "},\n{")
-    OUT.write_text(
-        "// File tự sinh bởi scripts/build_products.py — không sửa tay.\n"
-        "window.PRODUCTS = " + body + ";\n",
-        encoding="utf-8",
-    )
+    write_products(products)
     static_pages.main()  # trang chia sẻ sp/, sitemap.xml, robots.txt, 404.html
     in_stock = sum(1 for p in products if p["sizes"] and p.get("price"))
     brands = {}
     for p in products:
         brands[p["brand"]] = brands.get(p["brand"], 0) + 1
-    print(f"Đã ghi {OUT.relative_to(ROOT)}: {len(products)} mẫu, {in_stock} mẫu còn hàng")
+    print(f"Đã ghi {OUT.relative_to(ROOT)}: {len(products)} mẫu, {in_stock} mẫu còn hàng"
+          + (f" ({named} mẫu dùng tên đặt riêng trong data/ten-mau.csv)" if named else ""))
     for b, n in sorted(brands.items(), key=lambda x: -x[1]):
         print(f"  {b}: {n}")
 

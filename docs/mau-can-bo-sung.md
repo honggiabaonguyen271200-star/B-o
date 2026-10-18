@@ -4,7 +4,7 @@ Danh sách tự lấy từ `data/products.js` (bảng hàng chủ shop gửi g�
 
 ## 1. Tên chỉ có tên hãng (38 mẫu) — đã tra gợi ý tên đầy đủ
 
-Tra theo mã sản phẩm trên trang hãng / cửa hàng lớn (17/10), đối chiếu với ảnh của shop. Dán cột "Tên gợi ý" vào ô tên trong bảng hàng. `(W)` = mẫu nữ, `(GS)` = giày trẻ em: web tự gắn nhãn "Code nữ" / "GS" và bỏ phần trong ngoặc khỏi tên hiển thị. Cùng nội dung ở dạng bảng tính: `docs/ten-goi-y.csv`.
+Tra theo mã sản phẩm trên trang hãng / cửa hàng lớn (17/10), đối chiếu với ảnh của shop. **Đã gắn lên web ngày 18/10** (37 mẫu, qua `data/ten-mau.csv`: web tự dùng các tên này theo mã, không cần sửa bảng hàng). Muốn đổi một tên: sửa dòng đó trong `data/ten-mau.csv` (mở bằng Excel) hoặc nhờ trợ lý. Còn WRS341800 chưa có tên. `(W)` = mẫu nữ, `(GS)` = giày trẻ em: web tự gắn nhãn "Code nữ" / "GS" và bỏ phần trong ngoặc khỏi tên hiển thị. Cùng nội dung ở dạng bảng tính: `docs/ten-goi-y.csv`.
 
 | Mã | Tên gợi ý | Chắc chắn | Ghi chú |
 | --- | --- | --- | --- |
