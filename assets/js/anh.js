@@ -85,10 +85,14 @@
       });
     }
     return step().then(function () {
-      var shots = {};
+      var shots = {}, codes = {};
+      PRODUCTS.forEach(function (p) { codes[p.code] = 1; });
       names.forEach(function (n) {
         var m = n.match(/^(.+?)(?:-(\d{1,2}))?\.(webp|jpe?g|png|JPG)$/);
         if (!m) return;
+        // Mã Puma có đuôi 2 số (401287-01): "-01" thuộc mã, không phải số ảnh
+        var whole = n.replace(/\.[^.]+$/, "");
+        if (codes[whole]) m = [n, whole, ""];
         var s = shots[m[1]] = shots[m[1]] || {}, k = +(m[2] || 1);
         if (!s[k] || /\.webp$/.test(n)) s[k] = n;
       });

@@ -96,7 +96,7 @@ def puma(code):
     style, color = m.groups()
     return [(f"https://images.puma.com/image/upload/w_240/global/{style}/{color}/{v}/fnd/{reg}/fmt/png",
              f"https://images.puma.com/image/upload/w_1200/global/{style}/{color}/{v}/fnd/{reg}/fmt/png")
-            for v in ("sv01", "sv02") for reg in ("PNA", "EEA", "SEA")]
+            for v in ("sv01", "sv04") for reg in ("PNA", "EEA", "SEA")]
 
 
 NIKE_IMG = re.compile(r"https://static\.nike\.com/a/images/[^\"'\s\\]*?/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/([^\"'\s\\?]+)")
@@ -151,6 +151,7 @@ def nike(code):
     return []
 
 
+SLIDE = re.compile(r"slide|cool cat|lead cat|dép|sandal", re.I)
 EXACT = {"New Balance", "Asics", "Onitsuka Tiger", "Puma"}  # kho ảnh tra thẳng theo mã
 SOURCES = {"New Balance": new_balance, "Asics": asics, "Onitsuka Tiger": asics, "Nike": nike, "Jordan": nike, "Puma": puma}
 
@@ -260,10 +261,12 @@ def restore(log):
     print(f"Đã trả lại ảnh cũ cho {n} mẫu. Chạy tiếp: python scripts/static_pages.py")
 
 
-def apply(log):
-    """Đưa ảnh đã tải thử (images/tai-ve/) lên web, trừ mẫu ghi trong scripts/anh-khong-tai.txt."""
+def apply(log, only=None):
+    """Đưa ảnh đã tải thử (images/tai-ve/) lên web, trừ mẫu ghi trong scripts/anh-khong-tai.txt (--ma: chỉ các mã đó)."""
     skip, n = read_skip(), 0
     for code, entry in log.items():
+        if only and code not in only:
+            continue
         name = entry.get("file")
         src = TRY_DIR / (name.rsplit(".", 1)[0] + ".png") if name and entry.get("thu") else None
         if not src or not src.exists() or code in skip:
@@ -294,7 +297,7 @@ def main():
 
     log = json.loads(LOG.read_text(encoding="utf-8")) if LOG.exists() else {}
     if args.tra_lai or args.ap_dung:
-        (restore if args.tra_lai else apply)(log)
+        restore(log) if args.tra_lai else apply(log, {c.upper() for c in args.ma})
         LOG.write_text(json.dumps(dict(sorted(log.items())), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
         return
 
@@ -330,6 +333,8 @@ def main():
         with Image.open(IMG_DIR / name) as cur:
             ref = cur.convert("RGB").resize((48, 48), Image.BILINEAR)
         cands = src(p["code"])
+        if SLIDE.search(p.get("name", "")):  # dép: ảnh nhìn từ trên (thấy quai, logo) lên trước
+            cands = [c for c in cands if "/sv04/" in c[0]] + [c for c in cands if "/sv04/" not in c[0]]
         exact = p["brand"] in EXACT
         best = (-9, None, None)
         for small, big in cands:

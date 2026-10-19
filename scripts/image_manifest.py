@@ -17,13 +17,25 @@ OUT = IMG_DIR / "danh-sach.js"
 NAME_RE = re.compile(r"^(.+?)(?:-(\d{1,2}))?\.(webp|jpe?g|png|JPG)$")
 
 
+def product_codes():
+    """Mã sản phẩm trong data/products.js. Mã Puma có đuôi 2 số (401287-01): "-01" là một phần của mã, không phải số ảnh."""
+    path = ROOT / "data" / "products.js"
+    if not path.exists():
+        return set()
+    return set(re.findall(r'"code":"([^"]+)"', path.read_text(encoding="utf-8")))
+
+
 def build():
     shots = {}
+    codes = product_codes()
     for f in IMG_DIR.iterdir():
         m = NAME_RE.match(f.name)
         if not m or not f.is_file():
             continue
         stem, n = m.group(1), int(m.group(2) or 1)
+        whole = f.name.rsplit(".", 1)[0]
+        if whole in codes:
+            stem, n = whole, 1
         # Cùng số ảnh có nhiều đuôi: giữ WebP (nhẹ nhất)
         cur = shots.setdefault(stem, {}).get(n)
         if cur is None or f.name.endswith(".webp"):
