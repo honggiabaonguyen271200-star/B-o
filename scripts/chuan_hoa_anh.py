@@ -413,8 +413,8 @@ def normalize(im, keep_bg=False):
     part = im.crop((c0, r0, c1, r1))
     mask = feather(part.size, (x0 - c0 if c0 > 0 else 0, y0 - r0 if r0 > 0 else 0,
                                c1 - x1 if c1 < im.width else 0, r1 - y1 if r1 < im.height else 0))
-    # Giày chạm mép ảnh gốc (ảnh trong bảng đã cắt mất mũi / gót): cho phần bị cắt sát mép khung như ảnh chụp cận,
-    # không để một đôi giày bị cắt lơ lửng giữa nền trắng (chủ shop báo 19/10: Air Force 1 mất mũi, gót)
+    # Giày bị cắt cả mũi lẫn gót trong ảnh gốc (chạm cả hai mép): cho giày rộng hết khung như ảnh chụp cận
+    # (chủ shop báo 19/10: Air Force 1 mất mũi, gót). Chỉ chạm một mép: vẫn đặt giữa (chủ shop muốn giày luôn ở giữa)
     cut_l, cut_r = (x0 <= EDGE, x1 >= im.width - EDGE) if how != "mau" else (False, False)
     box_w = 1.0 if cut_l and cut_r else BOX_W
     side = min(MAX_SIDE, math.ceil(max(bw / box_w, bh / BOX_H)))
@@ -426,10 +426,6 @@ def normalize(im, keep_bg=False):
     # Đặt tâm khung giày vào giữa ảnh
     ox = round(side / 2 - ((x0 + x1) / 2 - c0) * k)
     oy = round(side / 2 - ((y0 + y1) / 2 - r0) * k)
-    if cut_l:
-        ox = round(-(x0 - c0) * k)
-    elif cut_r:
-        ox = side - round((x1 - c0) * k)
     out.paste(part, (ox, oy), mask)
     return out, ("trang" if how != "mau" else "mau")
 
