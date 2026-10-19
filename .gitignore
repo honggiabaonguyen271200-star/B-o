@@ -14,3 +14,6 @@ desktop.ini
 
 # Ảnh bìa gốc trước khi chuẩn hoá (scripts/chuan_hoa_anh.py) — chỉ giữ trên máy
 images/goc/
+
+# Ảnh tải thử (scripts/tai_anh_hang.py --thu) — chỉ để xem trên máy
+images/tai-ve/
