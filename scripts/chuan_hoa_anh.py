@@ -27,7 +27,7 @@ import sys
 from pathlib import Path
 
 try:
-    from PIL import Image, ImageChops, ImageFilter, ImageOps
+    from PIL import Image, ImageChops, ImageFilter, ImageOps, ImageStat
 except ImportError:
     Image = None
 
@@ -40,6 +40,7 @@ KEEP = Path(__file__).resolve().parent / "anh-giu-nen.txt"  # mã mẫu giữ ng
 BOX_W, BOX_H = 0.86, 0.68   # khung chứa giày trong ảnh vuông
 EDGE = 3                    # giày cách mép ảnh gốc ≤ 3px: coi như bị cắt sẵn
 MAX_SIDE = 1200
+SMALL_SRC = 800             # ảnh gốc nhỏ hơn (ảnh chèn trong bảng hàng): làm rõ giày sáng màu (lift_white)
 WHITE = (255, 255, 255)
 
 
@@ -433,6 +434,22 @@ def normalize(im, keep_bg=False):
     return out, ("trang" if how != "mau" else "mau")
 
 
+def lift_white(out):
+    """Giày trắng / màu sáng trong ảnh nhỏ của bảng hàng bị bạc, khó thấy đường may (chủ shop báo 19/10):
+    kéo tông sáng xuống một chút (nền trắng 255 giữ nguyên), làm nét nhẹ. Giày càng sáng kéo càng nhiều."""
+    g = out.convert("L")
+    shoe = g.point(lambda v: 255 if v < 246 else 0)
+    if not shoe.getbbox():
+        return out
+    light = ImageStat.Stat(g, shoe).mean[0]
+    t = min(1.0, max(0.0, (light - 175) / 35))
+    if t <= 0:
+        return out
+    gamma = 1 + 0.6 * t
+    lut = [round(255 * (v / 255) ** gamma) for v in range(256)]
+    return out.point(lut * 3).filter(ImageFilter.UnsharpMask(radius=1.2, percent=60, threshold=2))
+
+
 def run(redo=False, quiet=False):
     if Image is None:
         print("Bỏ qua chuẩn hoá ảnh bìa: chưa cài Pillow (pip install pillow)")
@@ -461,6 +478,8 @@ def run(redo=False, quiet=False):
             continue
         if out is None:
             continue
+        if kind == "trang" and max(Image.open(src).size) < SMALL_SRC:
+            out = lift_white(out)
         if src == path:
             BACKUP.mkdir(parents=True, exist_ok=True)
             shutil.copy2(path, backup)
