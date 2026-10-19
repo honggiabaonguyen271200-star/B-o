@@ -1079,11 +1079,23 @@
   "file": "CM997HCA.webp",
   "url": "https://nb.scene7.com/is/image/NB/cm997hca_nb_02_i?wid=1200&fmt=png-alpha"
  },
+ "CT2302-100": {
+  "giong": 0.456,
+  "ngay": "2026-10-19",
+  "file": "CT2302-100.webp",
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/350e7f3a-979a-402b-9396-a8a998dd76ab/AIR+FORCE+1+%2707.png"
+ },
  "CT8527-100": {
   "khong_thay": "2026-10-19"
  },
  "CT8527-400": {
   "khong_thay": "2026-10-19"
+ },
+ "CW2288-111": {
+  "giong": -0.003,
+  "ngay": "2026-10-19",
+  "file": "CW2288-111.webp",
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/ea33db62-7df9-480a-b5f7-3634525852eb/AIR+FORCE+1+%2707.png"
  },
  "CZ0220-133": {
   "khong_thay": "2026-10-19"

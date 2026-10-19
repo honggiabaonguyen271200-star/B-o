@@ -289,6 +289,7 @@ def main():
     ap.add_argument("--tim-lai", action="store_true")
     ap.add_argument("--tra-lai", action="store_true")
     ap.add_argument("--ap-dung", action="store_true")
+    ap.add_argument("--bo-so", action="store_true", help="không so với ảnh cũ (ảnh cũ hỏng); chỉ dùng khi tự xem lại kết quả")
     args = ap.parse_args()
 
     log = json.loads(LOG.read_text(encoding="utf-8")) if LOG.exists() else {}
@@ -344,7 +345,7 @@ def main():
                 best = (s, small, big)
         score, _, big = best
         line = f"[{i}/{len(todo)}] {code}: "
-        ok = big and (exact or score >= MIN_SCORE)
+        ok = big and (exact or args.bo_so or score >= MIN_SCORE)
         full = fetch_image(big) if ok else None
         if full is None or max(full.size) < MIN_SIDE:
             log[code] = {"khong_thay": today}
