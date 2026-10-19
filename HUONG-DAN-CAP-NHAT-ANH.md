@@ -24,6 +24,17 @@ Bảng hàng đã có cột **Hình ảnh**. Ảnh chèn trong bảng được l
   `python scripts/extract_images.py <file.xlsx> --ghi-de`.
 - Mỗi lần cập nhật hàng, mẫu mới có ảnh trong bảng cũng tự có ảnh trên web.
 
+## Ảnh bìa nét từ kho ảnh của hãng (19/10)
+
+Ảnh chèn trong bảng hàng chỉ rộng khoảng 300px nên lên web hơi mờ. Từ 19/10, ảnh bìa New Balance, Asics, Onitsuka Tiger
+được thay bằng ảnh chính hãng 1200px, tra đúng theo mã. Mẫu mới về sau này: nhờ trợ lý chạy
+`python scripts/tai_anh_hang.py --thu` (tải thử + ảnh so sánh cũ/mới) → xem → `python scripts/tai_anh_hang.py --ap-dung`
+→ `python scripts/static_pages.py` → Commit + Push. Máy cần vào được mạng (Antigravity trên máy bạn thì được sẵn).
+
+- Mẫu nào ảnh hãng **khác màu** với đôi bạn có: ghi mã vào `scripts/anh-khong-tai.txt` (web giữ ảnh cũ).
+  Lỡ thay sai: ghi mã vào file đó rồi chạy `python scripts/tai_anh_hang.py --tra-lai`.
+- Danh sách mẫu đang chờ bạn xem: `docs/anh-can-xem.md`.
+
 ## Cách 2 — Kéo thả ảnh vào trang `anh.html` (cho mẫu còn thiếu)
 
 Không cần đổi tên file bằng tay.

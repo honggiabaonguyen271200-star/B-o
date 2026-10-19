@@ -1,0 +1,29 @@
+# Mã mẫu KHÔNG thay ảnh bìa bằng ảnh tải từ hãng (scripts/tai_anh_hang.py).
+# Mỗi dòng một mã. Xoá dòng nếu bạn đã xem và thấy ảnh của hãng đúng.
+# 19/10: ảnh hãng khác màu / khác góc so với ảnh trong bảng hàng — chờ chủ shop xem (xem docs/anh-can-xem.md)
+1042A220-250  # kho ảnh hãng chỉ có hình vẽ, chưa có ảnh thật
+GR530SO       # chỉ có ảnh nhìn từ trên
+U9060ORB
+U7407YI
+U9060CTC
+GC9060ER
+BB550NCL
+U740WM2
+WL574EG
+U9060IND
+U20007PF
+U7404OO
+U204L2SZ
+MT580OG2
+U530SUA
+M1906RCF
+GR530UK
+U20004GM
+U2000420
+U2002RB
+U1906RCR
+U9060CCB
+MR530RS
+GC9060EX
+U9060493
+MR530SX
