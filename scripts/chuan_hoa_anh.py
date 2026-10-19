@@ -38,6 +38,7 @@ RECORD = Path(__file__).resolve().parent / "anh-da-chuan-hoa.json"
 KEEP = Path(__file__).resolve().parent / "anh-giu-nen.txt"  # mã mẫu giữ nguyên nền (làm trắng tự động không đẹp)
 
 BOX_W, BOX_H = 0.86, 0.68   # khung chứa giày trong ảnh vuông
+EDGE = 3                    # giày cách mép ảnh gốc ≤ 3px: coi như bị cắt sẵn
 MAX_SIDE = 1200
 WHITE = (255, 255, 255)
 
@@ -411,8 +412,12 @@ def normalize(im, keep_bg=False):
     part = im.crop((c0, r0, c1, r1))
     mask = feather(part.size, (x0 - c0 if c0 > 0 else 0, y0 - r0 if r0 > 0 else 0,
                                c1 - x1 if c1 < im.width else 0, r1 - y1 if r1 < im.height else 0))
-    side = min(MAX_SIDE, math.ceil(max(bw / BOX_W, bh / BOX_H)))
-    k = min(BOX_W * side / bw, BOX_H * side / bh, 1)
+    # Giày chạm mép ảnh gốc (ảnh trong bảng đã cắt mất mũi / gót): cho phần bị cắt sát mép khung như ảnh chụp cận,
+    # không để một đôi giày bị cắt lơ lửng giữa nền trắng (chủ shop báo 19/10: Air Force 1 mất mũi, gót)
+    cut_l, cut_r = (x0 <= EDGE, x1 >= im.width - EDGE) if how != "mau" else (False, False)
+    box_w = 1.0 if cut_l and cut_r else BOX_W
+    side = min(MAX_SIDE, math.ceil(max(bw / box_w, bh / BOX_H)))
+    k = min(box_w * side / bw, BOX_H * side / bh, 1)
     if k < 1:
         size = (max(1, round(part.width * k)), max(1, round(part.height * k)))
         part, mask = part.resize(size, Image.LANCZOS), mask.resize(size, Image.BILINEAR)
@@ -420,6 +425,10 @@ def normalize(im, keep_bg=False):
     # Đặt tâm khung giày vào giữa ảnh
     ox = round(side / 2 - ((x0 + x1) / 2 - c0) * k)
     oy = round(side / 2 - ((y0 + y1) / 2 - r0) * k)
+    if cut_l:
+        ox = round(-(x0 - c0) * k)
+    elif cut_r:
+        ox = side - round((x1 - c0) * k)
     out.paste(part, (ox, oy), mask)
     return out, ("trang" if how != "mau" else "mau")
 
