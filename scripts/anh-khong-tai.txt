@@ -4,5 +4,5 @@
 1042A220-250  # kho ảnh hãng chỉ có hình vẽ, chưa có ảnh thật
 GR530SO       # chỉ có ảnh nhìn từ trên
 # 20/10 adidas (ảnh StockX)
-IG6184        # bảng ghi "Adifom Superstar mule White" nhưng mã này là Handball Spezial Maroon — kiểm tra lại mã
-IG6174        # bảng ghi "Adifom Superstar mule White" nhưng mã này là Samba OG Dark Brown — kiểm tra lại mã
+IG6184        # bảng ghi "Adifom Superstar mule White" nhưng mã này là Handball Spezial Maroon — giữ ảnh cũ (chủ shop chọn bỏ qua 20/10)
+IG6174        # bảng ghi "Adifom Superstar mule White" nhưng mã này là Samba OG Dark Brown — giữ ảnh cũ (chủ shop chọn bỏ qua 20/10)

@@ -5,7 +5,7 @@
 - `1042A220-250`: kho ảnh hãng chỉ có hình vẽ minh hoạ.
 - `GR530SO`: hãng chỉ có ảnh chụp từ trên xuống.
 
-adidas (ảnh StockX), giữ ảnh cũ, cần kiểm tra lại mã trong bảng hàng:
+adidas (ảnh StockX), giữ ảnh cũ (20/10 chủ shop chọn bỏ qua, không cần kiểm tra lại):
 
 - `IG6184`, `IG6174`: bảng ghi "Adifom Superstar mule White" nhưng trên StockX hai mã này là Handball Spezial / Samba OG.
 - `KE3892`: ảnh trong bảng là quần áo, không phải giày.
