@@ -574,13 +574,13 @@
   "khong_thay": "2026-10-20"
  },
  "343881-013": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "343881-014": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "343881-111": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "371013-05": {
   "url": "(đã thay, sổ bị ghi đè)",
@@ -700,7 +700,10 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/7869dac9-4d4a-4337-9c13-affa8c0d3c5c/AIR+MONARCH+IV.png"
  },
  "415445-101": {
-  "khong_thay": "2026-10-19"
+  "thu": "https://static.nike.com/a/images/w_1200,c_limit,f_png/2760bef4-4640-474c-a5d5-d8dd636afb8a/AIR+MONARCH+IV.png",
+  "giong": 0.111,
+  "ngay": "2026-10-20",
+  "file": "415445-101.webp"
  },
  "415445-102": {
   "giong": 0.564,
@@ -709,13 +712,19 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/f9a8deaa-87f2-4191-92b8-c7661aae48de/AIR+MONARCH+IV.png"
  },
  "432997-107": {
-  "khong_thay": "2026-10-19"
+  "thu": "https://static.nike.com/a/images/w_1200,c_limit,f_png/73627869-5239-40d9-b41f-5dcdaba413e4/KILLSHOT+2+LEATHER.png",
+  "giong": 0.471,
+  "ngay": "2026-10-20",
+  "file": "432997-107.webp"
  },
  "432997-121": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "432997-128": {
-  "khong_thay": "2026-10-19"
+  "thu": "https://static.nike.com/a/images/w_1200,c_limit,f_png/fb68d062-00ea-4b3f-89fa-8676c56ccb07/KILLSHOT+2+LEATHER.png",
+  "giong": 0.576,
+  "ngay": "2026-10-20",
+  "file": "432997-128.webp"
  },
  "432997-130": {
   "khong_thay": "2026-10-19"
@@ -943,10 +952,10 @@
   "khong_thay": "2026-10-20"
  },
  "618919-029": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "618919-113": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "772109": {
   "giong": 0.083,
@@ -1261,10 +1270,10 @@
   "url": "https://images.stockx.com/images/adidas-Handball-Spezial-Navy-Gum-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "BQ5448-104": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "BQ5448-116": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "BQ6472-015": {
   "khong_thay": "2026-10-20"
@@ -1282,7 +1291,7 @@
   "khong_thay": "2026-10-20"
  },
  "BQ6806-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "BQ6817-302": {
   "khong_thay": "2026-10-19"
@@ -1297,10 +1306,10 @@
   "khong_thay": "2026-10-20"
  },
  "CD5463-102": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "CD5463-105": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "CD7861-700": {
   "khong_thay": "2026-10-20"
@@ -1348,7 +1357,7 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/f627cc74-8184-4f57-a6c0-637d11a87dbc/AIR+FORCE+1+%2707+WB.png"
  },
  "CK6654-601": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "CM997HCA": {
   "giong": 0.459,
@@ -1408,10 +1417,13 @@
   "khong_thay": "2026-10-20"
  },
  "CW1590-100": {
-  "khong_thay": "2026-10-19"
+  "thu": "https://static.nike.com/a/images/w_1200,c_limit,f_png/bc845b97-d7c3-4023-80af-ed7e83d9d8c3/NIKE+DUNK+LOW+%28GS%29.png",
+  "giong": 0.468,
+  "ngay": "2026-10-20",
+  "file": "CW1590-100.webp"
  },
  "CW1590-601": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "CW2288-001": {
   "giong": 0.883,
@@ -1600,22 +1612,25 @@
   "khong_thay": "2026-10-20"
  },
  "DD1391-103": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DD1391-600": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DD1391-601": {
   "khong_thay": "2026-10-19"
  },
  "DD1391-602": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DD1399-105": {
-  "khong_thay": "2026-10-19"
+  "thu": "https://static.nike.com/a/images/w_1200,c_limit,f_png/3fa14041-94e6-4a19-af29-e75eabd2ad4a/NIKE+DUNK+HI+RETRO.png",
+  "giong": 0.468,
+  "ngay": "2026-10-20",
+  "file": "DD1399-105.webp"
  },
  "DD1399-400": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DD1399-401": {
   "giong": 0.516,
@@ -1630,7 +1645,7 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/347df68b-483d-458b-b71b-ade378829aad/W+NIKE+DUNK+LOW.png"
  },
  "DD1503-118": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DD1503-119": {
   "khong_thay": "2026-10-19"
@@ -1639,16 +1654,16 @@
   "khong_thay": "2026-10-20"
  },
  "DD1869-110": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DD1873-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DD3111-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DD3111-103": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DD8959-100": {
   "khong_thay": "2026-10-19"
@@ -1666,7 +1681,10 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/4ee7f9e9-9f1f-4395-95f4-ceca25120f39/AIR+FORCE+1+LE+%28GS%29.png"
  },
  "DH2987-002": {
-  "khong_thay": "2026-10-19"
+  "thu": "https://static.nike.com/a/images/w_1200,c_limit,f_png/468e4793-23a0-4f1d-86f6-150cd6e42ad3/NIKE+COURT+VISION+LO+NN.png",
+  "giong": 0.171,
+  "ngay": "2026-10-20",
+  "file": "DH2987-002.webp"
  },
  "DH2987-100": {
   "giong": 0.67,
@@ -1675,22 +1693,25 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/706e54b6-9360-4760-817d-86bba495f2e5/NIKE+COURT+VISION+LO+NN.png"
  },
  "DH2987-101": {
-  "khong_thay": "2026-10-19"
+  "thu": "https://static.nike.com/a/images/w_1200,c_limit,f_png/6ef8f54a-1dda-49b8-9097-34c9c3dc766e/NIKE+COURT+VISION+LO+NN.png",
+  "giong": 0.519,
+  "ngay": "2026-10-20",
+  "file": "DH2987-101.webp"
  },
  "DH2987-106": {
   "khong_thay": "2026-10-19"
  },
  "DH2987-110": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DH3158-101": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DH3158-606": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DH3160-101": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DH3162-100": {
   "giong": 0.82,
@@ -1705,7 +1726,7 @@
   "khong_thay": "2026-10-19"
  },
  "DH4402-001": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DH4406-100": {
   "khong_thay": "2026-10-19"
@@ -1738,7 +1759,7 @@
   "khong_thay": "2026-10-19"
  },
  "DH9765-003": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DJ0292-101": {
   "khong_thay": "2026-10-19"
@@ -1747,7 +1768,7 @@
   "khong_thay": "2026-10-20"
  },
  "DJ1196-101": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DJ6188-600": {
   "khong_thay": "2026-10-19"
@@ -1786,16 +1807,16 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/0c2ecdfd-df75-4d38-b6de-76a3bfa117e4/NIKE+CORTEZ.png"
  },
  "DM4044-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DM4044-102": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DM4044-103": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DM4044-104": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DM4044-105": {
   "giong": 0.725,
@@ -1810,16 +1831,16 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/accd6e6d-04e2-4df6-b2b8-798d63cd3a9c/NIKE+CORTEZ.png"
  },
  "DM4044-109": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DM4044-110": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DM4044-112": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DM4044-114": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DM7590-100": {
   "giong": 0.924,
@@ -1846,22 +1867,25 @@
   "khong_thay": "2026-10-20"
  },
  "DN1431-001": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DN1791-002": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DN1791-003": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DN1791-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DN1791-104": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DN1791-107": {
-  "khong_thay": "2026-10-19"
+  "thu": "https://static.nike.com/a/images/w_1200,c_limit,f_png/adc1dd14-37c3-4511-945e-de82c448ec1d/W+NIKE+CORTEZ.png",
+  "giong": 0.552,
+  "ngay": "2026-10-20",
+  "file": "DN1791-107.webp"
  },
  "DN1791-108": {
   "giong": 0.516,
@@ -1876,7 +1900,7 @@
   "khong_thay": "2026-10-20"
  },
  "DN3866-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DN4162-991": {
   "khong_thay": "2026-10-19"
@@ -1891,7 +1915,7 @@
   "khong_thay": "2026-10-20"
  },
  "DO6288-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DO7416-991": {
   "khong_thay": "2026-10-20"
@@ -1903,19 +1927,19 @@
   "khong_thay": "2026-10-20"
  },
  "DO9581-500": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DO9844-101": {
   "khong_thay": "2026-10-20"
  },
  "DQ0265-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DQ0837-100": {
   "khong_thay": "2026-10-20"
  },
  "DQ1470-101": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DQ3989-101": {
   "giong": 0.902,
@@ -1957,7 +1981,7 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/bfcf61ad-4304-424a-b99b-63934e1ffe0b/women-s-air-force-1-07-black-and-summit-white-dr0148-101-release-date.jpg"
  },
  "DR0156-300": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DR0502-101": {
   "khong_thay": "2026-10-20"
@@ -1993,7 +2017,7 @@
   "khong_thay": "2026-10-20"
  },
  "DR9514-400": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DR9654-100": {
   "giong": 0.712,
@@ -2005,7 +2029,7 @@
   "khong_thay": "2026-10-19"
  },
  "DR9885-101": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DV0427-301": {
   "khong_thay": "2026-10-19"
@@ -2017,13 +2041,13 @@
   "khong_thay": "2026-10-19"
  },
  "DV0833-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DV0833-400": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DV0834-101": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DV0990-111": {
   "giong": 0.836,
@@ -2068,13 +2092,16 @@
   "khong_thay": "2026-10-19"
  },
  "DV4342-300": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DV5456-005": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DV5456-104": {
-  "khong_thay": "2026-10-19"
+  "thu": "https://static.nike.com/a/images/w_1200,c_limit,f_png/03872514-e104-49a5-b97f-f3d5588707de/COURT+BOROUGH+LOW+RECRAFT+%28GS%29.png",
+  "giong": 0.319,
+  "ngay": "2026-10-20",
+  "file": "DV5456-104.webp"
  },
  "DV5456-105": {
   "giong": 0.614,
@@ -2083,13 +2110,16 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/bdac467f-5e7e-4568-9c14-3455a9fec704/COURT+BOROUGH+LOW+RECRAFT+%28GS%29.png"
  },
  "DV5456-110": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DV5456-111": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DV5456-131": {
-  "khong_thay": "2026-10-19"
+  "thu": "https://static.nike.com/a/images/w_1200,c_limit,f_png/55330ea9-afad-4781-b8dc-3970ef46d2ab/COURT+BOROUGH+LOW+RECRAFT+%28GS%29.png",
+  "giong": 0.376,
+  "ngay": "2026-10-20",
+  "file": "DV5456-131.webp"
  },
  "DV5477-012": {
   "khong_thay": "2026-10-19"
@@ -2125,7 +2155,7 @@
   "khong_thay": "2026-10-19"
  },
  "DX9176-106": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "DZ1847-104": {
   "khong_thay": "2026-10-19"
@@ -2230,7 +2260,7 @@
   "khong_thay": "2026-10-20"
  },
  "FD0689-001": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "FD0736-004": {
   "khong_thay": "2026-10-19"
@@ -2245,7 +2275,7 @@
   "khong_thay": "2026-10-19"
  },
  "FD0736-104": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "FD0736-105": {
   "khong_thay": "2026-10-19"
@@ -2257,7 +2287,7 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/86425bdf-901b-4905-9305-64efb8f764b6/W+NIKE+V2K+RUN.png"
  },
  "FD1449-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "FD4116-001": {
   "khong_thay": "2026-10-19"
@@ -2308,7 +2338,7 @@
   "khong_thay": "2026-10-20"
  },
  "FJ0685-010": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "FJ0698-100": {
   "giong": 0.825,
@@ -2329,13 +2359,13 @@
   "khong_thay": "2026-10-20"
  },
  "FJ4641-536": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "FJ5429-133": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "FJ7707-131": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "FJ7765-502": {
   "giong": 0.559,
@@ -2344,7 +2374,7 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/64a4c9d9-7d47-40f6-aba4-4ba38a555df6/W+NIKE+JOURNEY+RUN.png"
  },
  "FN3612-300": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "FN5032-200": {
   "khong_thay": "2026-10-20"
@@ -2359,13 +2389,13 @@
   "khong_thay": "2026-10-20"
  },
  "FN7649-110": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "FN8923-061": {
   "khong_thay": "2026-10-19"
  },
  "FQ7628-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "FQ7728-001": {
   "khong_thay": "2026-10-19"
@@ -2374,7 +2404,7 @@
   "khong_thay": "2026-10-20"
  },
  "FQ8075-133": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "FQ8077-104": {
   "khong_thay": "2026-10-19"
@@ -2383,10 +2413,10 @@
   "khong_thay": "2026-10-20"
  },
  "FQ8899-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "FQ8903-004": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "FV3250": {
   "giong": 0.285,
@@ -2434,7 +2464,7 @@
   "khong_thay": "2026-10-20"
  },
  "FV8104-221": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "FW5191": {
   "giong": 0.137,
@@ -3001,19 +3031,19 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/3f4633fb-5d2f-4928-b67d-5298fc23118e/NIKE+CORTEZ+TXT.png"
  },
  "HF0263-002": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "HF1054-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "HF1068-133": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "HF1161-300": {
   "khong_thay": "2026-10-20"
  },
  "HF1744-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "HF3148-102": {
   "khong_thay": "2026-10-19"
@@ -3031,7 +3061,7 @@
   "khong_thay": "2026-10-20"
  },
  "HF4268-113": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "HF4312-100": {
   "khong_thay": "2026-10-20"
@@ -3064,13 +3094,13 @@
   "khong_thay": "2026-10-19"
  },
  "HJ5269-600": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "HJ6647-300": {
   "khong_thay": "2026-10-20"
  },
  "HJ6650-300": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "HM9862-001": {
   "giong": 0.874,
@@ -3085,7 +3115,7 @@
   "url": "https://images.stockx.com/images/adidas-Adilette-22-Slides-Sand-Strata-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HP7870": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "HP8739": {
   "giong": 0.141,
@@ -3097,10 +3127,10 @@
   "khong_thay": "2026-10-20"
  },
  "HQ2609-600": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "HQ2665": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "HQ2993-100": {
   "giong": 0.805,
@@ -3112,7 +3142,7 @@
   "khong_thay": "2026-10-19"
  },
  "HQ3490-099": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "HQ4307-001": {
   "giong": 0.524,
@@ -3193,10 +3223,10 @@
   "url": "https://images.stockx.com/images/adidas-adiFOM-Superstar-Black-White-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HV1376-601": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "HV1449-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "HV1452-100": {
   "khong_thay": "2026-10-20"
@@ -3205,7 +3235,7 @@
   "khong_thay": "2026-10-20"
  },
  "HV2530-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "HV4089-201": {
   "giong": 0.856,
@@ -3220,7 +3250,7 @@
   "khong_thay": "2026-10-19"
  },
  "HV4506-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "HV5060-002": {
   "giong": 0.967,
@@ -3250,7 +3280,7 @@
   "khong_thay": "2026-10-19"
  },
  "HV8568-202": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "IB0018-004": {
   "khong_thay": "2026-10-20"
@@ -3259,10 +3289,10 @@
   "khong_thay": "2026-10-20"
  },
  "IB1857-201": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "IB2998-003": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "IB4504-237": {
   "giong": 0.851,
@@ -3289,7 +3319,7 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/126ad26f-6605-4ec5-920e-38d9760b9dad/AIR+JORDAN+1+LOW+SE.png"
  },
  "IB7311-001": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "IB8958-001": {
   "giong": 0.641,
@@ -3535,7 +3565,7 @@
   "url": "https://images.stockx.com/images/adidas-adiFOM-Stan-Smith-Mule-Wonder-Taupe-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "IF1764-100": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "IF2649": {
   "giong": -0.48,
@@ -3586,10 +3616,10 @@
   "url": "https://images.stockx.com/images/adidas-Handball-Spezial-Aluminum-Core-Black-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "IF6733": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "IF7052-005": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "IF7086": {
   "giong": 0.659,
@@ -3706,7 +3736,7 @@
   "url": "https://images.stockx.com/images/adidas-Samba-LT-Black-White-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "IG4446": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "IG4507": {
   "giong": 0.594,
@@ -3937,10 +3967,10 @@
   "khong_thay": "2026-10-19"
  },
  "IQ6076-601": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "IQ6078-400": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "IR2175-200": {
   "giong": 0.726,
@@ -3955,7 +3985,7 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/f5a0a23e-7f28-43e6-bc20-b5b4a38aa15a/COURT+BOROUGH+LOW+BBALL+%28GS%29.png"
  },
  "IR8316-401": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "IV5820-100": {
   "giong": 0.77,
@@ -4135,7 +4165,7 @@
   "url": "https://images.stockx.com/images/adidas-Samba-OG-Crystal-Sand-Charcoal-Womens.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "JI4279": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "JI4463": {
   "giong": 0.635,
@@ -4318,7 +4348,7 @@
   "url": "https://images.stockx.com/images/adidas-Samba-Jane-Cloud-White-Pink-Womens.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "JR7150": {
-  "khong_thay": "2026-10-19"
+  "khong_thay": "2026-10-20"
  },
  "JR8830": {
   "giong": 0.286,
