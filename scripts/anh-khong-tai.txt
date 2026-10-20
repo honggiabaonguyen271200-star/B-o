@@ -30,7 +30,3 @@ MR530SX
 # 20/10 adidas (ảnh StockX)
 IG6184        # bảng ghi "Adifom Superstar mule White" nhưng mã này là Handball Spezial Maroon — kiểm tra lại mã
 IG6174        # bảng ghi "Adifom Superstar mule White" nhưng mã này là Samba OG Dark Brown — kiểm tra lại mã
-BD7632        # ảnh StockX xanh xám, ảnh hãng xanh nhạt
-ID1107        # ảnh StockX hồng đậm hơn
-IF6490        # ảnh StockX nâu olive, ảnh cũ nâu xám
-IH8047        # ảnh StockX tối màu khác ảnh cũ
