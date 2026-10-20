@@ -6,3 +6,7 @@ GR530SO       # chỉ có ảnh nhìn từ trên
 # 20/10 adidas (ảnh StockX)
 IG6184        # bảng ghi "Adifom Superstar mule White" nhưng mã này là Handball Spezial Maroon — giữ ảnh cũ (chủ shop chọn bỏ qua 20/10)
 IG6174        # bảng ghi "Adifom Superstar mule White" nhưng mã này là Samba OG Dark Brown — giữ ảnh cũ (chủ shop chọn bỏ qua 20/10)
+# 20/10 Nike: ảnh hãng góc xấu
+FZ2158-109    # ảnh hãng chỉ thấy đế giày
+DV5477-012    # ảnh hãng chụp phía sau
+CI0919-100    # ảnh hãng chụp cả đôi chính diện
