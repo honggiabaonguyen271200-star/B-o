@@ -40,6 +40,7 @@ OLD_DIR = ch.BACKUP / "bang"          # ảnh bìa cũ (từ bảng hàng) trư�
 TRY_DIR = ROOT / "images" / "tai-ve"  # --thu: ảnh tải về để xem
 LOG = Path(__file__).resolve().parent / "anh-tai-ve.json"
 SKIP = Path(__file__).resolve().parent / "anh-khong-tai.txt"
+STOCKX = Path(__file__).resolve().parent / "anh-stockx.csv"  # mã → ảnh StockX (tên mẫu tra theo mã trên stockx.com)
 
 SMALL = 800        # ảnh bìa gốc nhỏ hơn cỡ này thì tìm ảnh mới
 MIN_SIDE = 900     # ảnh tải về phải lớn hơn cỡ này
@@ -149,6 +150,23 @@ def nike(code):
             if found:
                 return found
     return []
+
+
+def stockx_links():
+    if not STOCKX.exists():
+        return {}
+    out = {}
+    for line in STOCKX.read_text(encoding="utf-8").splitlines()[1:]:
+        code, _, url = line.partition(",")
+        if url.strip():
+            out[code.strip().upper()] = url.strip()
+    return out
+
+
+def stockx(code):
+    """Ảnh StockX: chỉ có khi mã đã được tra trên stockx.com (tên trang có đúng mã) và ghi vào scripts/anh-stockx.csv."""
+    url = stockx_links().get(code.upper())
+    return [(url + "?w=240&fm=jpg", url + "?w=800&dpr=1.5&fm=jpg&q=90")] if url else []  # StockX trả rộng tối đa 800px: dpr 1,5 → 1200px
 
 
 SLIDE = re.compile(r"slide|cool cat|lead cat|dép|sandal", re.I)
@@ -305,11 +323,12 @@ def main():
     brands = {b.strip().lower() for b in args.hang.split(",") if b.strip()}
     wanted = {c.upper() for c in args.ma}
     skip = read_skip()
+    sx = stockx_links()
     todo = []
     for p in load_products():
         code = p["code"].upper()
         name = cover_name(code, files)
-        src = SOURCES.get(p["brand"])
+        src = stockx if code in sx else SOURCES.get(p["brand"])
         if not name or not src or code in skip:
             continue
         if wanted and code not in wanted:
@@ -335,7 +354,7 @@ def main():
         cands = src(p["code"])
         if SLIDE.search(p.get("name", "")):  # dép: ảnh nhìn từ trên (thấy quai, logo) lên trước
             cands = [c for c in cands if "/sv04/" in c[0]] + [c for c in cands if "/sv04/" not in c[0]]
-        exact = p["brand"] in EXACT
+        exact = p["brand"] in EXACT or src is stockx
         best = (-9, None, None)
         for small, big in cands:
             im = fetch_image(small)
