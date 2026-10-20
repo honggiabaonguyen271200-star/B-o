@@ -377,6 +377,10 @@ def apply_names(products):
         if PARENS_TAGS.search(name):
             p["gender"] = detect(GENDER_RULES, name, p.get("gender") or "unisex")
         p["name"] = re.sub(r"\s+", " ", PARENS_TAGS.sub(" ", name)).strip()
+        # Tên đặt riêng mở đầu bằng tên hãng thì lấy hãng theo tên đó (bảng ghi "Nike adiFOM…" là giày adidas)
+        brand = detect(BRAND_RULES, p["name"], None)
+        if brand and p["name"].lower().startswith(brand.split()[0].lower()):
+            p["brand"] = brand
         done += 1
     return done
 
