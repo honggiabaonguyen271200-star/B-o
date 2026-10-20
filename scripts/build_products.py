@@ -142,13 +142,25 @@ def display_name(raw, code):
     return name
 
 
+SIZE_RANGE = re.compile(r"^\d{2}(,5)?(\s*[-/–]\s*\d{2}(,5)?)+$")
+
+
+def size_range_note(text):
+    """'40-40,5' / '41,5-42' / '34/35' trong ô size: khoảng size vừa chân, không phải giá (lỗi "Từ 40.000đ" 20/10)."""
+    t = re.sub(r"\s*[-/–]\s*", "–", text.strip())
+    return "Size " + t if SIZE_RANGE.match(text.strip()) else None
+
+
 def parse_size_cell(value):
-    """'1' -> còn; '1 2000' -> còn, giá riêng 2000; '1 ib' -> còn, ghi chú."""
+    """'1' -> còn; '1 2000' -> còn, giá riêng 2000; '1 ib' -> còn, ghi chú; '40-40,5' -> còn, ghi khoảng size."""
     s = clean(value)
     if not s:
         return None
     info = {}
     rest = re.sub(r"^1\b", "", s).strip()
+    note = size_range_note(rest)
+    if note:
+        return {"note": note}
     m = re.match(r"^(\d[\d.,]*)\s*(.*)$", rest)
     if m:
         price = parse_price(m.group(1))
@@ -380,12 +392,31 @@ def write_products(products):
     )
 
 
+def fix_sizes(products):
+    """Sửa dữ liệu đã đọc bằng bản cũ: giá size < 100 nghìn là số size bị đọc nhầm ('40' của ô '40-40,5')."""
+    n = 0
+    for prod in products:
+        for sz in prod.get("sizes") or []:
+            if "p" in sz and sz["p"] < 100:
+                text = f"{sz.pop('p')}{sz.get('n', '')}"
+                note = size_range_note(text)
+                if note:
+                    sz["n"] = note
+                else:
+                    sz.pop("n", None)
+                n += 1
+    return n
+
+
 def names_only():
     """python scripts/build_products.py --ten : chỉ áp lại data/ten-mau.csv vào data/products.js đang có
     (không cần file bảng hàng), rồi tạo lại các trang tĩnh."""
     text = OUT.read_text(encoding="utf-8")
     products = json.loads(re.search(r"window\.PRODUCTS\s*=\s*(.*);\s*$", text, re.S).group(1))
     n = apply_names(products)
+    fixed = fix_sizes(products)
+    if fixed:
+        print(f"Sửa {fixed} size bị đọc nhầm số size thành giá")
     write_products(products)
     static_pages.main()
     print(f"Đã đặt tên riêng cho {n} mẫu theo {NAMES.relative_to(ROOT)}")
@@ -445,6 +476,7 @@ def main():
             del p[k]
 
     named = apply_names(products)
+    fix_sizes(products)
     mark_arrivals(products)
     write_products(products)
     static_pages.main()  # trang chia sẻ sp/, sitemap.xml, robots.txt, 404.html
