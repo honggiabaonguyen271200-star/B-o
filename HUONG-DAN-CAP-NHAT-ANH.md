@@ -33,7 +33,7 @@ Bảng hàng đã có cột **Hình ảnh**. Ảnh chèn trong bảng được l
 
 - Mẫu nào ảnh hãng **khác màu** với đôi bạn có: ghi mã vào `scripts/anh-khong-tai.txt` (web giữ ảnh cũ).
   Lỡ thay sai: ghi mã vào file đó rồi chạy `python scripts/tai_anh_hang.py --tra-lai`.
-- Danh sách mẫu đang chờ bạn xem: `docs/anh-can-xem.md`.
+- Danh sách mẫu chưa thay ảnh và lý do: `docs/anh-can-xem.md`.
 
 ## Cách 2 — Kéo thả ảnh vào trang `anh.html` (cho mẫu còn thiếu)
 
