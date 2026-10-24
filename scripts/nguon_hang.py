@@ -265,6 +265,7 @@ def current_products():
 def clean_name(raw, code):
     name = bp.display_name(re.sub(r"\s+", " ", raw), code) if raw else ""
     name = re.sub(r"^\(?(gs|w)\)?\s+", "", name, flags=re.I)
+    name = re.sub(r"\s+(sz|size)\s+khác.*$|\s+có\s+order.*$|\s+-\s*\d{2}(,5)?\s*$", "", name, flags=re.I)  # ghi chú của NCC
     return name.strip(" -/")
 
 
@@ -292,7 +293,7 @@ def sibling_model(code, old_by):
         common.append(ws[0])
     if len(common) < 2:  # tên khác nhau: lấy tên ngắn nhất, bỏ phần màu sau dấu nháy
         common = min((re.split(r"['\"“‘]", n)[0].split() for n in names), key=len)
-    return f"{' '.join(common)} {code}".strip() if len(common) >= 2 else ""
+    return " ".join(common) if len(common) >= 2 else ""
 
 
 def merge(items, old):
@@ -340,6 +341,9 @@ def merge(items, old):
             name = f"{model or brand or ''} {code}".strip()
             if rec["sizes"] and code not in custom_names():
                 need_name.append(code)
+        name = re.sub(r"\s+(sz|size)\s+khác.*$|\s+có\s+order.*$|\s+-\s*\d{2}(,5)?\s*$", "", name, flags=re.I).strip()
+        if len(name.split()) > 2:  # tên dòng giày + mã (lượt trước): bỏ mã, mã đã hiện riêng trên thẻ
+            name = re.sub(r"\s+" + re.escape(code) + r"$", "", name, flags=re.I)
         detected = bp.detect(bp.BRAND_RULES, name + " " + rec["raw"], None)
         brand = (prev or {}).get("brand") or detected or code_brand(code) or brand or "Khác"
         first = brand.split()[0]

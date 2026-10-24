@@ -10,3 +10,4 @@ IG6174        # bảng ghi "Adifom Superstar mule White" nhưng mã này là Sam
 FZ2158-109    # ảnh hãng chỉ thấy đế giày
 DV5477-012    # ảnh hãng chụp phía sau
 CI0919-100    # ảnh hãng chụp cả đôi chính diện
+HQ4309-610    # 20/10 ảnh hãng chụp cả đôi từ trên
