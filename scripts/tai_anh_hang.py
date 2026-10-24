@@ -221,7 +221,7 @@ def review_page(items, size, no):
     d = ImageDraw.Draw(sheet)
     for k, (score, code, old, new) in enumerate(items):
         x, y = (k % cols) * size * 2, (k // cols) * (size + 18)
-        for j, im in enumerate((Image.open(old), new)):
+        for j, im in enumerate((Image.open(old) if Path(old).exists() else Image.new("RGB", (size, size), "white"), new)):
             t = ch.flatten(im)
             t.thumbnail((size - 6, size - 6))
             sheet.paste(t, (x + j * size + (size - t.width) // 2, y + 18 + (size - t.height) // 2))
@@ -291,7 +291,7 @@ def apply(log, only=None):
             continue
         OLD_DIR.mkdir(parents=True, exist_ok=True)
         old = OLD_DIR / name
-        if not old.exists():
+        if not old.exists() and (IMG_DIR / name).exists():
             shutil.copy2(ch.BACKUP / name if (ch.BACKUP / name).exists() else IMG_DIR / name, old)
         with Image.open(src) as im:
             im.convert("RGB").save(IMG_DIR / name, "WEBP", quality=90, method=6)
@@ -311,6 +311,7 @@ def main():
     ap.add_argument("--tra-lai", action="store_true")
     ap.add_argument("--ap-dung", action="store_true")
     ap.add_argument("--bo-so", action="store_true", help="không so với ảnh cũ (ảnh cũ hỏng); chỉ dùng khi tự xem lại kết quả")
+    ap.add_argument("--moi", action="store_true", help="mẫu còn hàng chưa có ảnh nào: lấy ảnh đầu tiên của đúng mã (không có ảnh cũ để so)")
     args = ap.parse_args()
 
     log = json.loads(LOG.read_text(encoding="utf-8")) if LOG.exists() else {}
@@ -329,7 +330,11 @@ def main():
         code = p["code"].upper()
         name = cover_name(code, files)
         src = stockx if code in sx else SOURCES.get(p["brand"])
-        if not name or not src or code in skip:
+        if args.moi:
+            if name or not p.get("sizes") or not src or code in skip or (log.get(code) or {}).get("khong_thay"):
+                continue
+            name = code + ".webp"
+        elif not name or not src or code in skip:
             continue
         if wanted and code not in wanted:
             continue
@@ -338,7 +343,7 @@ def main():
         done = log.get(code) or {}
         if not wanted and (done.get("url") or done.get("thu") or (done.get("khong_thay") and not args.tim_lai)):
             continue
-        if not wanted and original_side(name) >= SMALL:
+        if not wanted and not args.moi and original_side(name) >= SMALL:
             continue
         todo.append((code, p, name, src))
     if args.so:
@@ -349,19 +354,21 @@ def main():
     review = []
     today = str(datetime.date.today())
     for i, (code, p, name, src) in enumerate(todo, 1):
-        with Image.open(IMG_DIR / name) as cur:
-            ref = cur.convert("RGB").resize((48, 48), Image.BILINEAR)
+        ref = None
+        if (IMG_DIR / name).exists():
+            with Image.open(IMG_DIR / name) as cur:
+                ref = cur.convert("RGB").resize((48, 48), Image.BILINEAR)
         cands = src(p["code"])
         if SLIDE.search(p.get("name", "")):  # dép: ảnh nhìn từ trên (thấy quai, logo) lên trước
             cands = [c for c in cands if "/sv04/" in c[0]] + [c for c in cands if "/sv04/" not in c[0]]
-        exact = p["brand"] in EXACT or src is stockx
+        exact = p["brand"] in EXACT or src is stockx or ref is None
         best = (-9, None, None)
         for small, big in cands:
             im = fetch_image(small)
             t = thumb(im) if im is not None else None
             if t is None:
                 continue
-            s = best_match(ref, t)
+            s = best_match(ref, t) if ref is not None else 0.0
             if exact:  # kho ảnh theo đúng mã: lấy góc nghiêng (ảnh đầu tiên có được), độ giống chỉ để ghi lại
                 best = (s, small, big)
                 break

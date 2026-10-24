@@ -55,19 +55,19 @@ def txt(v):
 
 
 def size_label(v):
-    """'405' / '40.5' / '40,5' / '9uk-43' / '37-375' → '40,5' / '43' / '37,5'; không phải size → None."""
+    """'405' / '40.5' / '40,5' / '9uk-43' / '36.5-4UK' / '41 (rep box)' → '40,5' / '43' / '36,5' / '41'; không phải size → None."""
     s = txt(v).lower().replace(" ", "")
     if not s:
         return None
-    m = re.search(r"(?:uk|us)?-?(\d{2,3}(?:[.,]5)?)y?$", s)
-    if not m:
-        return None
-    n = m.group(1).replace(".", ",")
-    if re.fullmatch(r"\d{3}", n) and n.endswith("5"):  # 405 → 40,5
-        n = n[:2] + ",5"
-    if not re.fullmatch(r"\d{2}(,5)?", n) or not 16 <= int(n[:2]) <= 50:
-        return None
-    return n + ("Y" if s.endswith("y") else "")
+    for num, unit in re.findall(r"(\d{2,3}(?:[.,]5)?)(uk|us|y)?", s):
+        if unit in ("uk", "us"):
+            continue
+        n = num.replace(".", ",")
+        if re.fullmatch(r"\d{3}", n) and n.endswith("5"):  # 405 → 40,5
+            n = n[:2] + ",5"
+        if re.fullmatch(r"\d{2}(,5)?", n) and 16 <= int(n[:2]) <= 50:
+            return n + ("Y" if unit == "y" else "")
+    return None
 
 
 def price_k(v):
@@ -268,6 +268,33 @@ def clean_name(raw, code):
     return name.strip(" -/")
 
 
+def custom_names():
+    import csv
+    if not bp.NAMES.exists():
+        return set()
+    with bp.NAMES.open(encoding="utf-8-sig", newline="") as f:
+        return {r[0].strip().upper() for r in csv.reader(f) if r and r[0].strip() and r[0] != "Mã"}
+
+
+def sibling_model(code, old_by):
+    """Tên dòng giày của các mẫu cùng mã gốc (FZ2158-600 ← FZ2158-102 'Nike Zoom Vapor Pro 3'): phần chữ đầu giống nhau."""
+    base = re.split(r"[-_ ]", code)[0]
+    if len(base) < 5:
+        return ""
+    names = [p["name"] for c, p in old_by.items() if c != code and re.split(r"[-_ ]", c)[0] == base and p.get("name")]
+    if not names:
+        return ""
+    words = [re.sub(r"['\"“”‘’]", "", n).split() for n in names]
+    common = []
+    for ws in zip(*words):
+        if len({w.lower() for w in ws}) != 1:
+            break
+        common.append(ws[0])
+    if len(common) < 2:  # tên khác nhau: lấy tên ngắn nhất, bỏ phần màu sau dấu nháy
+        common = min((re.split(r"['\"“‘]", n)[0].split() for n in names), key=len)
+    return f"{' '.join(common)} {code}".strip() if len(common) >= 2 else ""
+
+
 def merge(items, old):
     by = {}
     errs = []
@@ -308,8 +335,11 @@ def merge(items, old):
                     name = cand[0]
                     break
         if not name:
+            name = sibling_model(code, old_by)
+        if not name:
             name = f"{model or brand or ''} {code}".strip()
-            need_name.append(code)
+            if rec["sizes"] and code not in custom_names():
+                need_name.append(code)
         detected = bp.detect(bp.BRAND_RULES, name + " " + rec["raw"], None)
         brand = (prev or {}).get("brand") or detected or code_brand(code) or brand or "Khác"
         first = brand.split()[0]
