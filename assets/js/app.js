@@ -133,6 +133,35 @@
   }
   // Link gửi đi (Facebook): trang chia sẻ sp/<mã>.html có ảnh xem trước, tự mở trang sản phẩm
   function shareUrl(p) { return absUrl(p.inStock ? "sp/" + encodeURIComponent(p.id) + ".html" : productUrl(p)); }
+  // Link lọc (hãng / dòng / size) gửi đi: trang sp/loc/<hãng>--<dòng>--size-<size>.html có tiêu đề + mô tả + ảnh
+  // (scripts/static_pages.py tạo cho mọi bộ lọc đang có hàng; giống loc_key() trong đó)
+  function locKey(b, l, s) {
+    return [b ? slug(b) : "", b && l ? slug(l) : "", s ? "size-" + slug(s) : ""].filter(Boolean).join("--");
+  }
+  // Size trong link viết 37.5 (dấu phẩy dùng để nối nhiều size); link cũ size=37,5 vẫn hiểu đúng
+  function sizesParam(v) {
+    var out = [];
+    String(v || "").split(",").forEach(function (t) {
+      t = t.trim().replace(".", ",");
+      if (!t) return;
+      if (/^5$/.test(t) && out.length && /^\d+$/.test(out[out.length - 1])) out[out.length - 1] += ",5";
+      else out.push(t);
+    });
+    return out;
+  }
+  // Nút "Chia sẻ" ở đầu trang (và trang sản phẩm): trang nào có link riêng thì gán vào PAGE_SHARE
+  var PAGE_SHARE = null;
+  function sharePage() {
+    var s = PAGE_SHARE || { title: document.title, text: "", url: location.href };
+    var url = s.url, text = s.text || s.title;
+    track("share", { url: url });
+    if (navigator.share) {
+      navigator.share({ title: s.title, text: text, url: url }).catch(function () {});
+      return;
+    }
+    copyText(text + "\n" + url).then(function () { toast("Đã chép link — dán vào tin nhắn gửi khách"); });
+  }
+  document.addEventListener("click", function (e) { if (e.target.closest && e.target.closest("[data-share-page]")) { e.preventDefault(); sharePage(); } });
   function initials(b) {
     var w = b.split(/\s+/);
     return w.length > 1 ? (w[0][0] + w[1][0]).toUpperCase() : b[0].toUpperCase();
@@ -835,6 +864,8 @@
         navLink("size-guide.html", "Chọn size") + navLink("lien-he.html", "Liên hệ") +
         "</nav>" +
         '<div class="hd__icons">' +
+        // Nút chia sẻ trang đang xem (app không có thanh địa chỉ): danh mục gửi link có tiêu đề + ảnh, VD "Giày Puma size 37,5"
+        (["cart.html", "dat-hang.html", "anh.html"].indexOf(file) < 0 ? '<button type="button" class="icon-btn hd__share" data-share-page aria-label="Chia sẻ trang này">' + I.share + "</button>" : "") +
         '<a class="icon-btn hd__fb" href="' + esc(SHOP.facebookChat) + '" target="_blank" rel="noopener" aria-label="Nhắn Facebook cho shop" data-fb>' + I.fbc + "</a>" +
         (WISH ? '<a class="icon-btn" href="shop.html?wish=1" aria-label="Yêu thích">' + I.heart + '<span class="badge" data-wish-count hidden>0</span></a>' : "") +
         '<a class="icon-btn" href="cart.html" aria-label="Giỏ hàng">' + I.bag + '<span class="badge" data-cart-count hidden>0</span></a>' +
@@ -1562,7 +1593,7 @@
     var state = {
       q: p.get("q") || "",
       brands: (p.get("brands") || "").split(",").filter(Boolean),
-      sizes: (p.get("size") || "").split(",").filter(Boolean),
+      sizes: sizesParam(p.get("size")),
       colors: (p.get("color") || "").split(",").filter(Boolean),
       genders: (p.get("gender") || "").split(",").filter(Boolean),
       min: +p.get("min") || 0,
@@ -1707,7 +1738,7 @@
       if (line) u.set("line", slug(line));
       if (state.q) u.set("q", state.q);
       if (state.brands.length) u.set("brands", state.brands.join(","));
-      if (state.sizes.length) u.set("size", state.sizes.join(","));
+      if (state.sizes.length) u.set("size", state.sizes.map(function (s) { return s.replace(",", "."); }).join(","));
       if (state.lines.length) u.set("lines", state.lines.join(","));
       if (state.genders.length) u.set("gender", state.genders.join(","));
       if (state.min) u.set("min", state.min);
@@ -1771,6 +1802,28 @@
     }
     function chipHtml(c) { return '<button type="button" data-remove="' + c[0] + '" data-value="' + esc(c[1]) + '" aria-label="Bỏ lọc ' + esc(c[2]) + '">' + esc(c[2]) + I.close + "</button>"; }
 
+    // Link + lời giới thiệu khi bấm "Chia sẻ": lọc theo hãng / dòng / một size thì dùng trang sp/loc/… (hiện tiêu đề, ảnh khi gửi);
+    // lọc khác (nhiều size, giá, tìm kiếm…) dùng link đang xem, lời giới thiệu vẫn ghi rõ đang lọc gì
+    function shareInfo(list) {
+      var b = brand || (state.brands.length === 1 ? state.brands[0] : null), qBrand = null;
+      if (!b && !state.brands.length && state.q) {
+        qBrand = brands.filter(function (x) { return slug(x.name) === slug(state.q); })[0];
+        if (qBrand) b = qBrand.name;
+      }
+      var l = line || (state.lines.length === 1 && state.lines[0].split("|")[0] === b ? state.lines[0].split("|")[1] : null);
+      var what = wishMode ? "Giày yêu thích" : newMode ? "Hàng mới về" : l ? "Giày " + lineTitle(b, l) : b ? "Giày " + b : state.q ? "Giày “" + state.q + "”" : "Giày chính hãng";
+      var bits = [what + (state.sizes.length ? " size " + state.sizes.join(" / ") : "")];
+      if (state.genders.length) bits.push(state.genders.map(function (g) { return GENDER_LABEL[g]; }).join(", "));
+      if (state.min || state.max) bits.push("giá " + (state.min ? million(state.min) : "0") + " – " + (state.max ? million(state.max) : "…"));
+      var title = bits.join(" · ") + " có sẵn";
+      var simple = !wishMode && !newMode && !state.genders.length && !state.min && !state.max && state.brands.length <= 1 &&
+        state.lines.length <= (l ? 1 : 0) && state.sizes.length <= 1 && (!state.q || qBrand) && (!line || b) && l !== OTHER_LINE && list.length;
+      var key = simple ? locKey(b, l, state.sizes[0]) : "";
+      var cur = new URLSearchParams(location.search);
+      cur.delete("page");
+      return { title: title, text: title + " tại " + SHOP.name + " — bấm để xem mẫu và chọn size:", url: absUrl(key ? "sp/loc/" + key + ".html" : "shop.html" + (cur.toString() ? "?" + cur : "")) };
+    }
+
     function render() {
       renderLines();
       var list = filtered();
@@ -1801,6 +1854,7 @@
       $("[data-filter-count]").innerHTML = n ? "<b>" + n + "</b>" : "";
       $("[data-apply]").textContent = "Xem " + list.length + " mẫu";
       writeUrl();
+      PAGE_SHARE = shareInfo(list);
     }
     function toggle(arr, v) { var i = arr.indexOf(v); if (i >= 0) arr.splice(i, 1); else arr.push(v); }
     function openFilters(open) { openLayer(fEl, open); }
@@ -2028,6 +2082,7 @@
     var sizeText = p.sizes.map(function (s) { return s.s; }).join(", ");
     var hasLines = (LINES[p.brand] || []).length > 0;
     var linkUrl = shareUrl(p);
+    PAGE_SHARE = { title: name, text: name + (p.code && name.indexOf(p.code) < 0 ? " (" + p.code + ")" : "") + (p.inStock ? " · " + (p.sizes.some(function (s) { return (s.p || p.price) !== p.minPrice; }) ? "từ " : "") + money(p.minPrice) + " · size còn: " + sizeText : "") + " — " + SHOP.name + ":", url: linkUrl };
     var trail = [["Trang chủ", "index.html"], [p.brand, brandUrl(p.brand)]];
     if (hasLines && p.line !== OTHER_LINE) trail.push([p.line, lineUrl(p.brand, p.line)]);
     trail.push([p.name, ""]);
@@ -2232,7 +2287,7 @@
       if (e.target.closest("[data-guide]")) sizeGuideModal(p);
       if (e.target.closest("[data-copy-code]")) copyText(p.code).then(function () { toast("Đã sao chép mã " + p.code); });
       if (e.target.closest("[data-copy-link]")) copyText(linkUrl).then(function () { toast("Đã sao chép link sản phẩm"); });
-      if (e.target.closest("[data-native-share]")) navigator.share({ title: name, url: linkUrl }).catch(function () {});
+      if (e.target.closest("[data-native-share]")) sharePage();
       if (e.target.closest("[data-add]")) { if (add()) openMini(p.id + "|" + selected); }
     });
 

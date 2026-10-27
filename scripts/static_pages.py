@@ -6,6 +6,8 @@
 - images/anh-khac.js           danh sách banner (images/banners/) và ảnh khách (images/khach-hang/)
 - sp/<mã>.html   trang chia sẻ nhẹ cho từng mẫu còn hàng: có og:title, og:image, og:description để
                  Facebook hiện ảnh + tên + giá khi dán link, rồi tự chuyển sang product.html?id=…
+- sp/loc/<hãng>[--<dòng>][--size-<size>].html  trang chia sẻ cho link lọc (VD: Giày Puma size 37,5): có tiêu đề, mô tả, ảnh
+                 một mẫu trong bộ lọc, tự chuyển sang shop.html?brand=…&size=…. Nút "Chia sẻ" ở trang danh mục dùng link này
 - sp/anh/<MÃ>.jpg ảnh xem trước (JPEG, Facebook đọc chắc chắn hơn WebP), lấy từ ảnh chính của mẫu
 - 404.html       link sp/ của mẫu đã hết hàng vẫn mở được trang sản phẩm (GitHub Pages)
 - sitemap.xml    chỉ trang chính + mẫu còn hàng, lastmod = ngày chạy
@@ -38,6 +40,7 @@ except ImportError:
 ROOT = Path(__file__).resolve().parent.parent
 SP_DIR = ROOT / "sp"
 SP_IMG = SP_DIR / "anh"
+LOC_DIR = SP_DIR / "loc"
 IMG_DIR = ROOT / "images" / "products"
 LOGO = "images/brand/slife-logo-square-1200.jpg"
 MAIN_PAGES = ["", "shop.html", "size-guide.html", "policy.html", "gioi-thieu.html", "lien-he.html", "chinh-sach-bao-mat.html"]
@@ -157,6 +160,14 @@ def page_404(base):
   // Link chia sẻ sp/<mã>.html của mẫu đã bán hết: mở trang sản phẩm như bình thường
   var m = location.pathname.match(/^(.*\\/)sp\\/([^\\/]+?)(?:\\.html)?\\/?$/);
   if (m) location.replace(m[1] + "product.html?id=" + m[2]);
+  // Link lọc sp/loc/<hãng>--<dòng>--size-<size>.html không còn (size đã hết): mở trang danh mục cùng bộ lọc
+  var l = location.pathname.match(/^(.*\/)sp\/loc\/([^\/]+?)(?:\.html)?\/?$/);
+  if (l) {
+    var q = [], parts = l[2].split("--");
+    if (/^size-/.test(parts[parts.length - 1])) q.push("size=" + parts.pop().slice(5).replace("-", "."));
+    if (parts[0]) q.unshift("brand=" + parts[0] + (parts[1] ? "&line=" + parts[1] : ""));
+    location.replace(l[1] + "shop.html" + (q.length ? "?" + q.join("&") : ""));
+  }
 </script>
 <style>body{margin:64px 16px;font:16px/1.5 system-ui,sans-serif;color:#16122B;text-align:center}a{color:#004AAD}</style>
 </head>
@@ -246,6 +257,93 @@ def category_urls(in_stock):
                     urls.append(u2)
                 break
     return urls
+
+
+def size_text(s):
+    return str(s).replace(".", ",")
+
+
+def loc_key(brand, line, size):
+    """Tên file trang chia sẻ link lọc — giống locKey() trong app.js."""
+    parts = ([slug(brand)] if brand else []) + ([slug(line)] if brand and line else []) + (["size-" + slug(size)] if size else [])
+    return "--".join(parts)
+
+
+def line_title(brand, line):
+    """Giống lineTitle() trong app.js."""
+    if line.startswith("Giày "):
+        return line + " " + brand
+    return line if line.startswith(brand.split(" ")[0]) else brand + " " + line
+
+
+def filter_pages(base, in_stock, share_imgs):
+    """Trang chia sẻ cho link lọc: hãng, hãng + dòng, size, hãng + size, hãng + dòng + size (chỉ bộ lọc đang có hàng)."""
+    lines = read_lines()
+    groups = {}
+    for p in in_stock:
+        b = p.get("brand")
+        ln = next((n for n, rx in lines.get(b, []) if rx.search(p.get("name", ""))), None) if b else None
+        combos = [(b, None, None)] + ([(b, ln, None)] if ln else [])
+        for s in p["sizes"]:
+            combos += [(None, None, s["s"])] + ([(b, None, s["s"])] if b else []) + ([(b, ln, s["s"])] if ln else [])
+        for c in combos:
+            groups.setdefault(c, []).append((p, ln))
+    e = lambda s: html.escape(str(s), quote=True)  # noqa: E731
+    pages = {}
+    for (b, ln, s), items in groups.items():
+        key = loc_key(b, ln, s)
+        if not key:
+            continue
+        what = ("Giày " + line_title(b, ln)) if ln else ("Giày " + b) if b else "Giày chính hãng"
+        title = what + (" size " + size_text(s) if s else "") + " có sẵn"
+        prices = [(x.get("p") or p.get("price")) for p, _ in items for x in p["sizes"] if not s or x["s"] == s]
+        prices = [x for x in prices if x]
+        desc = ("Giá từ " + money(min(prices)) + " · ") if prices else ""
+        if b and not ln:
+            tops = {}
+            for _, l2 in items:
+                if l2:
+                    tops[l2] = tops.get(l2, 0) + 1
+            names = sorted(tops, key=lambda k: -tops[k])[:4]
+            if names:
+                desc += "Các dòng " + ", ".join(names) + ". "
+        desc += "Hàng chính hãng" + (", còn size " + size_text(s) if s else ", có sẵn size") + " tại S&LIFE Sneaker. Bấm để xem mẫu, giá và chọn size."
+        img = next((share_imgs[p.get("code") or p["id"]] for p, _ in items if (p.get("code") or p["id"]) in share_imgs), None)
+        q = ([("brand", slug(b))] if b else []) + ([("line", slug(ln))] if ln else []) + ([("size", s.replace(",", "."))] if s else [])
+        target = "shop.html?" + "&".join(k + "=" + quote(v) for k, v in q)
+        meta = [
+            '<meta charset="utf-8">',
+            '<meta name="viewport" content="width=device-width, initial-scale=1">',
+            "<title>%s — S&amp;LIFE Sneaker</title>" % e(title),
+            '<meta name="description" content="%s">' % e(desc),
+            '<meta name="robots" content="noindex, follow">',
+            '<link rel="canonical" href="%s">' % e(base + target),
+            '<meta property="og:type" content="website">',
+            '<meta property="og:site_name" content="S&amp;LIFE Sneaker">',
+            '<meta property="og:locale" content="vi_VN">',
+            '<meta property="og:url" content="%s">' % e(base + "sp/loc/" + key + ".html"),
+            '<meta property="og:title" content="%s">' % e(title),
+            '<meta property="og:description" content="%s">' % e(desc),
+            '<meta property="og:image" content="%s">' % e(base + (img or LOGO)),
+            '<meta property="og:image:type" content="image/jpeg">',
+            '<meta property="og:image:alt" content="%s">' % e(title),
+            '<meta name="twitter:card" content="summary_large_image">',
+            '<link rel="icon" type="image/png" sizes="32x32" href="../../images/brand/favicon-32.png">',
+            "<script>location.replace(%s + location.search.replace(/^\\?/, '&') + location.hash);</script>" % json.dumps("../../" + target),
+            "<style>body{margin:48px 16px;font:16px/1.5 system-ui,sans-serif;color:#16122B;text-align:center}a{color:#004AAD}</style>",
+        ]
+        body = '<p>Đang mở danh sách giày…</p>\n<p><a href="../../%s">%s</a></p>' % (e(target), e(title))
+        pages[key + ".html"] = ("<!doctype html>\n<!-- File tự sinh bởi scripts/static_pages.py — không sửa tay. -->\n"
+                                '<html lang="vi">\n<head>\n' + "\n".join(meta) + "\n</head>\n<body>\n" + body + "\n</body>\n</html>\n")
+    LOC_DIR.mkdir(parents=True, exist_ok=True)
+    for name, text in pages.items():
+        out = LOC_DIR / name
+        if not out.exists() or out.read_text(encoding="utf-8") != text:
+            out.write_text(text, encoding="utf-8")
+    for f in LOC_DIR.glob("*.html"):
+        if f.name not in pages:
+            f.unlink()  # size đã hết: link cũ vẫn mở được danh mục nhờ 404.html
+    return len(pages)
 
 
 HTML_PAGES = ["index.html", "shop.html", "product.html", "cart.html", "dat-hang.html", "yeu-cau.html", "gioi-thieu.html",
@@ -393,7 +491,8 @@ def main():
     write_verify()
     write_site_meta(base)
     feed = write_feed(base, in_stock, manifest, share_imgs)
-    print(f"Trang chia sẻ sp/: {len(keep_html)} mẫu còn hàng ({with_photo} có ảnh thật, còn lại dùng logo); sitemap.xml: {n} link; merchant-feed.xml: {feed} mẫu")
+    locs = filter_pages(base, in_stock, share_imgs)
+    print(f"Trang chia sẻ sp/: {len(keep_html)} mẫu còn hàng ({with_photo} có ảnh thật, còn lại dùng logo), sp/loc/: {locs} link lọc; sitemap.xml: {n} link; merchant-feed.xml: {feed} mẫu")
 
 
 if __name__ == "__main__":

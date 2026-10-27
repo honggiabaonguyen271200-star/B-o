@@ -10,6 +10,14 @@
   // Link chia sẻ sp/<mã>.html của mẫu đã bán hết: mở trang sản phẩm như bình thường
   var m = location.pathname.match(/^(.*\/)sp\/([^\/]+?)(?:\.html)?\/?$/);
   if (m) location.replace(m[1] + "product.html?id=" + m[2]);
+  // Link lọc sp/loc/<hãng>--<dòng>--size-<size>.html không còn (size đã hết): mở trang danh mục cùng bộ lọc
+  var l = location.pathname.match(/^(.*\/)sp\/loc\/([^\/]+?)(?:\.html)?\/?$/);
+  if (l) {
+    var q = [], parts = l[2].split("--");
+    if (/^size-/.test(parts[parts.length - 1])) q.push("size=" + parts.pop().slice(5).replace("-", "."));
+    if (parts[0]) q.unshift("brand=" + parts[0] + (parts[1] ? "&line=" + parts[1] : ""));
+    location.replace(l[1] + "shop.html" + (q.length ? "?" + q.join("&") : ""));
+  }
 </script>
 <style>body{margin:64px 16px;font:16px/1.5 system-ui,sans-serif;color:#16122B;text-align:center}a{color:#004AAD}</style>
 </head>
