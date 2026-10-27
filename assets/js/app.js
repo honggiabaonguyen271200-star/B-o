@@ -97,7 +97,16 @@
   // Giá trong dữ liệu tính theo nghìn đồng: 2600 -> 2.600.000₫
   function money(k) { return k == null ? "Liên hệ" : (k * 1000).toLocaleString("vi-VN") + "₫"; }
   function million(k) { return (k / 1000).toLocaleString("vi-VN", { maximumFractionDigits: 1 }) + " tr"; }
-  function sizeNum(s) { return parseFloat(String(s).replace(",", ".")) + (/y$/i.test(s) ? -0.01 : 0); }
+  // Size quần áo (chữ) xếp sau size giày theo XXS < XS < S < M < L…; quần jean W30xL32 theo số
+  var LETTER_SIZES = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL"];
+  function sizeNum(s) {
+    var n = parseFloat(String(s).replace(",", "."));
+    if (!isNaN(n)) return n + (/y$/i.test(s) ? -0.01 : 0);
+    var k = LETTER_SIZES.indexOf(String(s).split(" ")[0]);
+    if (k >= 0) return 100 + k + (/ Á$/.test(s) ? 0.1 : / Âu$/.test(s) ? 0.2 : 0);
+    var w = String(s).match(/^W(\d+)xL(\d+)/);
+    return w ? 200 + +w[1] + w[2] / 100 : 300;
+  }
   function params() { return new URLSearchParams(location.search); }
   function storage(key, value) {
     try {
@@ -105,7 +114,10 @@
       localStorage.setItem(key, JSON.stringify(value));
     } catch (e) { return null; }
   }
-  function fullName(p) { return "Giày " + p.name + (p.code ? " " + p.code : ""); }
+  // Quần áo (bán thêm từ 27/10): "cat": "ao" trong data/products.js — tên không thêm chữ "Giày"
+  function isAo(p) { return p.cat === "ao"; }
+  var AO_URL = "shop.html?loai=quan-ao";
+  function fullName(p) { return (isAo(p) ? "" : "Giày ") + p.name + (p.code ? " " + p.code : ""); }
   function productUrl(p) { return "product.html?id=" + encodeURIComponent(p.id); }
   function brandUrl(b) { return "shop.html?brand=" + slug(b); }
   // Logo hãng (images/brands/<hãng>.png, nền trong suốt, tô màu bằng CSS mask). Hãng chưa có logo: hiện tên in hoa.
@@ -196,7 +208,10 @@
     if (!id) return null;
     return BY_ID[id] || BY_ID[String(id).toLowerCase()] || BY_CODE[compact(id)] || null;
   }
-  var IN_STOCK = PRODUCTS.filter(function (p) { return p.inStock; });
+  // IN_STOCK: giày còn hàng (các khối giày trên web); CLOTHES: quần áo còn hàng; ALL_STOCK: cả hai (tìm kiếm, yêu thích)
+  var ALL_STOCK = PRODUCTS.filter(function (p) { return p.inStock; });
+  var IN_STOCK = ALL_STOCK.filter(function (p) { return !isAo(p); });
+  var CLOTHES = ALL_STOCK.filter(isAo);
   // Hàng mới về: mẫu lên web trong NEW_DAYS ngày qua (ngày ghi trong data/ngay-ve.json khi cập nhật bảng hàng)
   var NEW_DAYS = 14;
   function isNew(p) {
@@ -234,6 +249,7 @@
   function bestOf(list) { return list.slice().sort(rank)[0]; }
   function fromSlug(list, s) { return list.filter(function (x) { return slug(x.name) === s; })[0]; }
   function fitNote(p) {
+    if (isAo(p)) return null;
     for (var i = 0; i < FIT_NOTES.length; i++) if (FIT_NOTES[i].match.test(p.name)) return FIT_NOTES[i];
     return null;
   }
@@ -263,7 +279,7 @@
   }
   function searchProducts(q) {
     var m = matcher(q), cq = compact(q);
-    return IN_STOCK.filter(m).sort(function (a, b) {
+    return ALL_STOCK.filter(m).sort(function (a, b) {
       var ca = a.code && compact(a.code).indexOf(cq) === 0 ? 1 : 0, cb = b.code && compact(b.code).indexOf(cq) === 0 ? 1 : 0;
       return (b.inStock - a.inStock) || (cb - ca) || rank(a, b);
     });
@@ -567,10 +583,10 @@
   var fbContext = null; // trang sản phẩm gán hàm soạn tin nhắn cho mẫu đang xem
   var fbPending = "";   // tin nhắn vừa chép, để chép lại trong hộp chọn trình duyệt
   function consultMsg(p, size) {
-    return "Chào shop, mình cần tư vấn đôi này:\n" + fullName(p) + "\n" +
+    return "Chào shop, mình cần tư vấn " + (isAo(p) ? "mẫu" : "đôi") + " này:\n" + fullName(p) + "\n" +
       "Mã: " + (p.code || p.name) + " / Size: " + (size || "…") + "\n" +
       (p.inStock ? "Giá: " + money(size ? itemPrice(p, size) : p.minPrice) + "\n" : "") +
-      "Chân mình dài: … cm\n" +
+      (isAo(p) ? "Mình cao … cm, nặng … kg\n" : "Chân mình dài: … cm\n") +
       "Link: " + shareUrl(p);
   }
   function device() {
@@ -848,6 +864,7 @@
         '<button type="submit" class="search__go">Tìm</button><div class="search__pop" id="search-pop" role="listbox" aria-label="Gợi ý tìm kiếm" hidden></div></form>' +
         '<nav class="nav" aria-label="Menu chính">' +
         navLink("shop.html", "Hàng sẵn") +
+        (CLOTHES.length ? navLink(AO_URL, "Quần áo") : "") +
         (NEW_LIST.length ? navLink("shop.html?moi=1", "Mới về") : "") +
         '<div class="nav__item" data-mega-item><button type="button" class="nav__link" aria-expanded="false" aria-controls="mega-brands">Thương hiệu' + I.down + "</button>" +
         '<div class="mega" id="mega-brands"><div class="container mega__in">' +
@@ -877,6 +894,7 @@
         '<div class="drawer__body">' +
         '<div class="drawer__title">Giày theo hãng</div>' +
         '<div class="m-item"><div class="m-row"><a href="shop.html">Tất cả hàng sẵn</a></div></div>' +
+        (CLOTHES.length ? '<div class="m-item"><div class="m-row"><a href="' + AO_URL + '">Quần áo</a></div></div>' : "") +
         (NEW_LIST.length ? '<div class="m-item"><div class="m-row"><a href="shop.html?moi=1">Hàng mới về</a></div></div>' : "") +
         brands.map(function (b) {
           var lines = lineList(b.name);
@@ -1455,6 +1473,14 @@
         fresh.innerHTML = rail("Hàng mới về", NEW_LIST.slice(0, 12), "shop.html?moi=1", "Xem tất cả hàng mới về", "Mẫu lên web trong " + NEW_DAYS + " ngày qua");
         picks.parentNode.insertBefore(fresh, picks.nextSibling);
       }
+      // Quần áo (bán thêm từ 27/10): một dãy riêng dưới các khối giày đầu trang
+      if (CLOTHES.length >= 4) {
+        var ao = document.createElement("div");
+        ao.setAttribute("data-ao", "");
+        ao.innerHTML = rail("Quần áo có sẵn", CLOTHES.slice().sort(rank).slice(0, 12), AO_URL, "Xem tất cả quần áo", "Áo khoác, áo thun, polo, set tracksuit chính hãng");
+        var after = $("[data-fresh]") || picks;
+        after.parentNode.insertBefore(ao, after.nextSibling);
+      }
     }
 
     var perksEl = $("[data-perks]");
@@ -1589,6 +1615,8 @@
     }
     var wishMode = WISH && p.get("wish") === "1";
     var newMode = !wishMode && p.get("moi") === "1";
+    var aoMode = !wishMode && !newMode && p.get("loai") === "quan-ao"; // trang Quần áo
+    if (aoMode) { brand = null; line = null; }
 
     var state = {
       q: p.get("q") || "",
@@ -1604,7 +1632,7 @@
       page: Math.max(1, +p.get("page") || 1),
     };
 
-    var title = wishMode ? "Yêu thích" : newMode ? "Hàng mới về" : line ? lineTitle(brand, line) : brand ? "Giày " + brand : state.q ? "Kết quả cho “" + state.q + "”" : "Giày chính hãng";
+    var title = wishMode ? "Yêu thích" : newMode ? "Hàng mới về" : aoMode ? "Quần áo chính hãng" : line ? lineTitle(brand, line) : brand ? "Giày " + brand : state.q ? "Kết quả cho “" + state.q + "”" : "Giày chính hãng";
     var titleEl = $("[data-title]");
     titleEl.innerHTML = brand && !line ? 'Giày <span class="grad-text">' + esc(brand) + "</span>" : esc(title);
     if (brand && !line) titleEl.insertAdjacentHTML("beforebegin", brandLogo(brand, "coll__brandlogo").replace(/role="img" aria-label="[^"]*"/, 'aria-hidden="true"'));
@@ -1613,10 +1641,12 @@
       var tops = lineList(brand).filter(function (l) { return l.name !== OTHER_LINE; }).slice(0, 4).map(function (l) { return l.name; });
       setDesc(title + " chính hãng, có sẵn size tại " + SHOP.name + (tops.length && !line ? ": " + tops.join(", ") : "") + ". Xem size còn, giá và hỏi size qua Facebook.");
     }
+    if (aoMode) setDesc("Quần áo chính hãng có sẵn size tại " + SHOP.name + ": áo khoác, áo thun, polo, set tracksuit… Xem size còn, giá và hỏi size qua Facebook.");
     if (newMode) setDesc("Giày chính hãng mới lên web tại " + SHOP.name + " trong " + NEW_DAYS + " ngày qua. Xem size còn, giá và hỏi size qua Facebook.");
-    if (!wishMode && !state.q) setCanonical(newMode ? "shop.html?moi=1" : line ? lineUrl(brand, line) : brand ? brandUrl(brand) : "shop.html");
-    var trail = [["Trang chủ", "index.html"], ["Hàng sẵn", brand || line || state.q || wishMode || newMode ? "shop.html" : ""]];
+    if (!wishMode && !state.q) setCanonical(aoMode ? AO_URL : newMode ? "shop.html?moi=1" : line ? lineUrl(brand, line) : brand ? brandUrl(brand) : "shop.html");
+    var trail = [["Trang chủ", "index.html"], ["Hàng sẵn", brand || line || state.q || wishMode || newMode || aoMode ? "shop.html" : ""]];
     if (newMode) trail.push(["Hàng mới về", ""]);
+    if (aoMode) trail.push(["Quần áo", ""]);
     if (brand) trail.push(["Giày " + brand, line ? brandUrl(brand) : ""]);
     if (line) trail.push([line, ""]);
     if (state.q && !brand) trail.push(["Tìm kiếm", ""]);
@@ -1643,7 +1673,7 @@
     if (brand && lines.length > 1) {
       tilesEl.innerHTML = '<a class="chip' + (line ? "" : " is-active") + '" href="' + brandUrl(brand) + '">Tất cả <small>' + IN_STOCK.filter(function (x) { return x.brand === brand; }).length + "</small></a>" +
         lines.map(function (l) { return '<a class="chip' + (l.name === line ? " is-active" : "") + '" href="' + lineUrl(brand, l.name) + '">' + esc(l.name) + "</a>"; }).join("");
-    } else if (!brand && !line && !wishMode && !newMode) {
+    } else if (!brand && !line && !wishMode && !newMode && !aoMode) {
       tilesEl.innerHTML = '<a class="chip is-active" href="shop.html">Tất cả</a>' +
         brands.map(function (b) { return '<a class="chip" href="' + brandUrl(b.name) + '">' + esc(b.name) + "</a>"; }).join("");
     } else {
@@ -1652,7 +1682,9 @@
 
     // Tập sản phẩm của trang
     var wishIds = wishes();
-    var pool = IN_STOCK.filter(function (x) {
+    // Trang chung / hãng / dòng: giày; Quần áo: quần áo; tìm kiếm, yêu thích, hàng mới về: cả hai
+    var base = aoMode ? CLOTHES : wishMode || newMode || (state.q && !brand) ? ALL_STOCK : IN_STOCK;
+    var pool = base.filter(function (x) {
       if (wishMode) return wishIds.indexOf(x.id) >= 0;
       if (newMode && !isNew(x)) return false;
       return (!brand || x.brand === brand) && (!line || x.line === line);
@@ -1679,9 +1711,9 @@
         return '<label class="check"><input type="checkbox" name="brand" value="' + esc(b) + '"> ' + esc(b) + " <small>" + brandCount[b] + "</small></label>";
       }).join(""), true) : "") +
       '<div data-lines-filter></div>' +
-      (sizeKeys.length ? section("Size (EU)", '<div class="size-grid">' +
+      (sizeKeys.length ? section(aoMode ? "Size" : "Size (EU)", '<div class="size-grid">' +
         sizeKeys.map(function (s) { return '<button type="button" class="size-btn" data-size="' + esc(s) + '" aria-pressed="false">' + esc(s) + "</button>"; }).join("") +
-        '</div><p class="filter__note">40Y: size 40 bản GS. Chọn nhiều size được.</p>', true) : "") +
+        '</div><p class="filter__note">' + (aoMode ? "Âu / Á: form size Âu hoặc châu Á (size Á nhỏ hơn khoảng một size). " : "40Y: size 40 bản GS. ") + "Chọn nhiều size được.</p>", true) : "") +
       (pMax > pMin ? section("Khoảng giá", '<div class="range" data-range><div class="range__track"></div><div class="range__fill" data-range-fill></div>' +
         '<input type="range" min="' + pMin + '" max="' + pMax + '" step="100" data-range-min aria-label="Giá thấp nhất">' +
         '<input type="range" min="' + pMin + '" max="' + pMax + '" step="100" data-range-max aria-label="Giá cao nhất"></div>' +
@@ -1734,6 +1766,7 @@
       var u = new URLSearchParams();
       if (wishMode) u.set("wish", "1");
       if (newMode) u.set("moi", "1");
+      if (aoMode) u.set("loai", "quan-ao");
       if (brand) u.set("brand", slug(brand));
       if (line) u.set("line", slug(line));
       if (state.q) u.set("q", state.q);
@@ -1811,12 +1844,12 @@
         if (qBrand) b = qBrand.name;
       }
       var l = line || (state.lines.length === 1 && state.lines[0].split("|")[0] === b ? state.lines[0].split("|")[1] : null);
-      var what = wishMode ? "Giày yêu thích" : newMode ? "Hàng mới về" : l ? "Giày " + lineTitle(b, l) : b ? "Giày " + b : state.q ? "Giày “" + state.q + "”" : "Giày chính hãng";
+      var what = wishMode ? "Giày yêu thích" : newMode ? "Hàng mới về" : aoMode ? "Quần áo" : l ? "Giày " + lineTitle(b, l) : b ? "Giày " + b : state.q ? "Giày “" + state.q + "”" : "Giày chính hãng";
       var bits = [what + (state.sizes.length ? " size " + state.sizes.join(" / ") : "")];
       if (state.genders.length) bits.push(state.genders.map(function (g) { return GENDER_LABEL[g]; }).join(", "));
       if (state.min || state.max) bits.push("giá " + (state.min ? million(state.min) : "0") + " – " + (state.max ? million(state.max) : "…"));
       var title = bits.join(" · ") + " có sẵn";
-      var simple = !wishMode && !newMode && !state.genders.length && !state.min && !state.max && state.brands.length <= 1 &&
+      var simple = !wishMode && !newMode && !aoMode && !state.genders.length && !state.min && !state.max && state.brands.length <= 1 &&
         state.lines.length <= (l ? 1 : 0) && state.sizes.length <= 1 && (!state.q || qBrand) && (!line || b) && l !== OTHER_LINE && list.length;
       var key = simple ? locKey(b, l, state.sizes[0]) : "";
       var cur = new URLSearchParams(location.search);
@@ -2083,15 +2116,17 @@
     var hasLines = (LINES[p.brand] || []).length > 0;
     var linkUrl = shareUrl(p);
     PAGE_SHARE = { title: name, text: name + (p.code && name.indexOf(p.code) < 0 ? " (" + p.code + ")" : "") + (p.inStock ? " · " + (p.sizes.some(function (s) { return (s.p || p.price) !== p.minPrice; }) ? "từ " : "") + money(p.minPrice) + " · size còn: " + sizeText : "") + " — " + SHOP.name + ":", url: linkUrl };
-    var trail = [["Trang chủ", "index.html"], [p.brand, brandUrl(p.brand)]];
-    if (hasLines && p.line !== OTHER_LINE) trail.push([p.line, lineUrl(p.brand, p.line)]);
+    var ao = isAo(p), homeUrl = ao ? AO_URL : brandUrl(p.brand);
+    var trail = [["Trang chủ", "index.html"], ao ? ["Quần áo", AO_URL] : [p.brand, brandUrl(p.brand)]];
+    if (!ao && hasLines && p.line !== OTHER_LINE) trail.push([p.line, lineUrl(p.brand, p.line)]);
     trail.push([p.name, ""]);
     var known = shotsOf(p);
 
 
     // Dải size theo hãng: size đang có đậm, size đã hết làm mờ (bấm để nhắn shop tư vấn)
     var range = [];
-    if (p.inStock) {
+    if (ao) range = p.sizes.map(function (s) { return s.s; }); // quần áo: chỉ hiện size đang còn
+    else if (p.inStock) {
       var kid = p.gender === "gs" || p.gender === "kid", seen = {};
       PRODUCTS.forEach(function (x) {
         if (x.brand !== p.brand || ((x.gender === "gs" || x.gender === "kid") !== kid)) return;
@@ -2114,14 +2149,15 @@
       '<span class="gallery__hint" hidden>' + I.zoom + "Rê chuột để phóng to · bấm để xem lớn</span></div>" +
       '<div class="thumbs" data-thumbs></div></div>' +
       '<div class="pd__info">' +
-      '<div class="pd__brand"><a href="' + brandUrl(p.brand) + '">' + esc(p.brand) + "</a>" +
+      '<div class="pd__brand"><a href="' + homeUrl + '">' + esc(p.brand) + "</a>" +
       (p.code ? '<button type="button" class="pd__code" data-copy-code title="Sao chép mã">Mã ' + esc(p.code) + I.copy + "</button>" : "") + "</div>" +
       "<h1>" + esc(p.name) + "</h1>" +
       '<div class="pd__pills">' + status + genderPill + "</div>" +
       '<div class="pd__price" data-price>' + money(p.minPrice) + "</div>" +
       (p.note ? '<div class="pd__note"><b>Ghi chú của shop:</b> ' + esc(p.note) + "</div>" : "") +
       (p.inStock
-        ? '<div class="pd__sizehead" id="chon-size"><span>Chọn size (EU): <b data-size-label>' + esc(selected || "chưa chọn") + '</b></span><button type="button" class="pd__guide" data-guide>' + I.ruler + "Hướng dẫn chọn size</button></div>" +
+        ? '<div class="pd__sizehead" id="chon-size"><span>Chọn size' + (ao ? "" : " (EU)") + ': <b data-size-label>' + esc(selected || "chưa chọn") + "</b></span>" +
+          (ao ? "" : '<button type="button" class="pd__guide" data-guide>' + I.ruler + "Hướng dẫn chọn size</button>") + "</div>" +
           '<div class="sizes" data-sizes role="group" aria-label="Chọn size">' +
           range.map(function (s) {
             var own = p.sizes.filter(function (x) { return x.s === s; })[0];
@@ -2131,9 +2167,10 @@
           }).join("") + "</div>" +
           '<p class="pd__hint" data-size-note>' + (range.length > p.sizes.length ? "Size mờ đã hết tại shop — cần size khác, nhắn Facebook để shop tư vấn." : "Chỉ hiện size đang còn tại shop.") + "</p>" +
           // Tư vấn form và bảng size: đặt TRƯỚC nút mua
+          (ao ? '<p class="pd__hint">Nhắn shop chiều cao, cân nặng để được tư vấn size' + (p.sizes.some(function (s) { return / (Âu|Á)$/.test(s.s); }) ? " (Âu / Á: form size Âu hoặc châu Á, size Á nhỏ hơn khoảng một size)" : "") + ".</p>" :
           '<div class="fitbox">' +
           (fit ? '<div class="fit">' + I.info + "<div><b>Lưu ý form " + esc(fit.line) + ":</b> " + esc(fit.advice) + "</div></div>" : "") +
-          '<details class="chart"><summary>' + I.ruler + "Bảng size " + esc(p.brand) + I.down.replace("<svg", '<svg class="chev"') + "</summary>" + sizeChartHtml(p) + "</details></div>" +
+          '<details class="chart"><summary>' + I.ruler + "Bảng size " + esc(p.brand) + I.down.replace("<svg", '<svg class="chev"') + "</summary>" + sizeChartHtml(p) + "</details></div>") +
           '<div class="pd__buy" data-buy-block><button type="button" class="btn btn--grad" data-add>' + I.bagPlus + "Thêm vào giỏ</button>" +
           fbLink("Tư vấn qua Facebook", "", " data-fb-copy") + "</div>" +
           (WISH ? '<div class="pd__buy2">' + wishBtn(p) + "</div>" : "") +
@@ -2152,7 +2189,7 @@
       "<li>Đồng kiểm tuỳ đơn vị vận chuyển — shop xác nhận riêng khi chốt đơn.</li>" +
       '</ul><p style="margin:8px 0 0"><a class="link" href="policy.html#ship">Chi tiết giao hàng</a></p></div></details>' +
       "<details><summary>" + I.swap + "Đổi size &amp; đổi trả" + I.down.replace("<svg", '<svg class="chev"') + '</summary><div class="acc__body"><ul>' +
-      "<li>Đổi size trong " + SHOP.returnDays + " ngày kể từ khi nhận hàng: giày còn nguyên hộp, tem, chưa đi ngoài trời.</li>" +
+      "<li>Đổi size trong " + SHOP.returnDays + " ngày kể từ khi nhận hàng: " + (ao ? "sản phẩm còn nguyên tem mác, chưa giặt, chưa mặc ra ngoài." : "giày còn nguyên hộp, tem, chưa đi ngoài trời.") + "</li>" +
       "<li>Đổi theo nhu cầu: bạn chịu phí ship hai chiều.</li>" +
       "<li>Giao sai mẫu, sai size hoặc hàng lỗi đã được xác nhận: shop đổi lại hoặc hoàn tiền và chịu phí ship.</li>" +
       '</ul><p style="margin:8px 0 0"><a class="link" href="policy.html#doi-tra">Xem đầy đủ chính sách</a></p></div></details>' +
@@ -2165,11 +2202,11 @@
 
       '<section class="pd-sec"><div class="pd-desc"><div><h2>Mô tả sản phẩm</h2><div class="pd-desc__text">' +
       "<p><b>" + esc(name) + "</b> là hàng chính hãng" + (p.inStock ? " đang có sẵn" : "") + " tại " + esc(SHOP.name) + "." +
-      (p.code ? " Mã sản phẩm <b>" + esc(p.code) + "</b> khớp với tem hộp — bạn tra mã này trên trang chủ của " + esc(p.brand) + " sẽ ra đúng mẫu, đúng màu." : "") + "</p>" +
+      (p.code ? " Mã sản phẩm <b>" + esc(p.code) + "</b> khớp với tem " + (ao ? "mác" : "hộp") + " — bạn tra mã này trên trang chủ của " + esc(p.brand) + " sẽ ra đúng mẫu, đúng màu." : "") + "</p>" +
       (p.inStock ? "<p>Size còn tại shop: <b>" + esc(sizeText) + "</b>. Tồn kho thay đổi trong ngày; shop xác nhận lại size khi bạn gửi yêu cầu.</p>" : "<p>Mẫu này tạm hết size tại shop. Nhắn Facebook để shop tư vấn mẫu tương tự đang có sẵn.</p>") +
       (fit ? "<p>Về form: " + esc(fit.advice) + " Còn phân vân, nhắn shop số cm chân kèm tên đôi giày đang đi vừa nhất để được tư vấn.</p>" : "") +
-      "<p><b>Bảo quản:</b> tránh ngâm nước, không giặt máy, không dùng chất tẩy mạnh, không phơi trực tiếp dưới nắng gắt.</p>" +
-      "<p>Shop gửi ảnh chụp thật đôi giày trước khi giao.</p>" +
+      (ao ? "<p><b>Bảo quản:</b> giặt theo hướng dẫn trên tem mác, lộn trái khi giặt, không dùng chất tẩy mạnh.</p><p>Shop gửi ảnh chụp thật sản phẩm trước khi giao.</p>"
+        : "<p><b>Bảo quản:</b> tránh ngâm nước, không giặt máy, không dùng chất tẩy mạnh, không phơi trực tiếp dưới nắng gắt.</p><p>Shop gửi ảnh chụp thật đôi giày trước khi giao.</p>") +
       "</div>" +
       '<div class="about-shop"><img src="images/brand/icon-192.png" alt="" width="64" height="64" loading="lazy"><div><b>Về ' + esc(SHOP.name) + "</b>" +
       "<p>Giày chính hãng, hàng sẵn, bán online từ 2021. Shop tư vấn size theo form từng dòng và nói rõ nguồn hàng, tình trạng từng đôi trước khi chốt.</p>" +
@@ -2319,14 +2356,15 @@
     markSize();
 
     // Sản phẩm cùng dòng, cùng tầm giá, đã xem
-    var sameLine = IN_STOCK.filter(function (x) { return x.id !== p.id && x.brand === p.brand && (!hasLines || x.line === p.line); }).sort(rank).slice(0, 12);
+    var sameKind = ao ? CLOTHES : IN_STOCK;
+    var sameLine = sameKind.filter(function (x) { return x.id !== p.id && x.brand === p.brand && (ao || !hasLines || x.line === p.line); }).sort(rank).slice(0, 12);
     var used = {}; sameLine.forEach(function (x) { used[x.id] = 1; });
     var ref = p.minPrice || p.price || 0;
-    var samePrice = IN_STOCK.filter(function (x) { return x.id !== p.id && !used[x.id] && x.minPrice && Math.abs(x.minPrice - ref) <= ref * 0.15; })
+    var samePrice = sameKind.filter(function (x) { return x.id !== p.id && !used[x.id] && x.minPrice && Math.abs(x.minPrice - ref) <= ref * 0.15; })
       .sort(function (a, b) { return (hasPhoto(b) - hasPhoto(a)) || Math.abs(a.minPrice - ref) - Math.abs(b.minPrice - ref); }).slice(0, 12);
     var rel = $("[data-related]");
     rel.innerHTML =
-      rail(hasLines && p.line !== OTHER_LINE ? "Cùng dòng " + lineTitle(p.brand, p.line) : "Cùng hãng " + p.brand, sameLine, hasLines && p.line !== OTHER_LINE ? lineUrl(p.brand, p.line) : brandUrl(p.brand), "Xem tất cả") +
+      rail(!ao && hasLines && p.line !== OTHER_LINE ? "Cùng dòng " + lineTitle(p.brand, p.line) : "Cùng hãng " + p.brand, sameLine, !ao && hasLines && p.line !== OTHER_LINE ? lineUrl(p.brand, p.line) : homeUrl, "Xem tất cả") +
       rail("Cùng tầm giá", samePrice) +
       rail("Đã xem gần đây", seenProducts(p.id).slice(0, 10));
     bindRails(rel);

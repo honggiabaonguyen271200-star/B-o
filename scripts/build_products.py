@@ -49,6 +49,11 @@ BRAND_RULES = [
     ("Wilson", r"\bwilson\b"),
     ("Skechers", r"\bskechers\b"),
     ("DC Shoes", r"\bdc shoes\b"),
+    # Hãng quần áo (bán thêm quần áo từ 27/10)
+    ("Uniqlo", r"\buniqlo\b"),
+    ("Tommy Hilfiger", r"\btommy\b"),
+    ("New Era", r"\bnew era\b|\bera\b"),
+    ("Champion", r"\bchampion\b"),
 ]
 
 GENDER_RULES = [

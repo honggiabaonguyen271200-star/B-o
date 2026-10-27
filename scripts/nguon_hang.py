@@ -9,9 +9,12 @@ Trong thư mục có các file .xlsx tải từ Google Sheet của NCC, tên fil
     hana*.xlsx   nhiều khối cạnh nhau: tên (có mã) → các dòng SIZE / GIÁ / GHI CHÚ (HP, HN… = còn; "đang về" = bỏ)
     trung*.xlsx  dòng "Tên" + dòng cột size + cột "GIÁ", ô size có 1 là còn (giống bảng hàng chính cũ)
     thang*.xlsx  khối "TÊN MẪU-CODE / SIZE / GIÁ / TÌNH TRẠNG", chỉ lấy "SẴN …"
+    ncc5*.xlsx   trang "CÓ SẴN": cột A tên mẫu (dòng tiêu đề nhóm: GIẦY…, QUẦN ÁO…), cột "Mã SP" ghi
+                 mã-size ("WRS339620U-225 (EU 36 2/3)", "JX7761-XL"), "Giá CTV", "CÒN LẠI" > 0 là còn
 Link các bảng NCC không ghi trong kho mã (kho công khai): nằm trong lịch tự động kiểm hàng.
 
-Chỉ lấy giày đang sẵn (bỏ hàng đang về, quần áo, phụ kiện). Cùng mã ở nhiều NCC: gộp size, mỗi size lấy giá
+Lấy giày và quần áo đang sẵn (bỏ hàng đang về, phụ kiện: tất, túi, mũ, Labubu…). Quần áo ghi "cat": "ao"
+trong data/products.js, size chữ (S, M, L, XL…; "S Âu" / "S Á" khi bảng ghi form Âu / Á; quần jean W30xL32). Cùng mã ở nhiều NCC: gộp size, mỗi size lấy giá
 CTV thấp nhất. Giá bán = giá CTV + PHI (dưới NGUONG) hoặc × (1 + TY_LE) làm tròn lên 10.000đ (chủ shop chốt 24/10).
 Tên: data/ten-mau.csv > tên đang có trên web > tên trong bảng NCC > tên tạm theo dòng giày (báo trong báo cáo).
 --thu: chỉ in báo cáo, không ghi data/products.js.
@@ -20,6 +23,7 @@ import json
 import math
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -30,7 +34,16 @@ NGUONG = 3000   # nghìn đồng
 PHI = 300       # cộng thêm khi giá CTV dưới ngưỡng
 TY_LE = 0.10    # từ ngưỡng trở lên: cộng 10%
 
-SKIP_TABS = re.compile(r"cách làm việc|quy định|note|quần áo|phụ kiện|labubu|pop mart|túi|trang tính", re.I)
+SKIP_TABS = re.compile(r"cách làm việc|quy định|^note$|^phụ kiện|labubu|pop mart|trang tính", re.I)
+CLOTHES_TAB = re.compile(r"quần áo|áo\s*quần|áoquần", re.I)
+# Quần áo (chủ shop bán thêm từ 27/10) và phụ kiện (không bán)
+CLOTHES = re.compile(r"\b(áo|quần|set|tracksuits?|track suit|track top|jacket|jersey|tee|t-shirt|shirt|hoodie|sweatshirt|"
+                     r"sweater|pants|shorts|polo|bomber|windbreaker|cardigan|legging|jogger|longsleeve|long sleeve|váy|skirt|dress)\b", re.I)
+ACCESSORY = re.compile(r"\b(tất|vớ|socks?|túi|tote|bag|balo|backpack|mũ|nón|cap|beanie|hat|ví|wallet|đồng hồ|watch|kính|"
+                       r"labubu|pop mart|móc|keychain|dây giày|lót giày|bình|bóng|vợt|racket|headband|wristband|grip|xịt|"
+                       r"vệ sinh|phụ kiện|khăn|găng)\b", re.I)
+SHOES_WORD = re.compile(r"\b(giày|giầy|dép|sneakers?|shoes?|slides?|mules?|boots?)\b", re.I)
+LETTER = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL"]
 TAB_HINTS = [  # tên tạm theo trang (bảng CTV chỉ ghi mã)
     (r"jd1 low", "Jordan", "Air Jordan 1 Low"), (r"jd1|jordan", "Jordan", "Air Jordan"),
     (r"dunk", "Nike", "Nike Dunk"), (r"af1", "Nike", "Nike Air Force 1"),
@@ -41,6 +54,7 @@ TAB_HINTS = [  # tên tạm theo trang (bảng CTV chỉ ghi mã)
 
 
 def gia_ban(ctv):
+    """Giày và quần áo cùng một cách tính (chủ shop chốt 27/10: "giá quần áo cũng y như giày")."""
     if ctv < NGUONG:
         return ctv + PHI
     return int(math.ceil(ctv * (1 + TY_LE) / 10.0) * 10)
@@ -68,6 +82,47 @@ def size_label(v):
         if re.fullmatch(r"\d{2}(,5)?", n) and 16 <= int(n[:2]) <= 50:
             return n + ("Y" if unit == "y" else "")
     return None
+
+
+def letter_size(v):
+    """Size quần áo: 'S' / 'xs âu' / 'M á' / '2XL' / 'W30xL32' / 'free size' → 'S' / 'XS Âu' / 'M Á' / 'XXL' / 'W30xL32' / 'Free size'."""
+    s = txt(v).strip()
+    m = re.fullmatch(r"(?i)(xxs|2xs|xs|s|m|l|xl|xxl|2xl|xxxl|3xl|4xl)\s*(âu|au|eu|á|a|asia)?", s)
+    if m:
+        lab = m.group(1).upper().replace("2XS", "XXS").replace("XXXL", "3XL")
+        lab = "XXL" if lab == "2XL" else lab
+        reg = (m.group(2) or "").lower()
+        return lab + (" Âu" if reg in ("âu", "au", "eu") else " Á" if reg in ("á", "a", "asia") else "")
+    m = re.fullmatch(r"(?i)w\s*(\d{2})\s*x?\s*l\s*(\d{2})", s)
+    if m:
+        return f"W{m.group(1)}xL{m.group(2)}"
+    if re.fullmatch(r"(?i)free\s*size", s):
+        return "Free size"
+    return None
+
+
+def size_sort(s):
+    """Thứ tự size: số (giày) trước, rồi size chữ theo S < M < L…, quần jean theo số."""
+    s = str(s)
+    try:
+        return (0, float(s.rstrip("Y").replace(",", ".")) - (0.01 if s.endswith("Y") else 0), s)
+    except ValueError:
+        pass
+    base = s.split()[0]
+    if base in LETTER:
+        return (1, LETTER.index(base), s)
+    m = re.match(r"W(\d+)xL(\d+)", s)
+    return (2, int(m.group(1)) * 100 + int(m.group(2)), s) if m else (3, 0, s)
+
+
+def kind_of(tab, raw):
+    """'pk' phụ kiện (bỏ), 'ao' quần áo, 'giay' giày."""
+    raw = raw or ""
+    if ACCESSORY.search(raw) and not SHOES_WORD.search(raw):
+        return "pk"
+    if CLOTHES_TAB.search(tab) or (CLOTHES.search(raw) and not SHOES_WORD.search(raw)):
+        return "ao"
+    return "giay"
 
 
 def price_k(v):
@@ -136,8 +191,8 @@ def tab_hint(tab):
     return None, None
 
 
-def item(src, tab, raw, code, sizes, note=None):
-    return {"src": src, "tab": tab, "raw": raw, "code": code, "sizes": sizes, "note": note}
+def item(src, tab, raw, code, sizes, note=None, kind=None):
+    return {"src": src, "tab": tab, "raw": raw, "code": code, "sizes": sizes, "note": note, "kind": kind}
 
 
 # ---------- 4 kiểu bảng ----------
@@ -183,8 +238,8 @@ def parse_hana(path):
                     if cur:
                         yield cur
                     cur = item("hana", tab, name, code_of(name), {})
-                s = size_label(size)
-                if cur and s and "đang về" not in note.lower():
+                s = size_label(size) or letter_size(size)
+                if cur and s and "đang về" not in note.lower() and "đang vè" not in note.lower():
                     p = price_k(price)
                     if p:
                         cur["sizes"][s] = min(p, cur["sizes"].get(s, p))
@@ -207,6 +262,11 @@ def parse_trung(path):
                             scols = sc
                             pi = next((n for n, c in enumerate(hc) if c.upper().startswith("GIÁ")), None)
                             i = k
+                            # trang quần áo: dòng dưới ghi size chữ (2XS, XS, S…) cho cùng các cột
+                            if CLOTHES_TAB.search(tab) and k + 1 < len(rows):
+                                lc = {n: letter_size(c) for n, c in enumerate(rows[k + 1]) if n > 0 and letter_size(c)}
+                                if len(lc) >= 3:
+                                    scols, i = lc, k + 1
                             break
                 i += 1
                 continue
@@ -219,6 +279,8 @@ def parse_trung(path):
                     v = txt(rows[i][n]) if n < len(rows[i]) else ""
                     if info is not None and re.match(r"^1\b", v):
                         p = info.get("price") or base
+                        if letter_size(s) and p and p < 100:  # "1 size 28": số đo, không phải giá
+                            p = base
                         if p:
                             sizes[s] = p
                 extra = " ".join(c for c in cells[pi + 1:] if c and not re.match(r"(?i)^update", c))
@@ -243,8 +305,10 @@ def parse_thang(path):
                     if cur:
                         yield cur
                     cur = item("thang", tab, name, code_of(name), {})
-                s = size_label(r[j + 1] if j + 1 < len(r) else None)
-                if cur and s and "SẴN" in get(j + 3).upper():
+                    block_ok = "SẴN" in get(j + 3).upper()  # trang quần áo: tình trạng ghi một lần ở dòng tên
+                st = get(j + 3).upper()
+                s = size_label(r[j + 1] if j + 1 < len(r) else None) or letter_size(r[j + 1] if j + 1 < len(r) else None)
+                if cur and s and ("SẴN" in st if st else block_ok):
                     p = price_k(r[j + 2] if j + 2 < len(r) else None)
                     if p:
                         cur["sizes"][s] = min(p, cur["sizes"].get(s, p))
@@ -252,7 +316,93 @@ def parse_thang(path):
                 yield cur
 
 
-PARSERS = {"ctv": parse_ctv, "hana": parse_hana, "trung": parse_trung, "thang": parse_thang}
+EU_FRAC = {"1/3": "", "2/3": ",5", "1/2": ",5"}
+
+
+def eu_size(v):
+    """'EU 36 2/3' → '36,5' (2/3 coi như nửa size), 'EU37 1/3' → '37', 'EU42.5' → '42,5'."""
+    m = re.search(r"(\d{2})(?:\s*([.,]5)|\s+([12]/[23]))?", txt(v))
+    if not m:
+        return None
+    return size_label(m.group(1) + (m.group(2) or EU_FRAC.get(m.group(3) or "", "")).replace(".", ","))
+
+
+NCC5_NOTES = re.compile(r"(?i)(hàng\s+)?xả\s+kho.*$|\bhàng\s+trung\b|không\s+thử.*$|mẫu\s+mới\s+(nhất\s+)?(năm\s+)?20\d\d|"
+                        r"mã\s+(mới|cũ)\s+20\d\d|phom\s+bé.*$|\(\s*code\s+(nam|nữ|kid)\s*\)|\bcode\s+(nam|nữ|kid)\b|"
+                        r"\s-\s*túi.*$|túi\s+(áo|k).*$|\(?form\s+suông.*$|size\s+us\b|\ball\s*court\b|\ballcourt\b|\bomni\b")
+
+
+def ncc5_name(raw):
+    s = re.sub(r"\s+", " ", unicodedata.normalize("NFC", raw).replace("\n", " ")).strip(" \"'")
+    s = re.sub(r"(?i)\bwil\.son\b", "Wilson", s)
+    s = re.sub(r"(?i)\s+bản\b", "", s)
+    s = NCC5_NOTES.sub(" ", s)
+    s = re.sub(r"(?i)^(giày|giầy)\s+((thể thao\s+)?chạy bộ( nam| nữ)?|thể thao|thời trang|bóng chuyền|slip on)?\s*", "", s)
+    s = re.sub(r"(?i)^(tennis|pickleball)(\s*/\s*(tennis|pickleball))?\s+", "", s)
+    s = re.sub(r"(?i)\s+(dành\s+)?cho\s+(cả\s+)?(nam\s+nữ|nam|nữ)\b", " ", s)
+    s = re.sub(r"(?i)\b(nam|nữ)\b(?=\s*$)", "", s)
+    s = re.sub(r"\s+", " ", s).strip(" -–/,.")
+    return s
+
+
+def parse_ncc5(path):
+    for tab, rows in read_book(path):
+        ci = pi = qi = None
+        for r in rows[:5]:
+            cells = [txt(c).upper() for c in r]
+            if "MÃ SP" in cells:
+                ci = cells.index("MÃ SP")
+                pi = next((n for n, c in enumerate(cells) if c.startswith("GIÁ CTV")), ci + 1)
+                qi = next((n for n, c in enumerate(cells) if c.startswith("CÒN LẠI")), None)
+                break
+        if ci is None or qi is None:
+            continue
+        section, name, raw, got = "", "", "", {}
+        for r in rows:
+            get = lambda k: txt(r[k]) if k < len(r) else ""  # noqa: E731
+            a, cell = get(0), get(ci)
+            if a and not cell and (a.isupper() or re.match(r"(?i)^gi[aà]y tennis/ pickleball\s*$", a)) and len(a) < 40:
+                section = a  # dòng tiêu đề nhóm: GIẦY CHẠY NAM NỮ, QUẦN ÁO MÙA ĐÔNG…
+                continue
+            if a:
+                if re.match(r"(?i)^màu\s", a) and len(a.split()) <= 4 and name:
+                    name2 = name + " " + a.lower()  # dòng ghi màu riêng dưới tên
+                    raw, name = raw + " " + a, name2
+                elif " " not in a.strip():
+                    name, raw = "", a  # ô ghi lạc một mã: không lấy làm tên
+                else:
+                    name, raw = ncc5_name(a), a
+            if not cell or cell.upper().startswith("MÃ SP"):
+                continue
+            c = norm_code(cell).strip()
+            m = re.match(r"^(.+?)-(\d{2,3}(?:[.,]\d{1,2})?)\s*\(\s*EU\s*([^)]*)\)", c)
+            if m:
+                code, size = m.group(1), eu_size(m.group(3))
+            else:
+                m = re.match(r"^(.+?)-([^-]+)$", re.sub(r"\s*\(.*$", "", c))
+                code, size = (m.group(1), letter_size(m.group(2))) if m else (c, None)
+            seg = re.search(r"-([^-]*[^\x00-\x7f][^-]*)$", code)  # 78JA522-MÀU ĐEN → 78JA522, màu ghi vào tên
+            if seg:
+                code = code[:seg.start()]
+                if name and seg.group(1).lower() not in name.lower():
+                    name = name + " " + seg.group(1).lower()
+            code = code.replace("/", "-").strip(" -")
+            left = get(qi)
+            try:
+                left = float(left.replace(",", "."))
+            except ValueError:
+                left = 0
+            price = price_k(r[pi]) if pi < len(r) else None
+            rec = got.setdefault(code, {"raw": raw, "name": name, "section": section, "sizes": {}})
+            if size and left > 0 and price:
+                rec["sizes"][size] = min(price, rec["sizes"].get(size, price))
+        for code, rec in got.items():
+            kind = kind_of(rec["section"] if CLOTHES_TAB.search(rec["section"]) else "", rec["raw"])
+            yield item("ncc5", tab, rec["name"] or rec["raw"], code, rec["sizes"], kind=kind,
+                       note=None) | {"gender_raw": rec["raw"]}
+
+
+PARSERS = {"ctv": parse_ctv, "hana": parse_hana, "trung": parse_trung, "thang": parse_thang, "ncc5": parse_ncc5}
 
 
 # ---------- gộp + ghi ----------
@@ -264,6 +414,7 @@ def current_products():
 
 def clean_name(raw, code):
     name = bp.display_name(re.sub(r"\s+", " ", raw), code) if raw else ""
+    name = re.sub(r"(?i)\s*\bsẵn\s+(sg|hn|hcm)\s*$", "", name)
     name = re.sub(r"^\(?(gs|w)\)?\s+", "", name, flags=re.I)
     name = re.sub(r"\s+(sz|size)\s+khác.*$|\s+có\s+order.*$|\s+-\s*\d{2}(,5)?\s*$", "", name, flags=re.I)  # ghi chú của NCC
     return name.strip(" -/")
@@ -296,6 +447,12 @@ def sibling_model(code, old_by):
     return " ".join(common) if len(common) >= 2 else ""
 
 
+def code_only(name, brand):
+    """Tên chỉ có hãng + mã (+ "Set"): 'Nike DC7486-010', 'Set Nike Fz0686-100'."""
+    words = [w for w in name.split() if w.lower() not in brand.lower().split() + ["set"]]
+    return all(re.search(r"\d", w) and len(w) >= 5 for w in words)
+
+
 def merge(items, old):
     by = {}
     errs = []
@@ -305,12 +462,17 @@ def merge(items, old):
             if it["sizes"] and it["raw"]:
                 errs.append(f"{it['src']} / {it['tab']}: không thấy mã trong \"{it['raw'][:60]}\"")
             continue
-        if bp.APPAREL.search(it["raw"] or ""):
+        kind = it.get("kind") or kind_of(it["tab"], it["raw"])
+        if kind == "pk":
             continue
-        rec = by.setdefault(code, {"code": code, "names": [], "tabs": set(), "sizes": {}, "srcs": {}, "notes": set(), "raw": ""})
+        # giày: bỏ size chữ (ô ghi lạc); quần áo: giữ cả size chữ lẫn size số (quần jean, đồ trẻ em)
+        sizes = {s: p for s, p in it["sizes"].items() if kind == "ao" or not letter_size(s.split()[0])}
+        it = dict(it, sizes=sizes)
+        rec = by.setdefault(code, {"code": code, "names": [], "tabs": set(), "sizes": {}, "srcs": {}, "notes": set(), "raw": "", "kinds": set()})
+        rec["kinds"].add(kind)
         if it["raw"]:
             rec["names"].append((it["src"], it["raw"]))
-            rec["raw"] += " " + it["raw"]
+            rec["raw"] += " " + (it.get("gender_raw") or it["raw"])
         rec["tabs"].add(it["tab"])
         if it.get("note"):
             rec["notes"].add(it["note"])
@@ -329,7 +491,7 @@ def merge(items, old):
                 break
         name = prev["name"] if prev else ""
         if not name:
-            for pref in ("trung", "thang", "hana", "ctv"):
+            for pref in ("ncc5", "trung", "thang", "hana", "ctv"):
                 cand = [clean_name(r, code) for s, r in rec["names"] if s == pref]
                 cand = [c for c in cand if len(c) > 3]
                 if cand:
@@ -350,17 +512,33 @@ def merge(items, old):
         if not re.search(r"\b" + re.escape(first) + r"\b", name, re.I):
             name = f"{brand} {name}"
         gender = (prev or {}).get("gender") or bp.detect(bp.GENDER_RULES, rec["raw"], "unisex")
-        sizes = sorted(rec["sizes"].items(), key=lambda kv: (float(kv[0].rstrip("Y").replace(",", ".")), kv[0]))
+        sizes = sorted(rec["sizes"].items(), key=lambda kv: size_sort(kv[0]))
+        letters = any(size_sort(s)[0] != 0 for s, _ in sizes)
+        # quần áo: có ghi ở trang / tên quần áo và có size chữ (chỉ có size giày là giày đọc nhầm, VD DH6933-100)
+        is_ao = ("ao" in rec["kinds"] and (letters or not sizes)) or (not sizes and (prev or {}).get("cat") == "ao")
+        if is_ao and code not in custom_names() and code_only(name, brand):
+            # quần áo bảng chỉ ghi mã: chưa lên web (không tên, không ảnh) cho tới khi có tên trong data/ten-mau.csv
+            if rec["sizes"]:
+                need_name.append(code)
+            sizes = []
         retail = {s: gia_ban(p) for s, p in sizes}
         price = min(retail.values()) if retail else (prev or {}).get("price")
         p = {"id": bp.slugify(code), "code": code, "name": name, "brand": brand, "gender": gender, "price": price,
              "sizes": [dict({"s": s}, **({"p": retail[s]} if retail[s] != price else {})) for s, _ in sizes]}
+        if is_ao:
+            p["cat"] = "ao"
+            # quần áo có cả size chữ lẫn size số: size số đọc từ trang giày của cùng bảng (cột size giày) → bỏ
+            if any(size_sort(s["s"])[0] == 1 for s in p["sizes"]):
+                p["sizes"] = [s for s in p["sizes"] if size_sort(s["s"])[0] != 0]
+                if p["sizes"]:
+                    p["price"] = min(s.get("p", price) for s in p["sizes"])
+                    p["sizes"] = [dict({"s": s["s"]}, **({"p": s.get("p", price)} if s.get("p", price) != p["price"] else {})) for s in p["sizes"]]
         if rec["notes"]:
             p["note"] = "; ".join(sorted(rec["notes"]))
         p["_srcs"] = rec["srcs"]
-        p["_ctv"] = dict(sizes)
+        p["_ctv"] = {s: v for s, v in sizes if s in {x["s"] for x in p["sizes"]}}
         out.append(p)
-    return out, need_name, errs
+    return out, sorted(set(need_name)), errs
 
 
 def report(new, old, need_name, errs, counts):

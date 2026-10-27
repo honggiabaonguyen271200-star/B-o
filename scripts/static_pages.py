@@ -108,7 +108,7 @@ def share_page(p, base, img):
         price = "Giá " + money(prices[0])
     else:
         price = "Giá từ " + money(min(prices))
-    title = "Giày " + p["name"] + (" " + p["code"] if p.get("code") else "")
+    title = ("" if p.get("cat") == "ao" else "Giày ") + p["name"] + (" " + p["code"] if p.get("code") else "")
     desc = price + " · Hàng chính hãng, có sẵn tại S&LIFE Sneaker. Xem size còn và hỏi size qua Facebook."
     path, w, h = img
     alt = title if path != LOGO else "S&LIFE Sneaker"
@@ -243,7 +243,7 @@ def category_urls(in_stock):
     lines, urls, seen = read_lines(), [], set()
     for p in in_stock:
         b = p.get("brand")
-        if not b:
+        if not b or p.get("cat") == "ao":
             continue
         u = "shop.html?brand=" + slug(b)
         if u not in seen:
@@ -281,6 +281,8 @@ def filter_pages(base, in_stock, share_imgs):
     lines = read_lines()
     groups = {}
     for p in in_stock:
+        if p.get("cat") == "ao":
+            continue  # link lọc chỉ cho giày (hãng / dòng / size EU)
         b = p.get("brand")
         ln = next((n for n, rx in lines.get(b, []) if rx.search(p.get("name", ""))), None) if b else None
         combos = [(b, None, None)] + ([(b, ln, None)] if ln else [])
@@ -406,8 +408,10 @@ def write_feed(base, in_stock, manifest, share_imgs):
         line = next((n for n, rx in lines.get(p.get("brand"), []) if rx.search(p.get("name", ""))), "")
         g, age = gender.get(p.get("gender"), ("unisex", "adult"))
         extra = ["images/products/" + f for f in (manifest.get(code) or [])[1:11]]
-        title = ("Giày " + p["name"] + (" " + p["code"] if p.get("code") else ""))[:150]
-        desc = "%s%s chính hãng. Size còn (EU): %s. Tư vấn size theo form từng dòng, đổi size %s ngày nếu còn nguyên hộp, tem." % (
+        ao = p.get("cat") == "ao"
+        title = (("" if ao else "Giày ") + p["name"] + (" " + p["code"] if p.get("code") else ""))[:150]
+        desc = ("%s%s chính hãng. Size còn: %s. Tư vấn size theo chiều cao, cân nặng, đổi size %s ngày nếu còn nguyên tem mác." if ao else
+                "%s%s chính hãng. Size còn (EU): %s. Tư vấn size theo form từng dòng, đổi size %s ngày nếu còn nguyên hộp, tem.") % (
             p["name"], " (" + p["code"] + ")" if p.get("code") else "", sizes, days)
         row = [
             "<g:id>%s</g:id>" % e(code),
@@ -421,8 +425,8 @@ def write_feed(base, in_stock, manifest, share_imgs):
             "<g:condition>new</g:condition>",
             "<g:brand>%s</g:brand>" % e(p.get("brand") or "S&LIFE Sneaker"),
         ] + (["<g:mpn>%s</g:mpn>" % e(p["code"])] if p.get("code") else ["<g:identifier_exists>no</g:identifier_exists>"]) + [
-            "<g:google_product_category>187</g:google_product_category>",
-            "<g:product_type>%s</g:product_type>" % e(" > ".join(x for x in ["Giày", p.get("brand"), line] if x)),
+            "<g:google_product_category>%d</g:google_product_category>" % (1604 if ao else 187),
+            "<g:product_type>%s</g:product_type>" % e(" > ".join(x for x in (["Quần áo", p.get("brand")] if ao else ["Giày", p.get("brand"), line]) if x)),
             "<g:gender>%s</g:gender>" % g,
             "<g:age_group>%s</g:age_group>" % age,
         ]
@@ -439,7 +443,7 @@ def write_feed(base, in_stock, manifest, share_imgs):
 def write_sitemap(base, in_stock):
     today = datetime.date.today().isoformat()
     fresh = [p for p in in_stock if p.get("since") and (datetime.date.today() - datetime.date.fromisoformat(p["since"])).days < 14]
-    urls = MAIN_PAGES + (["shop.html?moi=1"] if fresh else []) + category_urls(in_stock) + ["product.html?id=" + quote(p["id"]) for p in in_stock]
+    urls = MAIN_PAGES + (["shop.html?moi=1"] if fresh else []) + (["shop.html?loai=quan-ao"] if any(p.get("cat") == "ao" for p in in_stock) else []) + category_urls(in_stock) + ["product.html?id=" + quote(p["id"]) for p in in_stock]
     body = "\n".join("  <url><loc>%s</loc><lastmod>%s</lastmod></url>" % (html.escape(base + u), today) for u in urls)
     (ROOT / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
