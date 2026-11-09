@@ -392,6 +392,13 @@
    "them": 4
   }
  },
+ "1116109-CHE": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "hang"
+  }
+ },
  "1182A660-001": {
   "giong": -0.202,
   "ngay": "2026-10-19",
@@ -1039,6 +1046,48 @@
    "them": 3
   }
  },
+ "172069-LTPK": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 3,
+   "nguon": "images.skechers.com"
+  }
+ },
+ "172069-PNK": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 3,
+   "nguon": "images.skechers.com"
+  }
+ },
+ "172109-LMLV": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 3,
+   "nguon": "images.skechers.com"
+  }
+ },
+ "172109-LTGY": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 2,
+   "nguon": "images.skechers.com"
+  }
+ },
+ "172109C-WHT": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "images.skechers.com"
+  }
+ },
+ "172109C-WPW": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "images.skechers.com"
+  }
+ },
  "1906LNS": {
   "khong_thay": "2026-10-19"
  },
@@ -1056,11 +1105,162 @@
   "url": "(đã thay, sổ bị ghi đè)",
   "file": "195217-03.webp"
  },
+ "246069-WHP": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "images.skechers.com"
+  }
+ },
+ "246069C-WTQ": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "images.skechers.com"
+  }
+ },
+ "246109-AQMT": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 3,
+   "nguon": "images.skechers.com"
+  }
+ },
+ "246109-PKBK": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 3,
+   "nguon": "images.skechers.com"
+  }
+ },
+ "246110-WHT": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "images.skechers.com"
+  }
+ },
+ "3027502-100": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "hang"
+  }
+ },
  "308497-060": {
   "khong_thay": "2026-10-20"
  },
+ "30F26442A-1069": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "media.babolat.com"
+  }
+ },
+ "30F26442B-2033": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "media.babolat.com"
+  }
+ },
+ "30F26629A-4131": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "media.babolat.com"
+  }
+ },
+ "30F26629B-4152": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "media.babolat.com"
+  }
+ },
+ "30S26208B-1069": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "media.babolat.com"
+  }
+ },
+ "30S26208C-7023": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "media.babolat.com"
+  }
+ },
+ "30S26529A-2051": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "media.babolat.com"
+  }
+ },
+ "30S26629B-1115": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "media.babolat.com"
+  }
+ },
+ "30S26629B-2036": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "media.babolat.com"
+  }
+ },
+ "30S26649C-7023": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "media.babolat.com"
+  }
+ },
+ "31F26447A-1019": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "media.babolat.com"
+  }
+ },
+ "31F26447B-1120": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "media.babolat.com"
+  }
+ },
+ "31F26975C-1120": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "media.babolat.com"
+  }
+ },
+ "31S26651A-1118": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "media.babolat.com"
+  }
+ },
+ "32S26648A-5050": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "media.babolat.com"
+  }
+ },
  "343881": {
-  "khong_thay": "2026-10-24"
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "343881-013": {
   "khong_thay": "2026-10-20"
@@ -1079,7 +1279,8 @@
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
-   "them": 0
+   "them": 3,
+   "nguon": "images.puma.com"
   }
  },
  "371013-05": {
@@ -1090,7 +1291,8 @@
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
-   "them": 0
+   "them": 3,
+   "nguon": "images.puma.com"
   }
  },
  "371023-02": {
@@ -1101,7 +1303,8 @@
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
-   "them": 0
+   "them": 3,
+   "nguon": "images.puma.com"
   }
  },
  "371025-11": {
@@ -1115,7 +1318,8 @@
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
-   "them": 0
+   "them": 2,
+   "nguon": "images.puma.com"
   }
  },
  "372276-01": {
@@ -1126,7 +1330,8 @@
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
-   "them": 0
+   "them": 2,
+   "nguon": "images.puma.com"
   }
  },
  "372277-01": {
@@ -1141,7 +1346,8 @@
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
-   "them": 0
+   "them": 3,
+   "nguon": "images.puma.com"
   }
  },
  "375343-01": {
@@ -1152,7 +1358,8 @@
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
-   "them": 0
+   "them": 3,
+   "nguon": "images.puma.com"
   }
  },
  "380788-03": {
@@ -1163,7 +1370,8 @@
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
-   "them": 0
+   "them": 3,
+   "nguon": "images.puma.com"
   }
  },
  "383443-01": {
@@ -1221,6 +1429,34 @@
   "goc": {
    "ngay": "2026-11-09",
    "them": 4
+  }
+ },
+ "3A0S25A529-4035": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "media.babolat.com"
+  }
+ },
+ "3ME10101430": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "hang"
+  }
+ },
+ "3ME10303602": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 3,
+   "nguon": "hang"
+  }
+ },
+ "3WE10330108": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "hang"
   }
  },
  "400986-04": {
@@ -1299,7 +1535,8 @@
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
-   "them": 0
+   "them": 2,
+   "nguon": "images.puma.com"
   }
  },
  "403587-01": {
@@ -1318,7 +1555,8 @@
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
-   "them": 0
+   "them": 3,
+   "nguon": "images.puma.com"
   }
  },
  "404383-03": {
@@ -1409,6 +1647,118 @@
    "them": 0
   }
  },
+ "449753-01": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
+ "449753-09": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
+ "449860-09": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
+ "469978-32": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
+ "474983-01": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
+ "474983-03": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
+ "474983-09": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
+ "478850-03": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
+ "479231-01": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
+ "479432-09": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
+ "479440-00": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
+ "479440-09": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
+ "479440-32": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
+ "479525-01": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
+ "479525-09": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
+ "483281-09": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 1,
+   "nguon": "image.uniqlo.com"
+  }
+ },
  "553558-040": {
   "giong": 0.674,
   "ngay": "2026-10-19",
@@ -1420,7 +1770,11 @@
   }
  },
  "553558-042": {
-  "khong_thay": "2026-10-24"
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "553558-044": {
   "khong_thay": "2026-10-20"
@@ -1891,7 +2245,11 @@
   }
  },
  "AR3863-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "AR6374-016": {
   "khong_thay": "2026-10-20",
@@ -2401,7 +2759,11 @@
   }
  },
  "CD7861-700": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CI0919-100": {
   "thu": "https://static.nike.com/a/images/w_1200,c_limit,f_png/f7723f5a-c1f3-43ff-b9cc-a6b7e4911b5f/W+AF1+SHADOW.png",
@@ -2410,19 +2772,39 @@
   "file": "CI0919-100.webp"
  },
  "CI0919-105": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CI0919-106": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CI0919-110": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CI0919-111": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CI0919-116": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CI0919-117": {
   "khong_thay": "2026-10-20",
@@ -2435,10 +2817,18 @@
   "khong_thay": "2026-10-20"
  },
  "CI0919-119": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CI0919-400": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CI0919-600": {
   "khong_thay": "2026-10-20",
@@ -2448,13 +2838,21 @@
   }
  },
  "CJ1641-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CJ9179-200": {
   "giong": 0.538,
   "ngay": "2026-10-20",
   "file": "CJ9179-200.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/f627cc74-8184-4f57-a6c0-637d11a87dbc/AIR+FORCE+1+%2707+WB.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/f627cc74-8184-4f57-a6c0-637d11a87dbc/AIR+FORCE+1+%2707+WB.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "CK6654-601": {
   "khong_thay": "2026-10-20",
@@ -2484,16 +2882,28 @@
   }
  },
  "CQ3317-001": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CT1985-700": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CT2302-002": {
   "giong": -0.092,
   "ngay": "2026-10-20",
   "file": "CT2302-002.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/d762c5e2-ae49-4208-99df-484594b51e5f/AIR+FORCE+1+%2707.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/d762c5e2-ae49-4208-99df-484594b51e5f/AIR+FORCE+1+%2707.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "CT2302-100": {
   "giong": 0.456,
@@ -2512,7 +2922,11 @@
   }
  },
  "CT3839-104": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CT3839-107": {
   "khong_thay": "2026-10-20",
@@ -2531,19 +2945,39 @@
   "giong": 0.0,
   "ngay": "2026-10-24",
   "file": "CU1727-100.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/5a2c6eb0-0647-4317-9160-4d5106f7408b/dunk-low-white-and-university-red-cu1727-100-release-date.jpg"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/5a2c6eb0-0647-4317-9160-4d5106f7408b/dunk-low-white-and-university-red-cu1727-100-release-date.jpg",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "CU8591-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CU8591-101": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CU8591-103": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CU8591-600": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CW1590-100": {
   "giong": 0.468,
@@ -2572,7 +3006,11 @@
   "giong": 0.883,
   "ngay": "2026-10-20",
   "file": "CW2288-001.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/5daa00d9-afae-4125-a95c-fc71923b81c3/AIR+FORCE+1+%2707.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/5daa00d9-afae-4125-a95c-fc71923b81c3/AIR+FORCE+1+%2707.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "CW2288-111": {
   "giong": -0.003,
@@ -2599,7 +3037,11 @@
   }
  },
  "CZ0326-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "CZ0775-046": {
   "giong": 0.812,
@@ -2688,7 +3130,11 @@
   "khong_thay": "2026-10-19"
  },
  "DA4086-100": {
-  "khong_thay": "2026-10-24"
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DA5380-102": {
   "giong": 0.662,
@@ -2708,7 +3154,11 @@
   }
  },
  "DB3902-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DC0350-100": {
   "khong_thay": "2026-10-20",
@@ -2902,10 +3352,18 @@
   }
  },
  "DD1390-100": {
-  "khong_thay": "2026-10-24"
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DD1391-100": {
-  "khong_thay": "2026-10-24"
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DD1391-103": {
   "khong_thay": "2026-10-20",
@@ -2975,7 +3433,11 @@
   "giong": 0.0,
   "ngay": "2026-10-24",
   "file": "DD1503-103.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/2f9b17b1-858b-40c2-9c46-646b8c4a0c8f/W+NIKE+DUNK+LOW.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/2f9b17b1-858b-40c2-9c46-646b8c4a0c8f/W+NIKE+DUNK+LOW.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "DD1503-117": {
   "khong_thay": "2026-10-24"
@@ -3058,10 +3520,18 @@
   "giong": 0.0,
   "ngay": "2026-10-24",
   "file": "DH1258-001.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/a35f6c5e-dca7-4472-a6d1-e9a9401aa2f3/005-slide-x-mmw-light-bone-and-chrome-dh1258-001-release-date.jpg"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/a35f6c5e-dca7-4472-a6d1-e9a9401aa2f3/005-slide-x-mmw-light-bone-and-chrome-dh1258-001-release-date.jpg",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "DH1290-002": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DH1290-100": {
   "khong_thay": "2026-10-20",
@@ -3127,7 +3597,11 @@
   "giong": 0.0,
   "ngay": "2026-11-09",
   "file": "DH3158-100.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/5ed6b522-25a9-43f9-b086-4bd78703d205/W+NIKE+COURT+VISION+LO+NN.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/5ed6b522-25a9-43f9-b086-4bd78703d205/W+NIKE+COURT+VISION+LO+NN.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "DH3158-101": {
   "khong_thay": "2026-10-20",
@@ -3161,10 +3635,18 @@
   }
  },
  "DH3718-700": {
-  "khong_thay": "2026-10-24"
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DH3859-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DH4268-001": {
   "khong_thay": "2026-10-19"
@@ -3218,7 +3700,11 @@
   }
  },
  "DH6933-100": {
-  "khong_thay": "2026-10-24"
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DH7004-100": {
   "khong_thay": "2026-10-20",
@@ -3242,7 +3728,11 @@
   }
  },
  "DH7561-106": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DH8016-001": {
   "khong_thay": "2026-10-20",
@@ -3286,7 +3776,11 @@
   "khong_thay": "2026-10-19"
  },
  "DJ9946-104": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DM0029-104": {
   "khong_thay": "2026-10-20",
@@ -3296,10 +3790,18 @@
   }
  },
  "DM0029-120": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DM0109-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DM0113-100": {
   "giong": 0.891,
@@ -3312,13 +3814,21 @@
   }
  },
  "DM0576-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DM0774-111": {
   "khong_thay": "2026-10-24"
  },
  "DM0985-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DM4044-001": {
   "giong": 0.655,
@@ -3525,13 +4035,25 @@
   "khong_thay": "2026-10-24"
  },
  "DN8006-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DO5220-131": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DO5872-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DO6288-100": {
   "khong_thay": "2026-10-20",
@@ -3541,10 +4063,18 @@
   }
  },
  "DO6485-600": {
-  "khong_thay": "2026-10-24"
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DO7416-991": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DO8244-301": {
   "khong_thay": "2026-10-20",
@@ -3554,7 +4084,11 @@
   }
  },
  "DO9392-200": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DO9581-500": {
   "khong_thay": "2026-10-20",
@@ -3564,7 +4098,11 @@
   }
  },
  "DO9844-101": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DQ0265-100": {
   "khong_thay": "2026-10-20",
@@ -3574,7 +4112,11 @@
   }
  },
  "DQ0837-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DQ1470-101": {
   "khong_thay": "2026-10-20",
@@ -3611,7 +4153,11 @@
   }
  },
  "DQ7582-101": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DQ7659-101": {
   "khong_thay": "2026-10-19"
@@ -3698,10 +4244,18 @@
   }
  },
  "DR7856-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DR7883-101": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DR9498-168": {
   "khong_thay": "2026-10-20",
@@ -3848,7 +4402,11 @@
   "khong_thay": "2026-10-19"
  },
  "DV3808-105": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DV3887-400": {
   "khong_thay": "2026-10-20",
@@ -3858,7 +4416,11 @@
   }
  },
  "DV4024-001": {
-  "khong_thay": "2026-10-24"
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DV4342-300": {
   "khong_thay": "2026-10-20",
@@ -3935,7 +4497,11 @@
   }
  },
  "DV7449-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DV7449-101": {
   "khong_thay": "2026-10-20",
@@ -3945,13 +4511,21 @@
   }
  },
  "DV7584-001": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DV7584-100": {
   "khong_thay": "2026-10-20"
  },
  "DX1156-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DX3199-100": {
   "khong_thay": "2026-10-20",
@@ -3961,10 +4535,18 @@
   }
  },
  "DX3358-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DX4816-001": {
-  "khong_thay": "2026-10-24"
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DX9176-102": {
   "khong_thay": "2026-10-19"
@@ -3977,7 +4559,11 @@
   }
  },
  "DZ1847-104": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "DZ2628-002": {
   "khong_thay": "2026-10-20",
@@ -4044,25 +4630,53 @@
   }
  },
  "FB1362-002": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FB1362-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FB1362-101": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FB1362-102": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FB1362-103": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FB1362-104": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FB1857-111": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FB3145-100": {
   "khong_thay": "2026-10-20"
@@ -4112,7 +4726,11 @@
   }
  },
  "FB7160-231": {
-  "khong_thay": "2026-10-24"
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FB7168-121": {
   "khong_thay": "2026-10-20",
@@ -4128,7 +4746,12 @@
   "giong": 0.0,
   "ngay": "2026-11-09",
   "file": "FB7920-010.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/ef129006-e80f-4a7f-bf19-dbfbb274ed28/AS+M+NP+DF+TIGHT+TOP+LS.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/ef129006-e80f-4a7f-bf19-dbfbb274ed28/AS+M+NP+DF+TIGHT+TOP+LS.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 3,
+   "nguon": "nike.com"
+  }
  },
  "FB7920-100": {
   "khong_thay": "2026-11-09"
@@ -4287,7 +4910,11 @@
   }
  },
  "FD8683-100": {
-  "khong_thay": "2026-10-24"
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FD8776-800": {
   "giong": 0.481,
@@ -4319,7 +4946,11 @@
   "khong_thay": "2026-10-19"
  },
  "FD9763-101": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FJ0685-010": {
   "khong_thay": "2026-10-20",
@@ -4338,13 +4969,25 @@
   "khong_thay": "2026-10-19"
  },
  "FJ4146-102": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FJ4146-103": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FJ4146-106": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FJ4641-536": {
   "khong_thay": "2026-10-20",
@@ -4388,13 +5031,25 @@
   }
  },
  "FN6952-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FN6952-101": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FN6952-102": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FN7649-110": {
   "khong_thay": "2026-10-20",
@@ -4445,7 +5100,11 @@
   }
  },
  "FQ8714-004": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FQ8899-100": {
   "khong_thay": "2026-10-20",
@@ -4495,7 +5154,11 @@
   "giong": 0.0,
   "ngay": "2026-10-24",
   "file": "FV5552-002.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/2e4c7ac8-7fca-4384-9404-eeb88666036d/M+ZOOM+VAPOR+12+HC.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/2e4c7ac8-7fca-4384-9404-eeb88666036d/M+ZOOM+VAPOR+12+HC.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "FV5552-004": {
   "khong_thay": "2026-10-20",
@@ -4515,13 +5178,21 @@
   "giong": 0.0,
   "ngay": "2026-10-24",
   "file": "FV5552-109.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/50a0bfc8-c157-481e-807a-cc3ebe0fabd7/M+ZOOM+VAPOR+12+HC.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/50a0bfc8-c157-481e-807a-cc3ebe0fabd7/M+ZOOM+VAPOR+12+HC.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "FV5554-100": {
   "giong": 0.0,
   "ngay": "2026-10-24",
   "file": "FV5554-100.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/2933a099-c3b7-4ac7-9e64-a3cc640831c5/W+ZOOM+VAPOR+12+HC.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/2933a099-c3b7-4ac7-9e64-a3cc640831c5/W+ZOOM+VAPOR+12+HC.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "FV5554-104": {
   "khong_thay": "2026-10-20",
@@ -4537,7 +5208,11 @@
   "giong": 0.0,
   "ngay": "2026-10-24",
   "file": "FV5554-600.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/cf64bfbc-e968-4e71-ae1f-0f38bb5f9649/W+ZOOM+VAPOR+12+HC.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/cf64bfbc-e968-4e71-ae1f-0f38bb5f9649/W+ZOOM+VAPOR+12+HC.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "FV5578": {
   "giong": 0.319,
@@ -4550,10 +5225,18 @@
   }
  },
  "FV5948-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FV5948-103": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FV6040-003": {
   "khong_thay": "2026-11-09"
@@ -4565,7 +5248,11 @@
   "khong_thay": "2026-11-09"
  },
  "FV7020-101": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "FV8104-221": {
   "khong_thay": "2026-10-20",
@@ -4638,7 +5325,11 @@
   "giong": 0.0,
   "ngay": "2026-10-24",
   "file": "FZ2155-003.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/40f59818-f03c-42ff-8607-992a35d7e42c/M+VAPOR+LITE+3+HC.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/40f59818-f03c-42ff-8607-992a35d7e42c/M+VAPOR+LITE+3+HC.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "FZ2155-108": {
   "khong_thay": "2026-10-20",
@@ -4651,13 +5342,21 @@
   "giong": 0.0,
   "ngay": "2026-10-24",
   "file": "FZ2156-600.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/e85888df-81ee-4a0a-a15a-cb8bf983f6bf/W+VAPOR+LITE+3+HC.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/e85888df-81ee-4a0a-a15a-cb8bf983f6bf/W+VAPOR+LITE+3+HC.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "FZ2158-101": {
   "giong": 0.0,
   "ngay": "2026-10-24",
   "file": "FZ2158-101.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/33da6da4-8cd8-4dd1-a8b2-e7756a2e29bd/W+ZOOM+VAPOR+PRO+3+HC.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/33da6da4-8cd8-4dd1-a8b2-e7756a2e29bd/W+ZOOM+VAPOR+PRO+3+HC.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "FZ2158-102": {
   "giong": 0.84,
@@ -4692,7 +5391,11 @@
   "giong": 0.0,
   "ngay": "2026-10-24",
   "file": "FZ2158-600.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/941c288c-f8db-44d4-9f38-05884bc5a08a/W+ZOOM+VAPOR+PRO+3+HC.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/941c288c-f8db-44d4-9f38-05884bc5a08a/W+ZOOM+VAPOR+PRO+3+HC.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "FZ2158-700": {
   "khong_thay": "2026-10-20",
@@ -4735,7 +5438,11 @@
   "giong": 0.0,
   "ngay": "2026-11-09",
   "file": "FZ2161-102.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/a9b441a2-bdd5-4217-8135-b13a54b13874/M+ZOOM+VAPOR+PRO+3+HC.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/a9b441a2-bdd5-4217-8135-b13a54b13874/M+ZOOM+VAPOR+PRO+3+HC.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "FZ2161-108": {
   "giong": 0.888,
@@ -4761,7 +5468,11 @@
   "giong": 0.0,
   "ngay": "2026-11-09",
   "file": "FZ2161-125.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/59d7a3fc-5005-4e34-b332-1f6e9c5b184c/M+ZOOM+VAPOR+PRO+3+HC.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/59d7a3fc-5005-4e34-b332-1f6e9c5b184c/M+ZOOM+VAPOR+PRO+3+HC.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "FZ2161-401": {
   "khong_thay": "2026-10-20",
@@ -5573,13 +6284,25 @@
   "khong_thay": "2026-10-19"
  },
  "HF3630-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "HF3630-101": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "HF3630-102": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "HF4268-113": {
   "khong_thay": "2026-10-20",
@@ -5589,7 +6312,11 @@
   }
  },
  "HF4312-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "HF5342-100": {
   "khong_thay": "2026-10-20",
@@ -5670,13 +6397,21 @@
   "giong": 0.0,
   "ngay": "2026-11-09",
   "file": "HJ8485-501.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/f7069ea7-2355-4c22-aa3d-ef87a1ec0287/W+NIKE+REVOLUTION+8.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/f7069ea7-2355-4c22-aa3d-ef87a1ec0287/W+NIKE+REVOLUTION+8.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "HJ9198-003": {
   "giong": 0.0,
   "ngay": "2026-11-09",
   "file": "HJ9198-003.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/e02cc15b-9d44-4154-b20d-1e03ad36952b/NIKE+REVOLUTION+8.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/e02cc15b-9d44-4154-b20d-1e03ad36952b/NIKE+REVOLUTION+8.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "HJ9198-007": {
   "khong_thay": "2026-11-09"
@@ -5685,13 +6420,21 @@
   "giong": 0.0,
   "ngay": "2026-11-09",
   "file": "HM9594-002.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/537ce884-8c77-490d-897b-6c4c457598ca/NIKE+RUN+DEFY.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/537ce884-8c77-490d-897b-6c4c457598ca/NIKE+RUN+DEFY.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "HM9594-004": {
   "giong": 0.0,
   "ngay": "2026-11-09",
   "file": "HM9594-004.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/ba2ab3da-0d91-4ebf-8dc0-b6e858b3bcd8/NIKE+RUN+DEFY.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/ba2ab3da-0d91-4ebf-8dc0-b6e858b3bcd8/NIKE+RUN+DEFY.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "HM9862-001": {
   "giong": 0.874,
@@ -5927,7 +6670,11 @@
   "giong": 0.0,
   "ngay": "2026-11-09",
   "file": "HV1488-300.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/22ed34f1-0360-44e6-9308-e08294939d94/M+ZOOM+VAPOR+12+HYPERSMASH.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/22ed34f1-0360-44e6-9308-e08294939d94/M+ZOOM+VAPOR+12+HYPERSMASH.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "HV2530-100": {
   "khong_thay": "2026-10-20",
@@ -6001,7 +6748,11 @@
   "giong": 0.0,
   "ngay": "2026-11-09",
   "file": "HV5060-200.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/b4d18450-5099-49c1-a179-0e36b644b642/NIKE+REACTX+REJUVEN8.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/b4d18450-5099-49c1-a179-0e36b644b642/NIKE+REACTX+REJUVEN8.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "HV5968-001": {
   "khong_thay": "2026-10-19"
@@ -6010,7 +6761,11 @@
   "khong_thay": "2026-10-24"
  },
  "HV5990-172": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "HV5997-161": {
   "khong_thay": "2026-10-20"
@@ -6023,10 +6778,18 @@
   }
  },
  "IB0018-004": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "IB0018-101": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "IB1857-201": {
   "khong_thay": "2026-10-20",
@@ -6056,7 +6819,11 @@
   }
  },
  "IB6388-100": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "IB6550-700": {
   "khong_thay": "2026-10-20",
@@ -7088,7 +7855,11 @@
   }
  },
  "IO4244-100": {
-  "khong_thay": "2026-10-24"
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 0
+  }
  },
  "IO7847-002": {
   "giong": 0.399,
@@ -7100,7 +7871,11 @@
   "giong": 0.598,
   "ngay": "2026-10-20",
   "file": "IQ0407-100.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/56385117-2409-45a9-a806-7de2750cb4d3/AIR+FORCE+1+%2707+LV8.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/56385117-2409-45a9-a806-7de2750cb4d3/AIR+FORCE+1+%2707+LV8.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "IQ3951-010": {
   "khong_thay": "2026-11-09"
@@ -7121,7 +7896,11 @@
   "giong": 0.0,
   "ngay": "2026-10-24",
   "file": "IQ5490-007.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/c0a60a42-b93f-42aa-afbd-f76cd8fe27c1/AIR+JORDAN+1+LOW+SE.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/c0a60a42-b93f-42aa-afbd-f76cd8fe27c1/AIR+JORDAN+1+LOW+SE.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "IQ6076-601": {
   "khong_thay": "2026-10-20",
@@ -7168,7 +7947,11 @@
   "giong": 0.0,
   "ngay": "2026-11-09",
   "file": "IU2268-100.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/30b6ffb1-5ad4-4c92-baa4-34e582dafdd7/AIR+JORDAN+1+LOW+SE+V2.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/30b6ffb1-5ad4-4c92-baa4-34e582dafdd7/AIR+JORDAN+1+LOW+SE+V2.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "IV5820-100": {
   "giong": 0.77,
@@ -7191,19 +7974,31 @@
   "giong": 0.0,
   "ngay": "2026-11-09",
   "file": "IZ5846-101.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/463883a2-6ea6-482a-abf6-d8f65929c858/AIR+JORDAN+1+LOW+GCEL.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/463883a2-6ea6-482a-abf6-d8f65929c858/AIR+JORDAN+1+LOW+GCEL.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "JA4395-041": {
   "giong": 0.0,
   "ngay": "2026-10-24",
   "file": "JA4395-041.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/b1020c08-ee21-4beb-aa25-ee4a9c22aa92/AIR+JORDAN+1+LOW+SE.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/b1020c08-ee21-4beb-aa25-ee4a9c22aa92/AIR+JORDAN+1+LOW+SE.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "JA6918-001": {
   "giong": 0.0,
   "ngay": "2026-11-09",
   "file": "JA6918-001.webp",
-  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/3a342aec-6159-43b1-a098-cf608e8128ec/M+ZOOM+VAPOR+12+HC.png"
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/3a342aec-6159-43b1-a098-cf608e8128ec/M+ZOOM+VAPOR+12+HC.png",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4
+  }
  },
  "JH5442": {
   "giong": 0.209,
@@ -8040,7 +8835,8 @@
   "khong_thay": "2026-10-19",
   "goc": {
    "ngay": "2026-11-09",
-   "them": 0
+   "them": 4,
+   "nguon": "images.puma.com"
   }
  },
  "M1000CA": {
@@ -10332,6 +11128,202 @@
   "goc": {
    "ngay": "2026-11-09",
    "them": 4
+  }
+ },
+ "WRS00766001": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS00963001": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS01048001": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS332710": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS332720": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS333540": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS333670": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS334690": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS335340": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS336360U": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS336750": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS337020": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS338310U": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS338390": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS338520U": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS338570": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS338570U": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS338580U": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS338780U": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS339620U": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS339630U": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS339670": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS339670U": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS339700U": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS340370U": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS340380U": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS340390U": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 5,
+   "nguon": "wilson.com"
+  }
+ },
+ "WRS341800": {
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 4,
+   "nguon": "wilson.com"
   }
  },
  "WS327KB": {
