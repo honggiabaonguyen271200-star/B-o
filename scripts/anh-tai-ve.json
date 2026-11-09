@@ -5,6 +5,12 @@
   "file": "1041A370-107.webp",
   "url": "https://images.asics.com/is/image/asics/1041A370_107_SR_RT_GLB?wid=1200&fmt=png-alpha"
  },
+ "1041A370-250": {
+  "thu": "https://images.asics.com/is/image/asics/1041A370_250_SR_RT_GLB?wid=1200&fmt=png-alpha",
+  "giong": 0.0,
+  "ngay": "2026-11-09",
+  "file": "1041A370-250.webp"
+ },
  "1041A438-401": {
   "giong": 0.667,
   "ngay": "2026-10-19",
@@ -55,6 +61,18 @@
  },
  "1041A532-102": {
   "khong_thay": "2026-10-19"
+ },
+ "1041A532-800": {
+  "thu": "https://images.asics.com/is/image/asics/1041A532_800_SR_RT_GLB?wid=1200&fmt=png-alpha",
+  "giong": 0.0,
+  "ngay": "2026-11-09",
+  "file": "1041A532-800.webp"
+ },
+ "1042A220-108": {
+  "thu": "https://images.asics.com/is/image/asics/1042A220_108_SR_RT_GLB?wid=1200&fmt=png-alpha",
+  "giong": 0.0,
+  "ngay": "2026-11-09",
+  "file": "1042A220-108.webp"
  },
  "1042A220-250": {
   "thu": "https://images.asics.com/is/image/asics/1042A220_250_SR_RT_GLB?wid=1200&fmt=png-alpha",
@@ -139,6 +157,12 @@
   "ngay": "2026-10-19",
   "file": "1042A294-100.webp",
   "url": "https://images.asics.com/is/image/asics/1042A294_100_SR_RT_GLB?wid=1200&fmt=png-alpha"
+ },
+ "1042A294-103": {
+  "thu": "https://images.asics.com/is/image/asics/1042A294_103_SR_RT_GLB?wid=1200&fmt=png-alpha",
+  "giong": 0.0,
+  "ngay": "2026-11-09",
+  "file": "1042A294-103.webp"
  },
  "1042A294-105": {
   "giong": -0.152,
@@ -349,6 +373,9 @@
  },
  "1183B480-200": {
   "khong_thay": "2026-10-24"
+ },
+ "1183B480-250": {
+  "khong_thay": "2026-11-09"
  },
  "1183B566-021": {
   "giong": -0.246,
@@ -1857,6 +1884,12 @@
  "DH3157-002": {
   "khong_thay": "2026-10-24"
  },
+ "DH3158-100": {
+  "thu": "https://static.nike.com/a/images/w_1200,c_limit,f_png/5ed6b522-25a9-43f9-b086-4bd78703d205/W+NIKE+COURT+VISION+LO+NN.png",
+  "giong": 0.0,
+  "ngay": "2026-11-09",
+  "file": "DH3158-100.webp"
+ },
  "DH3158-101": {
   "khong_thay": "2026-10-20"
  },
@@ -2798,6 +2831,12 @@
   "ngay": "2026-10-19",
   "file": "FZ2161-101.webp",
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/0d9226c7-a48d-46c4-838e-20a42e712e68/M+ZOOM+VAPOR+PRO+3+HC.png"
+ },
+ "FZ2161-102": {
+  "thu": "https://static.nike.com/a/images/w_1200,c_limit,f_png/a9b441a2-bdd5-4217-8135-b13a54b13874/M+ZOOM+VAPOR+PRO+3+HC.png",
+  "giong": 0.0,
+  "ngay": "2026-11-09",
+  "file": "FZ2161-102.webp"
  },
  "FZ2161-108": {
   "giong": 0.888,
@@ -4236,6 +4275,12 @@
   "file": "IQ0407-100.webp",
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/56385117-2409-45a9-a806-7de2750cb4d3/AIR+FORCE+1+%2707+LV8.png"
  },
+ "IQ3951-010": {
+  "khong_thay": "2026-11-09"
+ },
+ "IQ3966-216": {
+  "khong_thay": "2026-11-09"
+ },
  "IQ5180-005": {
   "giong": 0.743,
   "ngay": "2026-10-19",
@@ -4280,6 +4325,12 @@
  },
  "IX5004-121": {
   "khong_thay": "2026-10-20"
+ },
+ "IZ5846-101": {
+  "thu": "https://static.nike.com/a/images/w_1200,c_limit,f_png/463883a2-6ea6-482a-abf6-d8f65929c858/AIR+JORDAN+1+LOW+GCEL.png",
+  "giong": 0.0,
+  "ngay": "2026-11-09",
+  "file": "IZ5846-101.webp"
  },
  "JA4395-041": {
   "giong": 0.0,
