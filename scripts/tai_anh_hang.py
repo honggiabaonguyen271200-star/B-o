@@ -11,6 +11,8 @@ của hãng (New Balance, Asics, Onitsuka Tiger, Puma, Nike, Jordan), chọn ả
     python scripts/tai_anh_hang.py --ma U740WM2 FV5029-141
     python scripts/tai_anh_hang.py --thu         # chỉ tải về images/tai-ve/ để xem, không thay ảnh trên web
     python scripts/tai_anh_hang.py --ap-dung     # đưa ảnh đã tải thử lên web (trừ mã trong anh-khong-tai.txt)
+    python scripts/tai_anh_hang.py --goc         # thêm ảnh nhiều góc (MÃ-2, MÃ-3…) cho mẫu còn hàng mới có 1–2 ảnh
+                                                 # (chủ shop muốn khách thấy nhiều góc, 09/11); --thu: chỉ tải về xem
 
 Ảnh bìa cũ được giữ ở images/goc/bang/ (không đưa lên GitHub). Kết quả ghi ở scripts/anh-tai-ve.json
 (mẫu đã tìm không thấy thì lần sau bỏ qua; thêm --tim-lai để tìm lại). Mẫu bị thay sai ảnh: ghi mã vào
@@ -174,6 +176,116 @@ EXACT = {"New Balance", "Asics", "Onitsuka Tiger", "Puma"}  # kho ảnh tra th�
 SOURCES = {"New Balance": new_balance, "Asics": asics, "Onitsuka Tiger": asics, "Nike": nike, "Jordan": nike, "Puma": puma}
 
 
+# ---------- Ảnh nhiều góc của đúng mã (--goc) ----------
+
+GOC_MAX = 5       # tối đa ảnh mỗi mẫu tính cả ảnh bìa (bìa + 4 góc) — giữ kho ảnh nhẹ cho GitHub Pages
+GOC_SIDE = 1000   # ảnh góc thu về cạnh dài 1000px
+
+
+def nb_views(code):
+    c = code.lower()
+    return [f"https://nb.scene7.com/is/image/NB/{c}_nb_{i:02d}_i?wid=1200&fmt=png-alpha" for i in (2, 1, 3, 4, 5, 6, 7)]
+
+
+def asics_views(code):
+    c = code.upper().replace("-", "_")
+    return [f"https://images.asics.com/is/image/asics/{c}_{v}_GLB?wid=1200&fmt=png-alpha"
+            for v in ("SR_RT", "SR_LT", "SB_FR", "SB_BK", "SB_TP", "SB_BT")]
+
+
+def puma_views(code):
+    m = re.fullmatch(r"(\d{6})[-_ ]?(\d{2})", code.strip())
+    if not m:
+        return []
+    style, color = m.groups()
+    for reg in ("PNA", "EEA", "SEA"):
+        url = f"https://images.puma.com/image/upload/w_1200/global/{style}/{color}/{{}}/fnd/{reg}/fmt/png"
+        if fetch_image(url.format("sv01").replace("w_1200", "w_120")) is not None:
+            return [url.format(v) for v in ("sv01", "sv02", "sv03", "sv04", "sv05", "bv")]
+    return []
+
+
+def nike_views(code):
+    return [big for _, big in nike(code)]
+
+
+def stockx_views(code):
+    """StockX có ảnh xoay 360° (36 khung) cho nhiều mẫu: lấy khung 10, 19, 28 (sau, trước, bên kia)."""
+    url = stockx_links().get(code.upper())
+    m = re.search(r"/images/([^/?]+?)(?:-Product)?\.jpg", url or "")
+    if not m:
+        return []
+    name = m.group(1)
+    return [url] + [f"https://images.stockx.com/360/{name}/Images/{name}/Lv2/img{k:02d}.jpg?w=1000&q=90&fm=jpg" for k in (10, 19, 28)]
+
+
+VIEWS = {"New Balance": nb_views, "Asics": asics_views, "Onitsuka Tiger": asics_views, "Puma": puma_views,
+         "Nike": nike_views, "Jordan": nike_views}
+
+
+def add_views(products, manifest, log, try_only=False, limit=0):
+    """Thêm ảnh góc cho mẫu còn hàng có ít hơn 3 ảnh: ảnh của đúng mã trên kho ảnh hãng, bỏ ảnh trùng ảnh đang có."""
+    skip, sx = read_skip(), stockx_links()
+    todo = []
+    for p in products:
+        code = p["code"].upper()
+        shots = manifest.get(p["code"]) or manifest.get(code) or []
+        if not p.get("sizes") or not shots or len(shots) >= 3 or code in skip or p.get("cat") == "ao":
+            continue
+        if (log.get(code) or {}).get("goc"):
+            continue
+        src = stockx_views if code in sx else VIEWS.get(p["brand"])
+        if src:
+            todo.append((p, shots, src))
+    if limit:
+        todo = todo[:limit]
+    print(f"Thêm ảnh góc cho {len(todo)} mẫu…")
+    out_dir = TRY_DIR / "goc" if try_only else IMG_DIR
+    out_dir.mkdir(parents=True, exist_ok=True)
+    added, review = 0, []
+    today = str(datetime.date.today())
+    for i, (p, shots, src) in enumerate(todo, 1):
+        code = p["code"]
+        have = []
+        for name in shots:
+            try:
+                with Image.open(IMG_DIR / name) as im:
+                    have.append(thumb(im))
+            except Exception:
+                pass
+        have = [h for h in have if h is not None]
+        n, saved = len(shots), []
+        for url in src(code):
+            if n >= GOC_MAX:
+                break
+            im = fetch_image(url)
+            if im is None or max(im.size) < 600:
+                continue
+            t = thumb(im)
+            if t is None or any(max(similarity(h, t), similarity(h, ImageOps.mirror(t))) > 0.6 for h in have):  # trùng góc đã có
+                continue
+            flat = ch.flatten(im)
+            flat.thumbnail((GOC_SIDE, GOC_SIDE))
+            n += 1
+            k = 2
+            while (IMG_DIR / f"{code}-{k}.webp").exists() or (out_dir / f"{code}-{k}.webp").exists():
+                k += 1
+            name = f"{code}-{k}.webp"
+            flat.save(out_dir / name, "WEBP", quality=82, method=6)
+            have.append(t)
+            saved.append(name)
+        if try_only:
+            review.append((code, saved))
+        else:
+            log.setdefault(code.upper(), {})["goc"] = {"ngay": today, "them": len(saved)}
+        added += len(saved)
+        print(f"[{i}/{len(todo)}] {code}: +{len(saved)} ảnh")
+        if i % 10 == 0 and not try_only:
+            LOG.write_text(json.dumps(dict(sorted(log.items())), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    print(f"Xong: thêm {added} ảnh góc." + (f" Ảnh ở {out_dir.relative_to(ROOT)}" if try_only else " Chạy tiếp: python scripts/static_pages.py"))
+    return review
+
+
 # ---------- So ảnh ----------
 
 def thumb(im, size=48):
@@ -311,12 +423,26 @@ def main():
     ap.add_argument("--tra-lai", action="store_true")
     ap.add_argument("--ap-dung", action="store_true")
     ap.add_argument("--bo-so", action="store_true", help="không so với ảnh cũ (ảnh cũ hỏng); chỉ dùng khi tự xem lại kết quả")
+    ap.add_argument("--goc", action="store_true", help="thêm ảnh nhiều góc của đúng mã cho mẫu còn hàng có ít hơn 3 ảnh")
     ap.add_argument("--moi", action="store_true", help="mẫu còn hàng chưa có ảnh nào: lấy ảnh đầu tiên của đúng mã (không có ảnh cũ để so)")
     args = ap.parse_args()
 
     log = json.loads(LOG.read_text(encoding="utf-8")) if LOG.exists() else {}
     if args.tra_lai or args.ap_dung:
         restore(log) if args.tra_lai else apply(log, {c.upper() for c in args.ma})
+        LOG.write_text(json.dumps(dict(sorted(log.items())), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        return
+
+    if args.goc:
+        path = IMG_DIR / "danh-sach.js"
+        m = re.search(r"window\.PRODUCT_IMAGES\s*=\s*(.*);\s*$", path.read_text(encoding="utf-8"), re.S)
+        manifest = json.loads(m.group(1)) if m else {}
+        prods = load_products()
+        if args.ma:
+            prods = [p for p in prods if p["code"].upper() in {c.upper() for c in args.ma}]
+        if args.hang:
+            prods = [p for p in prods if p["brand"].lower() in {b.strip().lower() for b in args.hang.split(",")}]
+        add_views(prods, manifest, log, args.thu, args.so)
         LOG.write_text(json.dumps(dict(sorted(log.items())), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
         return
 
