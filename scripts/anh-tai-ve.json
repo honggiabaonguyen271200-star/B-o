@@ -1078,7 +1078,11 @@
    "ngay": "2026-11-09",
    "them": 3,
    "nguon": "images.skechers.com"
-  }
+  },
+  "url": "https://images.skechers.com/image;width=1200,format=jpg/172069_PNK_HERO_LG",
+  "giong": 0.673,
+  "ngay": "2026-11-17",
+  "file": "172069-PNK.webp"
  },
  "172109-LMLV": {
   "goc": {
@@ -1092,7 +1096,11 @@
    "ngay": "2026-11-09",
    "them": 2,
    "nguon": "images.skechers.com"
-  }
+  },
+  "url": "https://images.skechers.com/image;width=1200,format=jpg/172109_LTGY_HERO_LG",
+  "giong": 0.677,
+  "ngay": "2026-11-17",
+  "file": "172109-LTGY.webp"
  },
  "172109C-WHT": {
   "goc": {
@@ -1144,14 +1152,22 @@
    "ngay": "2026-11-09",
    "them": 3,
    "nguon": "images.skechers.com"
-  }
+  },
+  "url": "https://images.skechers.com/image;width=1200,format=jpg/246109_AQMT_HERO_LG",
+  "giong": 0.788,
+  "ngay": "2026-11-17",
+  "file": "246109-AQMT.webp"
  },
  "246109-PKBK": {
   "goc": {
    "ngay": "2026-11-09",
    "them": 3,
    "nguon": "images.skechers.com"
-  }
+  },
+  "url": "https://images.skechers.com/image;width=1200,format=jpg/246109_PKBK_HERO_LG",
+  "giong": 0.779,
+  "ngay": "2026-11-17",
+  "file": "246109-PKBK.webp"
  },
  "246110-WHT": {
   "goc": {
@@ -1175,14 +1191,22 @@
    "ngay": "2026-11-09",
    "them": 4,
    "nguon": "media.babolat.com"
-  }
+  },
+  "url": "https://media.babolat.com/image/upload/f_png,c_pad,w_1200,h_1200,b_white/Product_Media/2026/Tennis/SHOES/Propulse/30F26442A-PROPULSE_STORM_ALL_COURT_MEN-1069-1-Exterieur.png",
+  "giong": 0.518,
+  "ngay": "2026-11-17",
+  "file": "30F26442A-1069.webp"
  },
  "30F26442B-2033": {
   "goc": {
    "ngay": "2026-11-09",
    "them": 4,
    "nguon": "media.babolat.com"
-  }
+  },
+  "url": "https://media.babolat.com/image/upload/f_png,c_pad,w_1200,h_1200,b_white/Product_Media/2026/Tennis/SHOES/Propulse/30F26442B-PROPULSE_STORM_ALL_COURT_MEN-2033-1-Exterieur.png",
+  "giong": 0.923,
+  "ngay": "2026-11-17",
+  "file": "30F26442B-2033.webp"
  },
  "30F26629A-4131": {
   "goc": {
@@ -1196,14 +1220,22 @@
    "ngay": "2026-11-09",
    "them": 4,
    "nguon": "media.babolat.com"
-  }
+  },
+  "url": "https://media.babolat.com/image/upload/f_png,c_pad,w_1200,h_1200,b_white/Product_Media/2026/Tennis/SHOES/Jet%20Mach/30F26629B-JET_MACH_4_ALL_COURT_MEN-4152-1-Exterieur.png",
+  "giong": 0.929,
+  "ngay": "2026-11-17",
+  "file": "30F26629B-4152.webp"
  },
  "30S26208B-1069": {
   "goc": {
    "ngay": "2026-11-09",
    "them": 4,
    "nguon": "media.babolat.com"
-  }
+  },
+  "url": "https://media.babolat.com/image/upload/f_png,c_pad,w_1200,h_1200,b_white/Product_Media/2026/Tennis/SHOES/Propulse/30S26208B-PROPULSE_FURY_3_ALL_COURT_MEN-1069-1-Exterieur.png",
+  "giong": 0.685,
+  "ngay": "2026-11-17",
+  "file": "30S26208B-1069.webp"
  },
  "30S26208C-7023": {
   "goc": {
@@ -1217,7 +1249,11 @@
    "ngay": "2026-11-09",
    "them": 4,
    "nguon": "media.babolat.com"
-  }
+  },
+  "url": "https://media.babolat.com/image/upload/f_png,c_pad,w_1200,h_1200,b_white/Product_Media/2026/Tennis/SHOES/SFX/30S26529A-SFX_4_ALL_COURT_MEN-2051-2-Interieur.png",
+  "giong": 0.937,
+  "ngay": "2026-11-17",
+  "file": "30S26529A-2051.webp"
  },
  "30S26629B-1115": {
   "goc": {
@@ -1231,7 +1267,11 @@
    "ngay": "2026-11-09",
    "them": 4,
    "nguon": "media.babolat.com"
-  }
+  },
+  "url": "https://media.babolat.com/image/upload/f_png,c_pad,w_1200,h_1200,b_white/Product_Media/2026/Tennis/SHOES/Jet%20Mach/30S26629B-JET_MACH_4_ALL_COURT_MEN-2036-1-Exterieur.png",
+  "giong": 0.928,
+  "ngay": "2026-11-17",
+  "file": "30S26629B-2036.webp"
  },
  "30S26649C-7023": {
   "goc": {
@@ -1245,7 +1285,11 @@
    "ngay": "2026-11-09",
    "them": 4,
    "nguon": "media.babolat.com"
-  }
+  },
+  "url": "https://media.babolat.com/image/upload/f_png,c_pad,w_1200,h_1200,b_white/Product_Media/2026/Tennis/SHOES/Propulse/31F26447A-PROPULSE_STORM_ALL_COURT_WOMEN-1019-1-Exterieur.png",
+  "giong": 0.462,
+  "ngay": "2026-11-17",
+  "file": "31F26447A-1019.webp"
  },
  "31F26447B-1120": {
   "goc": {
@@ -1632,12 +1676,10 @@
   }
  },
  "432997-130": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.061,
+  "ngay": "2026-11-16",
+  "file": "432997-130.webp",
+  "url": "https://images.stockx.com/images/Nike-Killshot-2-Cacao-Wow-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "449753-01": {
   "goc": {
@@ -1762,12 +1804,10 @@
   }
  },
  "553558-042": {
-  "khong_thay": "2026-10-24",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.174,
+  "ngay": "2026-11-16",
+  "file": "553558-042.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Black-Royal-Toe-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553558-044": {
   "khong_thay": "2026-10-20"
@@ -1783,44 +1823,34 @@
   }
  },
  "553558-052": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.273,
+  "ngay": "2026-11-16",
+  "file": "553558-052.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Shadow-Toe-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553558-053": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.168,
+  "ngay": "2026-11-16",
+  "file": "553558-053.webp",
+  "url": "https://images.stockx.com/images/Air-Air-Jordan-1-Low-Vintage-Grey-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553558-062": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.041,
+  "ngay": "2026-11-16",
+  "file": "553558-062.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Black-Grey-Pink-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553558-063": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.45,
+  "ngay": "2026-11-16",
+  "file": "553558-063.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-White-Toe-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553558-081": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.484,
+  "ngay": "2026-11-16",
+  "file": "553558-081.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Shattered-Backboard-Alternate-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553558-132": {
   "khong_thay": "2026-10-19"
@@ -1842,12 +1872,10 @@
   "khong_thay": "2026-10-19"
  },
  "553558-149": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.09,
+  "ngay": "2026-11-16",
+  "file": "553558-149.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Sail-Blue-Chill-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553558-152": {
   "giong": 0.098,
@@ -1870,28 +1898,22 @@
   "khong_thay": "2026-10-19"
  },
  "553558-163": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.16,
+  "ngay": "2026-11-16",
+  "file": "553558-163.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Bulls-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553558-166": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.429,
+  "ngay": "2026-11-16",
+  "file": "553558-166.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-New-Beginnings-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553558-169": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.05,
+  "ngay": "2026-11-16",
+  "file": "553558-169.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Sail-College-Grey-Rattan-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553558-174": {
   "giong": 0.821,
@@ -1914,12 +1936,10 @@
   }
  },
  "553558-400": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.62,
+  "ngay": "2026-11-16",
+  "file": "553558-400.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Aura-Squadron-Blue.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553558-403": {
   "khong_thay": "2026-10-20",
@@ -1929,76 +1949,58 @@
   }
  },
  "553558-412": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "thu": "https://images.stockx.com/images/Air-Jordan-1-Low-True-Blue-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90",
+  "giong": -0.244,
+  "ngay": "2026-11-16",
+  "file": "553558-412.webp"
  },
  "553558-414": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.007,
+  "ngay": "2026-11-16",
+  "file": "553558-414.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Ashen-Slate-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553558-481": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.127,
+  "ngay": "2026-11-16",
+  "file": "553558-481.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Obsidian-Ember-Glow-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553558-607": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.116,
+  "ngay": "2026-11-16",
+  "file": "553558-607.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Cardinal-Red-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553558-612": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -1.719,
+  "ngay": "2026-11-16",
+  "file": "553558-612.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Bred-Toe-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553558-701": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "thu": "https://images.stockx.com/images/Air-Air-Jordan-1-Low-University-Gold-White-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90",
+  "giong": 0.213,
+  "ngay": "2026-11-16",
+  "file": "553558-701.webp"
  },
  "553560-052": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.016,
+  "ngay": "2026-11-16",
+  "file": "553560-052.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Shadow-Toe-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553560-053": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.441,
+  "ngay": "2026-11-16",
+  "file": "553560-053.webp",
+  "url": "https://images.stockx.com/images/Air-Air-Jordan-1-Low-Vintage-Grey-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553560-063": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.473,
+  "ngay": "2026-11-16",
+  "file": "553560-063.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-White-Toe-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553560-113": {
   "khong_thay": "2026-10-20",
@@ -2008,12 +2010,10 @@
   }
  },
  "553560-124": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.049,
+  "ngay": "2026-11-16",
+  "file": "553560-124.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Game-Royal-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553560-132": {
   "khong_thay": "2026-10-20",
@@ -2050,36 +2050,28 @@
   }
  },
  "553560-163": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.133,
+  "ngay": "2026-11-16",
+  "file": "553560-163.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Bulls-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553560-164": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.383,
+  "ngay": "2026-11-16",
+  "file": "553560-164.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-White-Gym-Red-Black-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553560-174": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "thu": "https://images.stockx.com/images/Air-Jordan-1-Low-Aquatone-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90",
+  "giong": 0.171,
+  "ngay": "2026-11-16",
+  "file": "553560-174.webp"
  },
  "553560-371": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.267,
+  "ngay": "2026-11-16",
+  "file": "553560-371.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Noble-Green-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553560-411": {
   "khong_thay": "2026-10-20",
@@ -2096,44 +2088,34 @@
   }
  },
  "553560-500": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.135,
+  "ngay": "2026-11-16",
+  "file": "553560-500.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Court-Purple-White-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553560-607": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.535,
+  "ngay": "2026-11-16",
+  "file": "553560-607.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Cardinal-Red-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553560-612": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.522,
+  "ngay": "2026-11-16",
+  "file": "553560-612.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Bred-Toe-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553560-615": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.394,
+  "ngay": "2026-11-16",
+  "file": "553560-615.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Bordeaux-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "553560-701": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.109,
+  "ngay": "2026-11-16",
+  "file": "553560-701.webp",
+  "url": "https://images.stockx.com/images/Air-Air-Jordan-1-Low-University-Gold-White-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "554724-078": {
   "giong": 0.556,
@@ -2202,28 +2184,22 @@
   }
  },
  "555088-610": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.647,
+  "ngay": "2026-11-16",
+  "file": "555088-610.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Retro-High-Bred-Toe-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "555088-701": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.038,
+  "ngay": "2026-11-16",
+  "file": "555088-701.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Retro-High-Pollen-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "555112-002": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.314,
+  "ngay": "2026-11-16",
+  "file": "555112-002.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Mid-Pinksicle-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "618919-029": {
   "khong_thay": "2026-10-20"
@@ -2254,12 +2230,10 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/b7cba291-d895-45bf-90b6-207069c360cb/air-jordan-1-high-og-x-v-a-a-white-white-aa3834-100-release-date.jpg"
  },
  "AO9944-441": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.387,
+  "ngay": "2026-11-16",
+  "file": "AO9944-441.webp",
+  "url": "https://images.stockx.com/360/Air-Jordan-1-Low-UNC-W/Images/Air-Jordan-1-Low-UNC-W/Lv2/img01.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "AQ9129-001": {
   "giong": 0.891,
@@ -2268,12 +2242,10 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/013fe29a-9eb8-4a97-8fe8-8697f52bf445/women-s-air-jordan-4-frozen-moments-aq9129-001-release-date.jpg"
  },
  "AQ9129-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.556,
+  "ngay": "2026-11-16",
+  "file": "AQ9129-101.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-4-Retro-Vivid-Sulfur-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "AR3863-100": {
   "khong_thay": "2026-10-20",
@@ -2689,12 +2661,10 @@
   "url": "https://images.stockx.com/images/adidas-Handball-Spezial-Navy-Gum-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "BQ5448-104": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.343,
+  "ngay": "2026-11-16",
+  "file": "BQ5448-104.webp",
+  "url": "https://images.stockx.com/images/Nike-Court-Borough-Low-2-White-Black-GS.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "BQ5448-116": {
   "khong_thay": "2026-10-20",
@@ -2704,36 +2674,28 @@
   }
  },
  "BQ6472-015": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.502,
+  "ngay": "2026-11-16",
+  "file": "BQ6472-015.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Mid-Light-Smoke-Grey-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "BQ6472-061": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.152,
+  "ngay": "2026-11-16",
+  "file": "BQ6472-061.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Mid-Gym-Red-Panda-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "BQ6472-131": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.564,
+  "ngay": "2026-11-16",
+  "file": "BQ6472-131.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Mid-White-Lime-W.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "BQ6472-141": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.935,
+  "ngay": "2026-11-16",
+  "file": "BQ6472-141.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Mid-UNC-2022-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "BQ6472-500": {
   "khong_thay": "2026-10-20",
@@ -2743,28 +2705,22 @@
   }
  },
  "BQ6806-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.276,
+  "ngay": "2026-11-16",
+  "file": "BQ6806-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Blazer-Mid-77-Vintage-White-Black-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "BQ6817-302": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.128,
+  "ngay": "2026-11-16",
+  "file": "BQ6817-302.webp",
+  "url": "https://images.stockx.com/images/Nike-SB-Dunk-Low-Classic-Green-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "BQ6931-402": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.137,
+  "ngay": "2026-11-16",
+  "file": "BQ6931-402.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Mid-Signal-Blue-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "BV6708-100": {
   "khong_thay": "2026-11-09"
@@ -2777,12 +2733,10 @@
   }
  },
  "CD0461-601": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.267,
+  "ngay": "2026-11-16",
+  "file": "CD0461-601.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Retro-High-Satin-Snake-Chicago-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CD5463-102": {
   "khong_thay": "2026-10-20",
@@ -2817,52 +2771,40 @@
   }
  },
  "CI0919-105": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.206,
+  "ngay": "2026-11-16",
+  "file": "CI0919-105.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Shadow-White-Flash-Crimson-Astronomy-Blue-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CI0919-106": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.274,
+  "ngay": "2026-11-16",
+  "file": "CI0919-106.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Shadow-White-Glacier-Blue-Ghost-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CI0919-110": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.458,
+  "ngay": "2026-11-16",
+  "file": "CI0919-110.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Shadow-White-Magic-Ember-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CI0919-111": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.321,
+  "ngay": "2026-11-16",
+  "file": "CI0919-111.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Shadow-Sail-Pink-Glaze-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CI0919-116": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.578,
+  "ngay": "2026-11-16",
+  "file": "CI0919-116.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Shadow-Sail-Fossil-Light-Bone-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CI0919-117": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.417,
+  "ngay": "2026-11-16",
+  "file": "CI0919-117.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Shadow-White-Atmosphere-Mint-Foam-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CI0919-118": {
   "khong_thay": "2026-10-20"
@@ -2875,20 +2817,16 @@
   }
  },
  "CI0919-400": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.353,
+  "ngay": "2026-11-16",
+  "file": "CI0919-400.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Shadow-Mystic-Navy-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CI0919-600": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.686,
+  "ngay": "2026-11-16",
+  "file": "CI0919-600.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Shadow-Light-Soft-Pink-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CJ1641-100": {
   "khong_thay": "2026-10-20",
@@ -2908,12 +2846,10 @@
   }
  },
  "CK6654-601": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "thu": "https://images.stockx.com/images/Nike-Dunk-Low-Disrupt-Siren-Red-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90",
+  "giong": 0.226,
+  "ngay": "2026-11-16",
+  "file": "CK6654-601.webp"
  },
  "CM997HCA": {
   "giong": 0.459,
@@ -2936,12 +2872,10 @@
   }
  },
  "CQ3317-001": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.107,
+  "ngay": "2026-11-16",
+  "file": "CQ3317-001.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Shadow-Black-Hyper-Crimson-Cargo-Khaki-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CT1985-700": {
   "khong_thay": "2026-10-20",
@@ -2977,12 +2911,10 @@
   }
  },
  "CT3839-104": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.389,
+  "ngay": "2026-11-16",
+  "file": "CT3839-104.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-White-Pink-Glaze-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CT3839-107": {
   "khong_thay": "2026-10-20",
@@ -3008,12 +2940,10 @@
   }
  },
  "CU8591-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.02,
+  "ngay": "2026-11-16",
+  "file": "CU8591-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Shadow-Sail-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CU8591-101": {
   "khong_thay": "2026-10-20",
@@ -3023,20 +2953,16 @@
   }
  },
  "CU8591-103": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.039,
+  "ngay": "2026-11-16",
+  "file": "CU8591-103.webp",
+  "url": "https://images.stockx.com/360/Nike-Air-Force-1-Low-Shadow-Infinite-Lilac-Football-Grey-W/Images/Nike-Air-Force-1-Low-Shadow-Infinite-Lilac-Football-Grey-W/Lv2/img01.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CU8591-600": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.568,
+  "ngay": "2026-11-16",
+  "file": "CU8591-600.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Shadow-Orange-Pearl-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CW1590-100": {
   "giong": 0.468,
@@ -3057,12 +2983,10 @@
   }
  },
  "CW1590-601": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.045,
+  "ngay": "2026-11-16",
+  "file": "CW1590-601.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-Pink-Red-White-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CW2288": {
   "khong_thay": "2026-10-24"
@@ -3088,12 +3012,10 @@
   }
  },
  "CW2655-001": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.33,
+  "ngay": "2026-11-16",
+  "file": "CW2655-001.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Shadow-Spruce-Aura-White-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CZ0220-133": {
   "khong_thay": "2026-10-20",
@@ -3103,12 +3025,10 @@
   }
  },
  "CZ0326-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.392,
+  "ngay": "2026-11-16",
+  "file": "CZ0326-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-White-Team-Red-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CZ0775-046": {
   "giong": 0.812,
@@ -3167,12 +3087,10 @@
   }
  },
  "CZ0858-400": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.597,
+  "ngay": "2026-11-16",
+  "file": "CZ0858-400.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-OG-Obsidian-UNC-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "CZ4776-100": {
   "giong": 0.889,
@@ -3216,28 +3134,22 @@
   }
  },
  "DB2889-001": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.303,
+  "ngay": "2026-11-16",
+  "file": "DB2889-001.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Retro-High-Element-Gore-Tex-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DB3902-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.321,
+  "ngay": "2026-11-16",
+  "file": "DB3902-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Shadow-White-Solar-Red-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DC0350-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.128,
+  "ngay": "2026-11-16",
+  "file": "DC0350-100.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Mid-Dia-de-los-Muertos-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DC0774-001": {
   "giong": 0.817,
@@ -3250,36 +3162,28 @@
   }
  },
  "DC0774-020": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "thu": "https://images.stockx.com/images/Air-Air-Jordan-1-Low-Cement-Grey-Chutney-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90",
+  "giong": 0.174,
+  "ngay": "2026-11-16",
+  "file": "DC0774-020.webp"
  },
  "DC0774-041": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.526,
+  "ngay": "2026-11-16",
+  "file": "DC0774-041.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Black-University-Blue-White-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DC0774-042": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.253,
+  "ngay": "2026-11-16",
+  "file": "DC0774-042.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Stealth-French-Blue-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DC0774-050": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.228,
+  "ngay": "2026-11-16",
+  "file": "DC0774-050.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-University-Blue-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DC0774-101": {
   "giong": 0.845,
@@ -3299,12 +3203,10 @@
   }
  },
  "DC0774-103": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.235,
+  "ngay": "2026-11-16",
+  "file": "DC0774-103.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Coconut-Milk-Neutral-Grey-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DC0774-105": {
   "giong": 0.635,
@@ -3330,12 +3232,10 @@
   }
  },
  "DC0774-121": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.499,
+  "ngay": "2026-11-16",
+  "file": "DC0774-121.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Coconut-Milk-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DC0774-122": {
   "khong_thay": "2026-10-19"
@@ -3378,20 +3278,16 @@
   "khong_thay": "2026-10-19"
  },
  "DC0774-501": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.27,
+  "ngay": "2026-11-16",
+  "file": "DC0774-501.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Barely-Grape-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DC0774-502": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.591,
+  "ngay": "2026-11-16",
+  "file": "DC0774-502.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Sky-J-Purple-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DC0774-606": {
   "khong_thay": "2026-10-20",
@@ -3401,12 +3297,10 @@
   }
  },
  "DC0774-800": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.335,
+  "ngay": "2026-11-16",
+  "file": "DC0774-800.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Light-Madder-Root-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DC2533-102": {
   "khong_thay": "2026-10-19"
@@ -3426,12 +3320,10 @@
   }
  },
  "DC7248-600": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.288,
+  "ngay": "2026-11-16",
+  "file": "DC7248-600.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Mid-Barcelona-Sweater-Red-Patent-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DD1390-100": {
   "khong_thay": "2026-10-24",
@@ -3450,31 +3342,25 @@
   }
  },
  "DD1391-103": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.533,
+  "ngay": "2026-11-16",
+  "file": "DD1391-103.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-Grey-Fog-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DD1391-600": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.006,
+  "ngay": "2026-11-16",
+  "file": "DD1391-600.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-University-Red-2021-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DD1391-601": {
   "khong_thay": "2026-10-20"
  },
  "DD1391-602": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.005,
+  "ngay": "2026-11-16",
+  "file": "DD1391-602.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-USC-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DD1399-104": {
   "khong_thay": "2026-10-24",
@@ -3495,12 +3381,10 @@
   }
  },
  "DD1399-400": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "thu": "https://images.stockx.com/images/Nike-Dunk-High-Retro-Laser-Blue-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90",
+  "giong": -0.43,
+  "ngay": "2026-11-16",
+  "file": "DD1399-400.webp"
  },
  "DD1399-401": {
   "giong": 0.516,
@@ -3541,20 +3425,16 @@
   }
  },
  "DD1503-118": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "thu": "https://images.stockx.com/images/Nike-Dunk-Low-Rose-Whisper-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90",
+  "giong": 0.4,
+  "ngay": "2026-11-16",
+  "file": "DD1503-118.webp"
  },
  "DD1503-119": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.402,
+  "ngay": "2026-11-16",
+  "file": "DD1503-119.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-USA-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DD1503-124": {
   "giong": 0.0,
@@ -3593,20 +3473,16 @@
   }
  },
  "DD1873-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.567,
+  "ngay": "2026-11-16",
+  "file": "DD1873-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-Move-To-Zero-Pale-Coral-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DD3111-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.532,
+  "ngay": "2026-11-16",
+  "file": "DD3111-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Blazer-Mid-77-Jumbo-White-Black-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DD3111-101": {
   "khong_thay": "2026-10-24",
@@ -3617,12 +3493,10 @@
   }
  },
  "DD3111-103": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.194,
+  "ngay": "2026-11-16",
+  "file": "DD3111-103.webp",
+  "url": "https://images.stockx.com/images/Nike-Blazer-Mid-77-Jumbo-White-University-Blue-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DD8959-100": {
   "giong": 0.094,
@@ -3645,20 +3519,16 @@
   }
  },
  "DH1290-002": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.642,
+  "ngay": "2026-11-16",
+  "file": "DH1290-002.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Fontanka-Phantom-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DH1290-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.09,
+  "ngay": "2026-11-16",
+  "file": "DH1290-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Fontanka-Triple-White-Multi-Color-Swoosh-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DH2920-111": {
   "giong": 0.542,
@@ -3729,12 +3599,10 @@
   }
  },
  "DH3158-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.269,
+  "ngay": "2026-11-16",
+  "file": "DH3158-101.webp",
+  "url": "https://images.stockx.com/images/Nike-Court-Vision-Low-Next-Nature-White-White-Black.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DH3158-606": {
   "khong_thay": "2026-10-20",
@@ -3761,12 +3629,10 @@
   }
  },
  "DH3718-700": {
-  "khong_thay": "2026-10-24",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.549,
+  "ngay": "2026-11-16",
+  "file": "DH3718-700.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-High-Rebel-Pastels-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DH3859-100": {
   "khong_thay": "2026-10-20",
@@ -3782,12 +3648,10 @@
   "khong_thay": "2026-10-24"
  },
  "DH4402-001": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.393,
+  "ngay": "2026-11-16",
+  "file": "DH4402-001.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-Disrupt-2-Malachite-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DH4402-102": {
   "khong_thay": "2026-10-24",
@@ -3798,20 +3662,16 @@
   }
  },
  "DH4406-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.119,
+  "ngay": "2026-11-16",
+  "file": "DH4406-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-07-Essential-White-Worn-Blue-Paisley-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DH4406-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.285,
+  "ngay": "2026-11-16",
+  "file": "DH4406-101.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-07-Essential-White-Black-Paisley-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DH4406-102": {
   "khong_thay": "2026-10-20",
@@ -3821,28 +3681,22 @@
   }
  },
  "DH6931-001": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -1.083,
+  "ngay": "2026-11-16",
+  "file": "DH6931-001.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Diamond-Shorts-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DH6931-102": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "thu": "https://images.stockx.com/images/Air-Jordan-1-Low-Orange-Olive-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90",
+  "giong": -0.104,
+  "ngay": "2026-11-16",
+  "file": "DH6931-102.webp"
  },
  "DH6933-100": {
-  "khong_thay": "2026-10-24",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.024,
+  "ngay": "2026-11-16",
+  "file": "DH6933-100.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Mid-Diamond-Shorts-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DH7004-100": {
   "khong_thay": "2026-10-20",
@@ -3852,36 +3706,28 @@
   }
  },
  "DH7004-109": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.386,
+  "ngay": "2026-11-16",
+  "file": "DH7004-109.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Elevate-Low-Black-White-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DH7004-110": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.473,
+  "ngay": "2026-11-16",
+  "file": "DH7004-110.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Elevate-Low-Neutral-Grey-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DH7561-106": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.14,
+  "ngay": "2026-11-16",
+  "file": "DH7561-106.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-07-White-Dark-Beetroot-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DH8016-001": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.071,
+  "ngay": "2026-11-16",
+  "file": "DH8016-001.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Max-97-Next-Nature-Black-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DH9765-003": {
   "khong_thay": "2026-10-20",
@@ -3908,12 +3754,10 @@
   }
  },
  "DJ6188-600": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.257,
+  "ngay": "2026-11-16",
+  "file": "DJ6188-600.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-Dark-Beetroot-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DJ9946-100": {
   "khong_thay": "2026-10-19"
@@ -3926,12 +3770,10 @@
   }
  },
  "DM0029-104": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.09,
+  "ngay": "2026-11-16",
+  "file": "DM0029-104.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Max-90-White-Spring-Green-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DM0029-120": {
   "khong_thay": "2026-10-20",
@@ -3941,12 +3783,10 @@
   }
  },
  "DM0109-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.095,
+  "ngay": "2026-11-16",
+  "file": "DM0109-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-07-LV8-White-Malachite-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DM0113-100": {
   "giong": 0.891,
@@ -3959,12 +3799,10 @@
   }
  },
  "DM0576-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.339,
+  "ngay": "2026-11-16",
+  "file": "DM0576-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-White-Chocolate-2022-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DM0774-111": {
   "khong_thay": "2026-10-24",
@@ -3975,12 +3813,10 @@
   }
  },
  "DM0985-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.49,
+  "ngay": "2026-11-16",
+  "file": "DM0985-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-LV8-White-Light-Madder-Root-GS.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DM4044-001": {
   "giong": 0.655,
@@ -3993,36 +3829,28 @@
   }
  },
  "DM4044-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.122,
+  "ngay": "2026-11-16",
+  "file": "DM4044-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Cortez-White-Black-Light-Photo-Blue-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DM4044-102": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.144,
+  "ngay": "2026-11-16",
+  "file": "DM4044-102.webp",
+  "url": "https://images.stockx.com/images/Nike-Cortez-White-Campfire-Orange-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DM4044-103": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.248,
+  "ngay": "2026-11-16",
+  "file": "DM4044-103.webp",
+  "url": "https://images.stockx.com/images/Nike-Cortez-Miami-Dolphins-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DM4044-104": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.233,
+  "ngay": "2026-11-16",
+  "file": "DM4044-104.webp",
+  "url": "https://images.stockx.com/images/Nike-Cortez-Sail-Stadium-Green-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DM4044-105": {
   "giong": 0.725,
@@ -4059,12 +3887,10 @@
   }
  },
  "DM4044-112": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.543,
+  "ngay": "2026-11-16",
+  "file": "DM4044-112.webp",
+  "url": "https://images.stockx.com/images/Nike-Cortez-Leather-Sail-Gum-Yellow-Light-Photo-Blue-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DM4044-114": {
   "khong_thay": "2026-10-20",
@@ -4096,20 +3922,16 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/624acbfe-8b86-4171-91f0-c6bf5b99d213/air-jordan-1-x-travis-scott-velvet-brown-and-dark-mocha-dm7866-202-release-date.jpg"
  },
  "DM8947-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.221,
+  "ngay": "2026-11-16",
+  "file": "DM8947-100.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Washed-Denim-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DM8960-801": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.437,
+  "ngay": "2026-11-16",
+  "file": "DM8960-801.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-White-Orange-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DN1431-001": {
   "khong_thay": "2026-10-20",
@@ -4119,12 +3941,10 @@
   }
  },
  "DN1791-002": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.stockx.com"
-  }
+  "thu": "https://images.stockx.com/images/Nike-Cortez-Phantom-Coconut-Milk-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90",
+  "giong": -0.28,
+  "ngay": "2026-11-16",
+  "file": "DN1791-002.webp"
  },
  "DN1791-003": {
   "khong_thay": "2026-10-20",
@@ -4134,20 +3954,16 @@
   }
  },
  "DN1791-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.003,
+  "ngay": "2026-11-16",
+  "file": "DN1791-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Cortez-White-Black-Light-Photo-Blue-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DN1791-104": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.519,
+  "ngay": "2026-11-16",
+  "file": "DN1791-104.webp",
+  "url": "https://images.stockx.com/images/Nike-Cortez-Cacao-Wow-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DN1791-107": {
   "giong": 0.552,
@@ -4170,28 +3986,22 @@
   }
  },
  "DN3705-301": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "thu": "https://images.stockx.com/images/Air-Jordan-1-Low-SE-New-Emerald-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90",
+  "giong": 0.019,
+  "ngay": "2026-11-16",
+  "file": "DN3705-301.webp"
  },
  "DN3706-401": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.03,
+  "ngay": "2026-11-16",
+  "file": "DN3706-401.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Mid-French-Blue-Fire-Red-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DN3866-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.189,
+  "ngay": "2026-11-16",
+  "file": "DN3866-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-Safari-Mix-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DN4162-991": {
   "khong_thay": "2026-10-20"
@@ -4219,12 +4029,10 @@
   }
  },
  "DO5872-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.362,
+  "ngay": "2026-11-16",
+  "file": "DO5872-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Shadow-Go-The-Extra-Smile-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DO6288-100": {
   "khong_thay": "2026-10-20",
@@ -4249,20 +4057,16 @@
   }
  },
  "DO8244-301": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "thu": "https://images.stockx.com/images/Air-Jordan-1-Low-New-Emerald-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90",
+  "giong": 0.153,
+  "ngay": "2026-11-16",
+  "file": "DO8244-301.webp"
  },
  "DO9392-200": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.197,
+  "ngay": "2026-11-16",
+  "file": "DO9392-200.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Max-1-Travis-Scott-Baroque-Brown-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DO9581-500": {
   "khong_thay": "2026-10-20",
@@ -4279,28 +4083,22 @@
   }
  },
  "DQ0265-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.394,
+  "ngay": "2026-11-16",
+  "file": "DQ0265-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-Retro-Sun-Club-Multi-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DQ0837-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.118,
+  "ngay": "2026-11-16",
+  "file": "DQ0837-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Shadow-White-Chrome-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DQ1470-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.607,
+  "ngay": "2026-11-16",
+  "file": "DQ1470-101.webp",
+  "url": "https://images.stockx.com/images/Nike-Blazer-Low-77-Jumbo-White-Black-Sail-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DQ3989-101": {
   "giong": 0.902,
@@ -4330,12 +4128,10 @@
   }
  },
  "DQ7582-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.379,
+  "ngay": "2026-11-16",
+  "file": "DQ7582-101.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-07-SE-40th-Anniversary-Edition-Sail-Malachite-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DQ7659-101": {
   "khong_thay": "2026-10-19"
@@ -4344,28 +4140,22 @@
   "khong_thay": "2026-10-20"
  },
  "DQ8423-014": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.421,
+  "ngay": "2026-11-16",
+  "file": "DQ8423-014.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Mid-True-Blue-Cement-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DQ8423-501": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.233,
+  "ngay": "2026-11-16",
+  "file": "DQ8423-501.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Mid-Barely-Grape-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DQ8423-616": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.572,
+  "ngay": "2026-11-16",
+  "file": "DQ8423-616.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Mid-Valentines-Day-2023-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DR0148-101": {
   "giong": 0.686,
@@ -4385,12 +4175,10 @@
   }
  },
  "DR0502-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.148,
+  "ngay": "2026-11-16",
+  "file": "DR0502-101.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-SE-Homage-White-Black-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DR2665-001": {
   "khong_thay": "2026-10-19"
@@ -4405,12 +4193,10 @@
   "khong_thay": "2026-10-19"
  },
  "DR6966-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.349,
+  "ngay": "2026-11-16",
+  "file": "DR6966-101.webp",
+  "url": "https://images.stockx.com/images/Nike-Court-Air-Zoom-Vapor-11-HC-White-Black-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DR6966-700": {
   "khong_thay": "2026-10-20",
@@ -4420,20 +4206,16 @@
   }
  },
  "DR6970-071": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.292,
+  "ngay": "2026-11-16",
+  "file": "DR6970-071.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-SE-Gold-Toe-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DR7856-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.36,
+  "ngay": "2026-11-16",
+  "file": "DR7856-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Shadow-Grey-Fog-Bright-Spruce-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DR7883-101": {
   "khong_thay": "2026-10-20",
@@ -4443,12 +4225,10 @@
   }
  },
  "DR9498-168": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.358,
+  "ngay": "2026-11-16",
+  "file": "DR9498-168.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Pinksicle-Orange-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DR9514-400": {
   "khong_thay": "2026-10-20",
@@ -4485,44 +4265,34 @@
   "khong_thay": "2026-10-19"
  },
  "DV0788-001": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.181,
+  "ngay": "2026-11-16",
+  "file": "DV0788-001.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-07-Low-White-Swoosh-Panda-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DV0831-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.177,
+  "ngay": "2026-11-16",
+  "file": "DV0831-101.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-Retro-White-Pure-Platinum-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DV0833-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "thu": "https://images.stockx.com/images/Nike-Dunk-Low-Team-Gold-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90",
+  "giong": 0.241,
+  "ngay": "2026-11-16",
+  "file": "DV0833-100.webp"
  },
  "DV0833-400": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.088,
+  "ngay": "2026-11-16",
+  "file": "DV0833-400.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-Polar-Blue-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DV0834-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.038,
+  "ngay": "2026-11-16",
+  "file": "DV0834-101.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-Industrial-Blue-Sashiko-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DV0990-111": {
   "giong": 0.836,
@@ -4545,20 +4315,16 @@
   }
  },
  "DV1299-104": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.088,
+  "ngay": "2026-11-16",
+  "file": "DV1299-104.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-SE-Reverse-Ice-Blue-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DV1309-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.181,
+  "ngay": "2026-11-16",
+  "file": "DV1309-100.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-SE-Concord-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DV1331-100": {
   "khong_thay": "2026-10-20",
@@ -4585,12 +4351,10 @@
   }
  },
  "DV1335-800": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.316,
+  "ngay": "2026-11-16",
+  "file": "DV1335-800.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-Halloween-2023-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DV1621-001": {
   "khong_thay": "2026-10-19"
@@ -4603,12 +4367,10 @@
   }
  },
  "DV3887-400": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.669,
+  "ngay": "2026-11-16",
+  "file": "DV3887-400.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Max-1-Obsidian-Varsity-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DV4024-001": {
   "khong_thay": "2026-10-24",
@@ -4659,12 +4421,10 @@
   }
  },
  "DV5456-111": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.466,
+  "ngay": "2026-11-16",
+  "file": "DV5456-111.webp",
+  "url": "https://images.stockx.com/images/Nike-Court-Borough-Low-Recraft-White-Pinksicle-Arctic-Orange-GS.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DV5456-131": {
   "giong": 0.376,
@@ -4693,39 +4453,31 @@
   }
  },
  "DV7449-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.396,
+  "ngay": "2026-11-16",
+  "file": "DV7449-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Shadow-Sail-Tan-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DV7449-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.47,
+  "ngay": "2026-11-16",
+  "file": "DV7449-101.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Shadow-Sail-Sea-Coral-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DV7584-001": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.685,
+  "ngay": "2026-11-16",
+  "file": "DV7584-001.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-07-SE-Just-Do-It-Photon-Dust-Team-Red-W-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DV7584-100": {
   "khong_thay": "2026-10-20"
  },
  "DX1156-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.321,
+  "ngay": "2026-11-16",
+  "file": "DX1156-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Retro-QS-West-Indies-2022-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DX3199-100": {
   "khong_thay": "2026-10-20",
@@ -4735,12 +4487,10 @@
   }
  },
  "DX3358-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.368,
+  "ngay": "2026-11-16",
+  "file": "DX3358-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Shadow-Hoops-Medium-Soft-Pink-W.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DX4816-001": {
   "khong_thay": "2026-10-24",
@@ -4754,12 +4504,10 @@
   "khong_thay": "2026-10-19"
  },
  "DX9176-106": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.213,
+  "ngay": "2026-11-16",
+  "file": "DX9176-106.webp",
+  "url": "https://images.stockx.com/images/Nike-Gamma-Force-Malachite-Womens.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DZ1847-104": {
   "khong_thay": "2026-10-20",
@@ -4776,12 +4524,10 @@
   }
  },
  "DZ2794-001": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.5,
+  "ngay": "2026-11-16",
+  "file": "DZ2794-001.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-Twist-Panda-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "DZ2795-300": {
   "khong_thay": "2026-10-19"
@@ -4817,12 +4563,10 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/aa2126d9-a21b-4c10-b3cf-cab1d4be912f/air-jordan-1-chicago-dz5485-612-release-date.jpg"
  },
  "DZ5485-701": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.482,
+  "ngay": "2026-11-16",
+  "file": "DZ5485-701.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Retro-High-OG-Yellow-Ochre-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "EF2905": {
   "giong": 0.24,
@@ -4842,28 +4586,22 @@
   }
  },
  "FB1362-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.077,
+  "ngay": "2026-11-16",
+  "file": "FB1362-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Full-Force-Low-White-Black-Polar-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FB1362-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.09,
+  "ngay": "2026-11-16",
+  "file": "FB1362-101.webp",
+  "url": "https://images.stockx.com/images/Nike-Full-Force-Low-White-Black-Pewter-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FB1362-102": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.036,
+  "ngay": "2026-11-16",
+  "file": "FB1362-102.webp",
+  "url": "https://images.stockx.com/images/Nike-Full-Force-Low-White-Red-Black-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FB1362-103": {
   "khong_thay": "2026-10-20",
@@ -4873,12 +4611,10 @@
   }
  },
  "FB1362-104": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.005,
+  "ngay": "2026-11-16",
+  "file": "FB1362-104.webp",
+  "url": "https://images.stockx.com/images/Nike-Full-Force-Low-Summit-White-Racer-Blue-Deep-Royal-Blue-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FB1857-111": {
   "khong_thay": "2026-10-20",
@@ -4985,12 +4721,10 @@
   }
  },
  "FB9892-670": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.539,
+  "ngay": "2026-11-16",
+  "file": "FB9892-670.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Mid-SE-Red-Stardust-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FB9908-102": {
   "khong_thay": "2026-10-20",
@@ -5000,12 +4734,10 @@
   }
  },
  "FB9927-200": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.154,
+  "ngay": "2026-11-16",
+  "file": "FB9927-200.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-4-Retro-SE-Craft-Medium-Olive-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FD0350-133": {
   "khong_thay": "2026-10-24",
@@ -5016,20 +4748,16 @@
   }
  },
  "FD0689-001": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.491,
+  "ngay": "2026-11-16",
+  "file": "FD0689-001.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-Next-Nature-TPU-Swoosh-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FD0736-004": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.304,
+  "ngay": "2026-11-16",
+  "file": "FD0736-004.webp",
+  "url": "https://images.stockx.com/images/Nike-V2K-Run-Platinum-Tint-Womens.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FD0736-100": {
   "giong": 0.639,
@@ -5042,20 +4770,16 @@
   }
  },
  "FD0736-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.097,
+  "ngay": "2026-11-16",
+  "file": "FD0736-101.webp",
+  "url": "https://images.stockx.com/images/Nike-V2K-Run-Fir-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FD0736-104": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.196,
+  "ngay": "2026-11-16",
+  "file": "FD0736-104.webp",
+  "url": "https://images.stockx.com/images/Nike-V2K-Run-Metallic-Silver-White-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FD0736-105": {
   "khong_thay": "2026-10-20",
@@ -5092,12 +4816,10 @@
   "khong_thay": "2026-10-19"
  },
  "FD5810-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.528,
+  "ngay": "2026-11-16",
+  "file": "FD5810-101.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Max-90-Gore-Tex-Infrared-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FD6574-001": {
   "giong": 0.609,
@@ -5166,12 +4888,10 @@
   "khong_thay": "2026-10-20"
  },
  "FD9082-102": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.2,
+  "ngay": "2026-11-16",
+  "file": "FD9082-102.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Max-1-White-Black-Medium-Olive-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FD9082-104": {
   "khong_thay": "2026-10-19"
@@ -5180,20 +4900,16 @@
   "khong_thay": "2026-10-19"
  },
  "FD9763-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.325,
+  "ngay": "2026-11-16",
+  "file": "FD9763-101.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-07-Light-Smoke-Grey-White-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FJ0685-010": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.09,
+  "ngay": "2026-11-16",
+  "file": "FJ0685-010.webp",
+  "url": "https://images.stockx.com/images/Nike-Court-Vision-Low-Next-Nature-Bred-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FJ0698-100": {
   "giong": 0.825,
@@ -5205,52 +4921,40 @@
   "khong_thay": "2026-10-19"
  },
  "FJ4146-102": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.189,
+  "ngay": "2026-11-16",
+  "file": "FJ4146-102.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-07-White-Malachite-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FJ4146-103": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.385,
+  "ngay": "2026-11-16",
+  "file": "FJ4146-103.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-07-White-Photo-Blue-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FJ4146-106": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.124,
+  "ngay": "2026-11-16",
+  "file": "FJ4146-106.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-07-Dragon-Red-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FJ4641-536": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.639,
+  "ngay": "2026-11-16",
+  "file": "FJ4641-536.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-SE-Easter-2023-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FJ5429-133": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.252,
+  "ngay": "2026-11-16",
+  "file": "FJ5429-133.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Dunk-85-Athletic-Department-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FJ7707-131": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.324,
+  "ngay": "2026-11-16",
+  "file": "FJ7707-131.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-Pastel-Paisley-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FJ7765-502": {
   "giong": 0.559,
@@ -5259,12 +4963,10 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/64a4c9d9-7d47-40f6-aba4-4ba38a555df6/W+NIKE+JOURNEY+RUN.png"
  },
  "FN3612-300": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.324,
+  "ngay": "2026-11-16",
+  "file": "FN3612-300.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-Celtics-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FN5032-200": {
   "khong_thay": "2026-10-20",
@@ -5274,55 +4976,43 @@
   }
  },
  "FN6952-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.037,
+  "ngay": "2026-11-16",
+  "file": "FN6952-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Max-1-White-Black-Stadium-Green-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FN6952-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.135,
+  "ngay": "2026-11-16",
+  "file": "FN6952-101.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Max-1-Monarch-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FN6952-102": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.039,
+  "ngay": "2026-11-16",
+  "file": "FN6952-102.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Max-1-Burgundy-Crush-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FN7649-110": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.001,
+  "ngay": "2026-11-16",
+  "file": "FN7649-110.webp",
+  "url": "https://images.stockx.com/images/Nike-Vomero-5-Supersonic-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FN8923-061": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.139,
+  "ngay": "2026-11-16",
+  "file": "FN8923-061.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-SE-All-Petals-United-Fir-Green-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FQ4155-800": {
   "khong_thay": "2026-11-09"
  },
  "FQ7628-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.366,
+  "ngay": "2026-11-16",
+  "file": "FQ7628-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Court-Vision-Low-Valentines-Day-2024-Womens.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FQ7728-001": {
   "khong_thay": "2026-10-19"
@@ -5335,12 +5025,10 @@
   }
  },
  "FQ8075-133": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.836,
+  "ngay": "2026-11-16",
+  "file": "FQ8075-133.webp",
+  "url": "https://images.stockx.com/images/Nike-Court-Vision-Low-Sail-Black-Gum.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FQ8077-104": {
   "khong_thay": "2026-10-20",
@@ -5350,20 +5038,16 @@
   }
  },
  "FQ8714-004": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.099,
+  "ngay": "2026-11-16",
+  "file": "FQ8714-004.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-07-LV8-Black-Summit-White-Gum-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FQ8899-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.417,
+  "ngay": "2026-11-16",
+  "file": "FQ8899-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Dunk-Low-Vintage-Panda-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FQ8903-004": {
   "khong_thay": "2026-10-20",
@@ -5484,12 +5168,10 @@
   }
  },
  "FV5948-103": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.277,
+  "ngay": "2026-11-16",
+  "file": "FV5948-103.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Malachite-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FV6040-003": {
   "khong_thay": "2026-11-09"
@@ -5634,12 +5316,10 @@
   }
  },
  "FZ2158-401": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.244,
+  "ngay": "2026-11-16",
+  "file": "FZ2158-401.webp",
+  "url": "https://images.stockx.com/images/Nike-Court-Air-Zoom-Vapor-Pro-3-HC-World-Indigo-White-Ghost-Womens.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FZ2158-600": {
   "giong": 0.0,
@@ -5729,12 +5409,10 @@
   }
  },
  "FZ2161-401": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.341,
+  "ngay": "2026-11-16",
+  "file": "FZ2161-401.webp",
+  "url": "https://images.stockx.com/images/Nike-Court-Air-Zoom-Vapor-Pro-3-HC-Psychic-Blue-Midnight-Navy.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FZ2622-002": {
   "khong_thay": "2026-10-20",
@@ -5747,23 +5425,19 @@
   "khong_thay": "2026-10-19"
  },
  "FZ5046-041": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.43,
+  "ngay": "2026-11-16",
+  "file": "FZ5046-041.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-SE-Phantom-Coconut-Milk-Amber-Brown-Light-Armory-Blue-GS-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FZ5061-100": {
   "khong_thay": "2026-10-19"
  },
  "FZ5068-161": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.479,
+  "ngay": "2026-11-16",
+  "file": "FZ5068-161.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-07-SE-PRM-Valentines-Day-2024-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "FZ5630-102": {
   "giong": 0.646,
@@ -6313,11 +5987,10 @@
   }
  },
  "GW1933": {
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.504,
+  "ngay": "2026-11-16",
+  "file": "GW1933.webp",
+  "url": "https://images.stockx.com/images/adidas-Yeezy-Slide-Ochre-Infants-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "GW3354": {
   "giong": 0.291,
@@ -6490,12 +6163,10 @@
   }
  },
  "HF0074-001": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.219,
+  "ngay": "2026-11-16",
+  "file": "HF0074-001.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Max-Plus-Tiempo-Black-White-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HF0263-001": {
   "giong": 0.849,
@@ -6549,20 +6220,16 @@
   "khong_thay": "2026-10-19"
  },
  "HF3630-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.012,
+  "ngay": "2026-11-16",
+  "file": "HF3630-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Evo-University-Red-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HF3630-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.111,
+  "ngay": "2026-11-16",
+  "file": "HF3630-101.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Evo-White-University-Blue-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HF3630-102": {
   "khong_thay": "2026-10-20",
@@ -6579,12 +6246,10 @@
   }
  },
  "HF4312-100": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.009,
+  "ngay": "2026-11-16",
+  "file": "HF4312-100.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Max-1-Since-72-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HF5342-100": {
   "khong_thay": "2026-10-20",
@@ -6621,12 +6286,10 @@
   }
  },
  "HF7834-300": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.04,
+  "ngay": "2026-11-16",
+  "file": "HF7834-300.webp",
+  "url": "https://images.stockx.com/images/Nike-Court-Vapor-12-HC-Premium-Luminous-Green-High-Voltage-White-Mineral-Teal-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HJ4497-100": {
   "giong": 0.446,
@@ -6647,12 +6310,10 @@
   }
  },
  "HJ5269-600": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.328,
+  "ngay": "2026-11-16",
+  "file": "HJ5269-600.webp",
+  "url": "https://images.stockx.com/images/Nike-V2K-Run-Pink-Foam-Arctic-Pink-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HJ6647-300": {
   "khong_thay": "2026-10-20",
@@ -6728,12 +6389,10 @@
   }
  },
  "HP7870": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.143,
+  "ngay": "2026-11-16",
+  "file": "HP7870.webp",
+  "url": "https://images.stockx.com/images/adidas-Yeezy-Boost-350-V2-Slate-Core-Black-Slate-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HP8739": {
   "giong": 0.141,
@@ -6746,12 +6405,10 @@
   }
  },
  "HQ2004-400": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.101,
+  "ngay": "2026-11-16",
+  "file": "HQ2004-400.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-SE-Denim-Worn-Blue-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HQ2609-600": {
   "khong_thay": "2026-10-20",
@@ -6761,12 +6418,10 @@
   }
  },
  "HQ2665": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.118,
+  "ngay": "2026-11-16",
+  "file": "HQ2665.webp",
+  "url": "https://images.stockx.com/images/adidas-Adistar-Control-3-Black-Silver-Metallic.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HQ2993-100": {
   "giong": 0.805,
@@ -6825,28 +6480,22 @@
   }
  },
  "HQ4307-301": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.251,
+  "ngay": "2026-11-16",
+  "file": "HQ4307-301.webp",
+  "url": "https://images.stockx.com/images/Nike-Mind-001-Slide-Geode-Teal-Light-Menta-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HQ4307-400": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.214,
+  "ngay": "2026-11-16",
+  "file": "HQ4307-400.webp",
+  "url": "https://images.stockx.com/images/Nike-Mind-001-Slide-Blackened-Blue-Game-Royal-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HQ4307-601": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.208,
+  "ngay": "2026-11-16",
+  "file": "HQ4307-601.webp",
+  "url": "https://images.stockx.com/images/Nike-Mind-001-Slide-Team-Red-University-Red-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HQ4309-610": {
   "thu": "https://static.nike.com/a/images/w_1200,c_limit,f_png/dc53f693-641e-4a29-aa8e-d22d09f65c0e/W+NIKE+MIND+001.png",
@@ -6989,12 +6638,10 @@
   }
  },
  "HV4314-030": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.257,
+  "ngay": "2026-11-16",
+  "file": "HV4314-030.webp",
+  "url": "https://images.stockx.com/images/Nike-V2K-Run-Phantom-LIght-Khaki-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HV4484-800": {
   "khong_thay": "2026-10-20",
@@ -7062,12 +6709,10 @@
   }
  },
  "HV5990-172": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.323,
+  "ngay": "2026-11-16",
+  "file": "HV5990-172.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Year-of-the-Snake-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "HV5997-161": {
   "khong_thay": "2026-10-20"
@@ -7087,20 +6732,16 @@
   }
  },
  "IB0018-101": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 4,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.264,
+  "ngay": "2026-11-16",
+  "file": "IB0018-101.webp",
+  "url": "https://images.stockx.com/images/Nike-Air-Force-1-Low-Kobe-Bryant-Forever-Lower-Merion-Home-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "IB1857-201": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.277,
+  "ngay": "2026-11-16",
+  "file": "IB1857-201.webp",
+  "url": "https://images.stockx.com/images/Nike-Cortez-Malt-Black-Womens.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "IB2998-003": {
   "khong_thay": "2026-10-20",
@@ -7175,12 +6816,10 @@
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/3d2e8974-4a7b-4a46-aef6-256e68d9a2a6/air-jordan-1-low-og-x-nigel-sylvester-better-with-time-ib8958-001-release-date.jpg"
  },
  "IB8971-106": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": -0.52,
+  "ngay": "2026-11-16",
+  "file": "IB8971-106.webp",
+  "url": "https://images.stockx.com/images/Air-Jordan-1-Low-SE-Black-Toe-2025-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "ID0477": {
   "giong": -0.117,
@@ -8801,11 +8440,10 @@
   }
  },
  "JQ4441": {
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.312,
+  "ngay": "2026-11-16",
+  "file": "JQ4441.webp",
+  "url": "https://images.stockx.com/360/adidas-Adizero-Evo-SL-White-Matte-Gold/Images/adidas-Adizero-Evo-SL-White-Matte-Gold/Lv2/img01.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "JQ4774": {
   "giong": -0.333,
@@ -8923,12 +8561,10 @@
   }
  },
  "JR7150": {
-  "khong_thay": "2026-10-20",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 1,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.41,
+  "ngay": "2026-11-16",
+  "file": "JR7150.webp",
+  "url": "https://images.stockx.com/images/adidas-adiFOM-Stan-Smith-Mule-Disneys-The-Aristocats-Sandy-Pink-Womens.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "JR8830": {
   "giong": 0.286,
@@ -9228,11 +8864,10 @@
   }
  },
  "KK2606": {
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.stockx.com"
-  }
+  "giong": 0.484,
+  "ngay": "2026-11-16",
+  "file": "KK2606.webp",
+  "url": "https://images.stockx.com/images/adidas-Adistar-Control-5-Care-Bears-Grumpy-Bear-Womens-Product.jpg?w=800&dpr=1.5&fm=jpg&q=90"
  },
  "M1000": {
   "khong_thay": "2026-10-19",
@@ -11538,7 +11173,11 @@
    "ngay": "2026-11-09",
    "them": 4,
    "nguon": "wilson.com"
-  }
+  },
+  "url": "https://cdn.shopify.com/s/files/1/0996/7373/5482/files/WRS00766001_1_Intrigue_Pro_BrightWhite_EnsignBlue_ChateauRose_brightWhiteEnsignBlueChateauRose_02.png?width=1200",
+  "giong": 0.566,
+  "ngay": "2026-11-17",
+  "file": "WRS00766001.webp"
  },
  "WRS00963001": {
   "goc": {
@@ -11552,7 +11191,11 @@
    "ngay": "2026-11-09",
    "them": 4,
    "nguon": "wilson.com"
-  }
+  },
+  "url": "https://cdn.shopify.com/s/files/1/0996/7373/5482/files/WRS01048001_0_Rush_Pro_5_CTC_BrightWhite_WilsonRed_Microchip_brightWhiteWilsonRedMicrochip_01.png?width=1200",
+  "giong": 0.611,
+  "ngay": "2026-11-17",
+  "file": "WRS01048001.webp"
  },
  "WRS332710": {
   "goc": {
@@ -11587,7 +11230,11 @@
    "ngay": "2026-11-09",
    "them": 4,
    "nguon": "wilson.com"
-  }
+  },
+  "url": "https://cdn.shopify.com/s/files/1/0996/7373/5482/files/WRS334690_1_Intrigue_Pro_White_White_Silver_whiteWhiteSilver_03.png?width=1200",
+  "giong": 0.47,
+  "ngay": "2026-11-17",
+  "file": "WRS334690.webp"
  },
  "WRS335340": {
   "goc": {
@@ -11643,7 +11290,11 @@
    "ngay": "2026-11-09",
    "them": 4,
    "nguon": "wilson.com"
-  }
+  },
+  "url": "https://cdn.shopify.com/s/files/1/0996/7373/5482/files/WRS338570_0_Rush_Lite_5_White_Evergreen_Gum1a_whiteEvergreenGum1a_01.png?width=1200",
+  "giong": 0.668,
+  "ngay": "2026-11-17",
+  "file": "WRS338570.webp"
  },
  "WRS338570U": {
   "goc": {
@@ -11685,7 +11336,11 @@
    "ngay": "2026-11-09",
    "them": 4,
    "nguon": "wilson.com"
-  }
+  },
+  "url": "https://cdn.shopify.com/s/files/1/0996/7373/5482/files/WRS339670_0_Rush_Pro_5_Titanium_SnowWhit_Titanium_png_titaniumSnowWhiteTitanium_01.png?width=1200",
+  "giong": 0.739,
+  "ngay": "2026-11-17",
+  "file": "WRS339670.webp"
  },
  "WRS339670U": {
   "goc": {
@@ -11727,7 +11382,11 @@
    "ngay": "2026-11-09",
    "them": 4,
    "nguon": "wilson.com"
-  }
+  },
+  "url": "https://cdn.shopify.com/s/files/1/0996/7373/5482/files/WRS341800_4_Intrigue_Pro_Tofu_LilacAsh_PurpleAsh_tofuLilacAshPurpleAsh_04.png?width=1200",
+  "giong": 0.472,
+  "ngay": "2026-11-17",
+  "file": "WRS341800.webp"
  },
  "WS327KB": {
   "giong": 0.333,

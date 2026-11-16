@@ -11,3 +11,16 @@ FZ2158-109    # ảnh hãng chỉ thấy đế giày
 DV5477-012    # ảnh hãng chụp phía sau
 CI0919-100    # ảnh hãng chụp cả đôi chính diện
 HQ4309-610    # 20/10 ảnh hãng chụp cả đôi từ trên
+# 17/11 Nike/Jordan (ảnh StockX): tông màu lệch rõ so với ảnh bìa đang có — giữ ảnh cũ
+DD1399-400    # StockX ngả xanh cổ vịt, ảnh cũ xanh da trời
+553558-412    # StockX xanh navy, ảnh cũ xanh hoàng gia
+DN1791-002    # StockX màu kem, ảnh cũ bạc
+DH6931-102    # StockX nâu cam, ảnh cũ cam tươi
+DN3705-301    # StockX xanh cổ vịt, ảnh cũ xanh bạc hà
+DO8244-301    # như DN3705-301 (bản GS)
+553560-174    # phối màu thân giày khác ảnh cũ
+DC0774-020    # StockX nâu cam, ảnh cũ vàng
+553558-701    # StockX cam, ảnh cũ vàng
+CK6654-601    # StockX đỏ, ảnh cũ hồng đậm
+DV0833-100    # StockX màu be, ảnh cũ vàng
+DD1503-118    # StockX nâu hồng, ảnh cũ hồng
