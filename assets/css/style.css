@@ -1744,7 +1744,7 @@ body.has-aura::after {
 /* ===== Trang mẫu trên điện thoại (17/11, soát theo góc nhìn khách): tên + giá nằm trên ảnh; thanh đáy hiện từ đầu,
    có nút "Nhắn shop" cạnh "Thêm giỏ" ===== */
 @media (max-width: 959px) {
-  .pd { display: flex; flex-direction: column; gap: 0; }
+  .pd { display: flex; flex-direction: column; align-items: stretch; gap: 0; } /* stretch: ảnh rộng hết khung kể cả mẫu chỉ có 1 ảnh (không có dãy ảnh nhỏ) */
   .pd__info { display: contents; }
   .pd__info > * { order: 3; }
   .pd__info > .pd__brand, .pd__info > h1, .pd__info > .pd__pills, .pd__info > .pd__price { order: 1; }
@@ -1762,3 +1762,10 @@ body.has-aura::after {
 .buybar .buybar__fb svg { width: 20px; height: 20px; }
 @media (max-width: 380px) { .buybar .buybar__add span { display: none; } .buybar .buybar__add { padding: 0 14px; } }
 .card__price .card__for { margin: 0 0 0 5px; }
+
+/* Nội dung dựng sẵn trong HTML cho máy đọc không chạy JavaScript (scripts/static_pages.py): ẩn với khách, app.js gỡ khi chạy.
+   Trang có <noscript> bật lại để người tắt JavaScript vẫn đọc được. */
+[data-static] { display: none; }
+/* Chỗ của đầu trang trước khi app.js dựng xong: trang tĩnh sp/ có sẵn nội dung, không bị đẩy xuống khi đầu trang hiện ra */
+#site-header { min-height: 171px; }
+@media (min-width: 1180px) { #site-header { min-height: 113px; } }

@@ -2,6 +2,10 @@
 (function () {
   "use strict";
 
+  // Trang tĩnh trong sp/ có <base href="../"> để dùng chung mọi đường dẫn. Ghi lại địa chỉ gốc đầy đủ ngay từ đầu:
+  // sau này trang đổi địa chỉ trên thanh (lọc danh mục) thì đường dẫn ảnh, link không bị lệch theo.
+  (function () { var b = document.querySelector("base[href]"); if (b) b.href = b.href; })();
+
   var SHOP = window.SHOP;
   var FIT_NOTES = window.FIT_NOTES || [];
   var LINES = window.LINES || {};
@@ -107,7 +111,13 @@
     var w = String(s).match(/^W(\d+)xL(\d+)/);
     return w ? 200 + +w[1] + w[2] / 100 : 300;
   }
-  function params() { return new URLSearchParams(location.search); }
+  // Trang tĩnh (sp/<mã>.html, sp/loc/<hãng>[--<dòng>].html — scripts/static_pages.py dựng sẵn nội dung cho Google):
+  // tham số của trang ghi ở <body data-q="id=…">, cộng với tham số trên link (size, utm…)
+  function params() {
+    var u = new URLSearchParams(location.search), q = document.body && document.body.dataset.q;
+    if (q) new URLSearchParams(q).forEach(function (v, k) { u.set(k, v); });
+    return u;
+  }
   function storage(key, value) {
     try {
       if (value === undefined) return JSON.parse(localStorage.getItem(key) || "null");
@@ -119,11 +129,29 @@
   var AO_URL = "shop.html?loai=quan-ao";
   function fullName(p) { return (isAo(p) ? "" : "Giày ") + p.name + (p.code ? " " + p.code : ""); }
   // size: vào từ danh sách đang lọc một size thì trang mẫu chọn sẵn size đó
-  function productUrl(p, size) { return "product.html?id=" + encodeURIComponent(p.id) + (size ? "&size=" + encodeURIComponent(String(size).replace(",", ".")) : ""); }
+  // Mẫu còn hàng có trang tĩnh sp/<mã>.html (cũng là link chia sẻ); mẫu hết hàng mở product.html?id=
+  function productUrl(p, size) {
+    var s = size ? "size=" + encodeURIComponent(String(size).replace(",", ".")) : "";
+    return p.inStock ? "sp/" + encodeURIComponent(p.id) + ".html" + (s ? "?" + s : "") : "product.html?id=" + encodeURIComponent(p.id) + (s ? "&" + s : "");
+  }
   // "Từ" khi các size của mẫu khác giá nhau
   function fromPrice(p) { return (p.maxPrice > p.minPrice ? "<small>Từ</small>" : "") + money(p.minPrice); }
   var CARD_SIZE = null; // danh mục đang lọc đúng một size: thẻ hiện giá của size đó
-  function brandUrl(b) { return "shop.html?brand=" + slug(b); }
+  // Hãng / dòng đang có giày: trang tĩnh sp/loc/<hãng>[--<dòng>].html; còn lại mở shop.html có tham số
+  var LOC_PAGES = null;
+  function locPage(b, l) {
+    if (!LOC_PAGES) {
+      LOC_PAGES = {};
+      IN_STOCK.forEach(function (p) {
+        if (!p.brand) return;
+        LOC_PAGES[slug(p.brand)] = 1;
+        if (p.line !== OTHER_LINE) LOC_PAGES[slug(p.brand) + "--" + slug(p.line)] = 1;
+      });
+    }
+    var key = slug(b) + (l ? "--" + slug(l) : "");
+    return LOC_PAGES[key] ? "sp/loc/" + key + ".html" : "";
+  }
+  function brandUrl(b) { return locPage(b) || "shop.html?brand=" + slug(b); }
   // Logo hãng (images/brands/<hãng>.png, nền trong suốt, tô màu bằng CSS mask). Hãng chưa có logo: hiện tên in hoa.
   var BRAND_LOGOS = ["new-balance", "asics", "onitsuka-tiger", "jordan", "nike", "adidas", "puma", "salomon", "on"];
   function brandLogo(name, cls, wordCls) {
@@ -132,8 +160,8 @@
     var u = "url(images/brands/" + s + ".png)"; // ghi thẳng vào thẻ để đường dẫn tính từ trang, không từ file CSS
     return '<span class="' + cls + '" style="-webkit-mask-image:' + u + ";mask-image:" + u + '" role="img" aria-label="Logo ' + esc(name) + '"></span>';
   }
-  function lineUrl(b, l) { return (b ? "shop.html?brand=" + slug(b) + "&line=" : "shop.html?line=") + slug(l); }
-  function absUrl(path) { return new URL(path, SHOP.siteUrl || location.href).href; }
+  function lineUrl(b, l) { return (b && locPage(b, l)) || (b ? "shop.html?brand=" + slug(b) + "&line=" : "shop.html?line=") + slug(l); }
+  function absUrl(path) { return new URL(path, SHOP.siteUrl || document.baseURI).href; }
   // SEO: link chuẩn của trang (Google gộp các link lọc / link chia sẻ về một địa chỉ) và dữ liệu có cấu trúc schema.org
   function setCanonical(path) {
     var l = $('link[rel="canonical"]');
@@ -142,13 +170,17 @@
   }
   function setDesc(text) { var m = $('meta[name="description"]'); if (m) m.content = text; }
   function jsonLd(data) {
+    // Trang tĩnh đã có sẵn khối cùng loại: thay bằng khối mới, không để hai khối
+    var old = $('script[data-ld="' + data["@type"] + '"]');
+    if (old) old.remove();
     var el = document.createElement("script");
     el.type = "application/ld+json";
+    el.setAttribute("data-ld", data["@type"]);
     el.textContent = JSON.stringify(data);
     document.head.appendChild(el);
   }
   // Link gửi đi (Facebook): trang chia sẻ sp/<mã>.html có ảnh xem trước, tự mở trang sản phẩm
-  function shareUrl(p) { return absUrl(p.inStock ? "sp/" + encodeURIComponent(p.id) + ".html" : productUrl(p)); }
+  function shareUrl(p) { return absUrl(productUrl(p)); }
   // Link lọc (hãng / dòng / size) gửi đi: trang sp/loc/<hãng>--<dòng>--size-<size>.html có tiêu đề + mô tả + ảnh
   // (scripts/static_pages.py tạo cho mọi bộ lọc đang có hàng; giống loc_key() trong đó)
   function locKey(b, l, s) {
@@ -178,6 +210,15 @@
     copyText(text + "\n" + url).then(function () { toast("Đã chép link — dán vào tin nhắn gửi khách"); });
   }
   document.addEventListener("click", function (e) { if (e.target.closest && e.target.closest("[data-share-page]")) { e.preventDefault(); sharePage(); } });
+  // Link "Bỏ qua, tới nội dung chính": tự cuộn tới nội dung (trang tĩnh có <base> nên link "#main" sẽ mở trang chủ)
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a.skip"), m = a && $("#main");
+    if (!m) return;
+    e.preventDefault();
+    m.setAttribute("tabindex", "-1");
+    m.focus();
+    m.scrollIntoView();
+  });
   function initials(b) {
     var w = b.split(/\s+/);
     return w.length > 1 ? (w[0][0] + w[1][0]).toUpperCase() : b[0].toUpperCase();
@@ -1800,7 +1841,12 @@
       if (state.max) u.set("max", state.max);
       if (state.sort !== "default") u.set("sort", state.sort);
       if (state.page > 1) u.set("page", state.page);
-      history.replaceState(null, "", "shop.html" + (u.toString() ? "?" + u : ""));
+      // Chỉ lọc theo hãng / dòng: giữ địa chỉ trang tĩnh của hãng / dòng đó
+      var keys = []; u.forEach(function (v, k) { keys.push(k); });
+      // (chỉ khi đang ở trang tĩnh — trang có <base>; shop.html?brand=… đổi sang thư mục khác sẽ lệch đường dẫn ảnh)
+      var only = brand && $("base") && keys.every(function (k) { return k === "brand" || k === "line"; });
+      var own = only ? (line ? lineUrl(brand, line) : brandUrl(brand)) : "";
+      history.replaceState(null, "", new URL(own && own.indexOf("sp/loc/") === 0 ? own : "shop.html" + (u.toString() ? "?" + u : ""), document.baseURI).href);
     }
     function filtered() {
       var m = matcher(state.q);
@@ -1874,7 +1920,7 @@
       var simple = !wishMode && !newMode && !aoMode && !state.genders.length && !state.min && !state.max && state.brands.length <= 1 &&
         state.lines.length <= (l ? 1 : 0) && state.sizes.length <= 1 && (!state.q || qBrand) && (!line || b) && l !== OTHER_LINE && list.length;
       var key = simple ? locKey(b, l, state.sizes[0]) : "";
-      var cur = new URLSearchParams(location.search);
+      var cur = params();
       cur.delete("page");
       return { title: title, text: title + " tại " + SHOP.name + " — bấm để xem mẫu và chọn size:", url: absUrl(key ? "sp/loc/" + key + ".html" : "shop.html" + (cur.toString() ? "?" + cur : "")) };
     }
@@ -2699,6 +2745,7 @@
 
   /* ---------- Khởi động ---------- */
   document.addEventListener("DOMContentLoaded", function () {
+    $all("[data-static]").forEach(function (el) { el.remove(); }); // nội dung dựng sẵn cho máy đọc không chạy JavaScript
     loadAnalytics();
     renderChrome();
     fillShopInfo();
