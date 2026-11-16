@@ -33,6 +33,12 @@ IMG_EXT = (".webp", ".jpg", ".jpeg", ".png")
 
 # Thứ tự quan trọng: Jordan trước Nike, Onitsuka trước Asics.
 BRAND_RULES = [
+    ("Reebok", r"\breebok\b"),
+    ("UGG", r"\bugg\b"),
+    ("Under Armour", r"\bunder armour\b"),
+    ("Maison Mihara Yasuhiro", r"\bmihara\b"),
+    ("Old Order", r"\bold order\b"),
+    ("Champion", r"\bchampion\b"),
     ("Onitsuka Tiger", r"onitsuka|mexico 66"),
     ("Asics", r"asics|gel[- ]"),
     ("New Balance", r"new balance|\bnb\b"),
@@ -53,7 +59,6 @@ BRAND_RULES = [
     ("Uniqlo", r"\buniqlo\b"),
     ("Tommy Hilfiger", r"\btommy\b"),
     ("New Era", r"\bnew era\b|\bera\b"),
-    ("Champion", r"\bchampion\b"),
 ]
 
 GENDER_RULES = [

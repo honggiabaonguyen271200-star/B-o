@@ -575,6 +575,16 @@
    "them": 2
   }
  },
+ "1183A872-200": {
+  "giong": 0.0,
+  "ngay": "2026-11-16",
+  "file": "1183A872-200.webp",
+  "url": "https://images.asics.com/is/image/asics/1183A872_200_SR_RT_GLB?wid=1200&fmt=png-alpha",
+  "goc": {
+   "ngay": "2026-11-16",
+   "them": 2
+  }
+ },
  "1183A872-254": {
   "giong": 0.33,
   "ngay": "2026-10-19",
@@ -649,6 +659,16 @@
   "url": "https://images.asics.com/is/image/asics/1183C015_202_SR_RT_GLB?wid=1200&fmt=png-alpha",
   "goc": {
    "ngay": "2026-11-09",
+   "them": 4
+  }
+ },
+ "1183C015-207": {
+  "giong": 0.0,
+  "ngay": "2026-11-16",
+  "file": "1183C015-207.webp",
+  "url": "https://images.asics.com/is/image/asics/1183C015_207_SR_RT_GLB?wid=1200&fmt=png-alpha",
+  "goc": {
+   "ngay": "2026-11-16",
    "them": 4
   }
  },
@@ -1255,18 +1275,19 @@
    "nguon": "media.babolat.com"
   }
  },
- "343881": {
+ "343881-013": {
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
    "them": 0
   }
  },
- "343881-013": {
-  "khong_thay": "2026-10-20"
- },
  "343881-014": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-16",
+   "them": 0
+  }
  },
  "343881-111": {
   "khong_thay": "2026-10-20",
@@ -1275,19 +1296,7 @@
    "them": 0
   }
  },
- "371013": {
-  "khong_thay": "2026-10-24",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 3,
-   "nguon": "images.puma.com"
-  }
- },
  "371013-05": {
-  "url": "(đã thay, sổ bị ghi đè)",
-  "file": "371013-05.webp"
- },
- "371023": {
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
@@ -1296,10 +1305,6 @@
   }
  },
  "371023-02": {
-  "url": "(đã thay, sổ bị ghi đè)",
-  "file": "371023-02.webp"
- },
- "371025": {
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
@@ -1308,41 +1313,6 @@
   }
  },
  "371025-11": {
-  "url": "(đã thay, sổ bị ghi đè)",
-  "file": "371025-11.webp"
- },
- "371951-07": {
-  "khong_thay": "2026-11-09"
- },
- "372276": {
-  "khong_thay": "2026-10-24",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.puma.com"
-  }
- },
- "372276-01": {
-  "url": "(đã thay, sổ bị ghi đè)",
-  "file": "372276-01.webp"
- },
- "372277": {
-  "khong_thay": "2026-10-24",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.puma.com"
-  }
- },
- "372277-01": {
-  "url": "(đã thay, sổ bị ghi đè)",
-  "file": "372277-01.webp"
- },
- "372277-03": {
-  "url": "(đã thay, sổ bị ghi đè)",
-  "file": "372277-03.webp"
- },
- "375343": {
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
@@ -1350,11 +1320,40 @@
    "nguon": "images.puma.com"
   }
  },
- "375343-01": {
-  "url": "(đã thay, sổ bị ghi đè)",
-  "file": "375343-01.webp"
+ "371951-07": {
+  "khong_thay": "2026-11-09"
  },
- "380788": {
+ "372276-01": {
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 2,
+   "nguon": "images.puma.com"
+  }
+ },
+ "372276-02": {
+  "goc": {
+   "ngay": "2026-11-16",
+   "them": 4
+  }
+ },
+ "372277-01": {
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 2,
+   "nguon": "images.puma.com"
+  }
+ },
+ "372277-03": {
+  "url": "(đã thay, sổ bị ghi đè)",
+  "file": "372277-03.webp",
+  "goc": {
+   "ngay": "2026-11-16",
+   "them": 4
+  }
+ },
+ "375343-01": {
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
@@ -1363,10 +1362,6 @@
   }
  },
  "380788-03": {
-  "url": "(đã thay, sổ bị ghi đè)",
-  "file": "380788-03.webp"
- },
- "383443": {
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
@@ -1375,8 +1370,12 @@
   }
  },
  "383443-01": {
-  "url": "(đã thay, sổ bị ghi đè)",
-  "file": "383443-01.webp"
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 3,
+   "nguon": "images.puma.com"
+  }
  },
  "384139-02": {
   "giong": 0.0,
@@ -1531,14 +1530,6 @@
    "them": 4
   }
  },
- "403587": {
-  "khong_thay": "2026-10-24",
-  "goc": {
-   "ngay": "2026-11-09",
-   "them": 2,
-   "nguon": "images.puma.com"
-  }
- },
  "403587-01": {
   "url": "(đã thay, sổ bị ghi đè)",
   "file": "403587-01.webp",
@@ -1548,20 +1539,20 @@
   }
  },
  "403587-02": {
-  "url": "(đã thay, sổ bị ghi đè)",
-  "file": "403587-02.webp"
+  "khong_thay": "2026-10-24",
+  "goc": {
+   "ngay": "2026-11-09",
+   "them": 2,
+   "nguon": "images.puma.com"
+  }
  },
- "404383": {
+ "404383-03": {
   "khong_thay": "2026-10-24",
   "goc": {
    "ngay": "2026-11-09",
    "them": 3,
    "nguon": "images.puma.com"
   }
- },
- "404383-03": {
-  "url": "(đã thay, sổ bị ghi đè)",
-  "file": "404383-03.webp"
  },
  "406334-07": {
   "url": "(đã thay, sổ bị ghi đè)",
@@ -2238,7 +2229,11 @@
   "khong_thay": "2026-10-20"
  },
  "618919-113": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-16",
+   "them": 0
+  }
  },
  "678477-01": {
   "khong_thay": "2026-11-09"
@@ -6823,7 +6818,11 @@
   "khong_thay": "2026-10-20"
  },
  "HQ4307-200": {
-  "khong_thay": "2026-10-20"
+  "khong_thay": "2026-10-20",
+  "goc": {
+   "ngay": "2026-11-16",
+   "them": 4
+  }
  },
  "HQ4307-301": {
   "khong_thay": "2026-10-20",
@@ -8185,6 +8184,16 @@
   "ngay": "2026-10-20",
   "file": "IO7847-002.webp",
   "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/515f0639-78b3-41b9-9821-bb705ee261f1/air-jordan-1-x-union-x-fragment-black-and-varsity-red-io7847-002-release-date.jpg"
+ },
+ "IO8294-300": {
+  "giong": 0.0,
+  "ngay": "2026-11-16",
+  "file": "IO8294-300.webp",
+  "url": "https://static.nike.com/a/images/w_1200,c_limit,f_png/53fc1c47-6c3c-4c3b-b2a0-588637969b1e/M+ZOOM+VAPOR+PRO+3+HC+PRM.png",
+  "goc": {
+   "ngay": "2026-11-16",
+   "them": 4
+  }
  },
  "IQ0407-100": {
   "giong": 0.598,

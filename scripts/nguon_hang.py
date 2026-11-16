@@ -300,7 +300,7 @@ def parse_thang(path):
             cur = None
             for r in rows:
                 get = lambda k: txt(r[k]) if k < len(r) else ""  # noqa: E731
-                name = get(j)
+                name = re.sub(r"\b(\d{6})\s+(\d{2,3})\s*$", r"\1-\2", get(j))  # mã + đuôi màu viết rời (dép Nike, Puma)
                 if name and not name.upper().startswith(("TÊN MẪU", "KÉO XUỐNG")):
                     if cur:
                         yield cur
@@ -378,6 +378,9 @@ def parse_ncc5(path):
             m = re.match(r"^(.+?)-(\d{2,3}(?:[.,]\d{1,2})?)\s*\(\s*EU\s*([^)]*)\)", c)
             if m:
                 code, size = m.group(1), eu_size(m.group(3))
+                tail = re.search(r"-(\d{2})$", code)  # 'IO8294-300-41-26 (EU41)': NCC ghi thêm size EU vào giữa mã và số cm
+                if tail and size and tail.group(1) == size.split(",")[0]:
+                    code = code[:tail.start()]
             else:
                 m = re.match(r"^(.+?)-([^-]+)$", re.sub(r"\s*\(.*$", "", c))
                 code, size = (m.group(1), letter_size(m.group(2))) if m else (c, None)
@@ -418,6 +421,36 @@ def clean_name(raw, code):
     name = re.sub(r"^\(?(gs|w)\)?\s+", "", name, flags=re.I)
     name = re.sub(r"\s+(sz|size)\s+khác.*$|\s+có\s+order.*$|\s+-\s*\d{2}(,5)?\s*$", "", name, flags=re.I)  # ghi chú của NCC
     return name.strip(" -/")
+
+
+SMALL_WORDS = {"GEL", "CAT", "AND", "LOW", "MID", "RED", "AIR", "MAX", "RUN", "PRO", "THE", "OF", "FF", "X"}
+KEEP_UPPER = {"JDI", "OG", "GS", "NYC", "SE", "II", "III", "IV", "USA", "UNC", "QS", "SB", "GT", "FTR", "BB", "HC", "AC", "GTX", "LX", "PRM", "SP", "TR", "W"}
+
+
+def tidy_name(name):
+    """Tên bảng NCC viết HOA cả câu ('PUMA COOL CAT OLIVE CAMO') → 'Puma Cool Cat Olive Camo'. Tên viết thường giữ nguyên."""
+    letters = [c for c in name if c.isalpha()]
+    if len(name) <= 12 or not letters or sum(c.isupper() for c in letters) <= 0.6 * len(letters):
+        return name
+    out = []
+    for w in name.split():
+        core = w.strip("'\"()/")
+        if core.isalpha() and core.isupper() and core not in KEEP_UPPER and (len(core) > 3 or core in SMALL_WORDS):
+            w = w.replace(core, "and" if core == "AND" else core.capitalize())
+        out.append(w)
+    return " ".join(out)
+
+
+def clean_note(note):
+    """Ghi chú của NCC dành cho CTV ('Giá xả không giảm thêm') không hiện cho khách; lỗi ngoại quan thì giữ, viết lại cho rõ."""
+    parts = []
+    for part in re.split(r"\s*[/;]\s*", note or ""):
+        if not part or re.search(r"giá xả|không giảm|ko giảm|k giảm", part, re.I):
+            continue
+        if re.search(r"flaw", part, re.I):
+            part = "Hàng có lỗi nhỏ về ngoại quan (flaw nhẹ) — nhắn shop để xem ảnh chi tiết trước khi mua"
+        parts.append(part[0].upper() + part[1:])
+    return "; ".join(parts)
 
 
 def custom_names():
@@ -507,10 +540,13 @@ def merge(items, old):
         if len(name.split()) > 2:  # tên dòng giày + mã (lượt trước): bỏ mã, mã đã hiện riêng trên thẻ
             name = re.sub(r"\s+" + re.escape(code) + r"$", "", name, flags=re.I)
         detected = bp.detect(bp.BRAND_RULES, name + " " + rec["raw"], None)
-        brand = (prev or {}).get("brand") or detected or code_brand(code) or brand or "Khác"
+        old_brand = (prev or {}).get("brand")
+        brand = (old_brand if old_brand != "Khác" else None) or detected or code_brand(code) or brand or "Khác"
         first = brand.split()[0]
-        if not re.search(r"\b" + re.escape(first) + r"\b", name, re.I):
+        name = re.sub(r"^Khác\s+", "", name)  # lượt trước ghép chữ "Khác" vào đầu tên
+        if brand != "Khác" and not re.search(r"\b" + re.escape(first) + r"\b", name, re.I):
             name = f"{brand} {name}"
+        name = tidy_name(name)
         gender = (prev or {}).get("gender") or bp.detect(bp.GENDER_RULES, rec["raw"], "unisex")
         sizes = sorted(rec["sizes"].items(), key=lambda kv: size_sort(kv[0]))
         letters = any(size_sort(s)[0] != 0 for s, _ in sizes)
@@ -533,8 +569,9 @@ def merge(items, old):
                 if p["sizes"]:
                     p["price"] = min(s.get("p", price) for s in p["sizes"])
                     p["sizes"] = [dict({"s": s["s"]}, **({"p": s.get("p", price)} if s.get("p", price) != p["price"] else {})) for s in p["sizes"]]
-        if rec["notes"]:
-            p["note"] = "; ".join(sorted(rec["notes"]))
+        notes = sorted({n for n in (clean_note(x) for x in rec["notes"]) if n})
+        if notes:
+            p["note"] = "; ".join(notes)
         p["_srcs"] = rec["srcs"]
         p["_ctv"] = {s: v for s, v in sizes if s in {x["s"] for x in p["sizes"]}}
         out.append(p)
