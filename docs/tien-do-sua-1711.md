@@ -7,8 +7,8 @@ Nếu phiên bị ngắt (hết hạn mức): đọc file này và `docs/soat-fa
 ## Việc
 
 - [x] 1. Trang mẫu trên điện thoại + nút nhắn shop (commit `00d763c3`): tên/giá trên ảnh, thanh đáy có "Nhắn shop", chọn sẵn size theo link, giá "Từ", giá theo size đang lọc, mở thẳng Messenger (`SHOP.openMessenger`), hộp chọn ngay trong app TikTok/IG/Zalo, bỏ câu "mở hộp kiểm tra trước khi trả tiền", bỏ số tài khoản khỏi `data/shop.js`, `cart.html` noindex.
-- [ ] 2. Làm sạch dữ liệu: hãng sai (M2022RDA, 2 mẫu Champion, FU7205 Reebok, 7 mẫu "Khác"), tên trùng (tên theo mã từ StockX), nhãn nữ/GS, ghi chú "Giá xả không giảm thêm", tên viết HOA, mã bảng Thắng thiếu đuôi màu (343881 gộp 2 màu).
-- [ ] 3. Chạy kiểm hàng 15/11 (quy trình 8 bước của lịch "Kiểm hàng sẵn S&LIFE").
+- [x] 2. Làm sạch dữ liệu: hãng sai (M2022RDA, 2 mẫu Champion, FU7205 Reebok, 7 mẫu "Khác"), tên trùng (tên theo mã từ StockX), nhãn nữ/GS, ghi chú "Giá xả không giảm thêm", tên viết HOA, mã bảng Thắng thiếu đuôi màu (343881 gộp 2 màu).
+- [x] 3. Chạy kiểm hàng 15/11 (quy trình 8 bước của lịch "Kiểm hàng sẵn S&LIFE").
 - [ ] 4. Ảnh xem trước: nâng ảnh bìa < 600px bằng ảnh lớn đúng mã; khai kích thước ảnh cho `sp/loc`.
 - [ ] 5. Nội dung tĩnh cho Google: trang `sp/<mã>`, trang hãng/dòng, trang chủ có sẵn nội dung trong HTML; sitemap trỏ về trang tĩnh.
 - [ ] 6. Kiểm tra cuối 390px/1280px, cập nhật `AGENTS.md`, báo chủ shop danh sách cần thử trên điện thoại.
