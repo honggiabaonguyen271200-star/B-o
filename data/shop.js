@@ -13,6 +13,10 @@ window.SHOP = {
   // ID số của Facebook cá nhân (không bắt buộc). Có ID thì iPhone mở đúng trang cá nhân trong app chắc chắn hơn.
   // Cách lấy: xem HANDOFF.md, mục "Chủ shop cần duyệt".
   facebookId: "100080431367928", // chủ shop gửi 01/10; kiểm: facebook.com/profile.php?id=100080431367928 phải ra đúng trang cá nhân
+  // Điện thoại: nút nhắn shop mở thẳng khung chat Messenger với chủ shop (dùng facebookId ở trên).
+  // false: mở trang cá nhân trong app Facebook như trước 17/11.
+  openMessenger: true,
+  messengerUser: "honggiabaoslife", // tên trong link m.me/<tên> — dùng cho lựa chọn "Mở Messenger bằng trình duyệt"
   // Máy tính đang dùng trình duyệt khác Chrome (Edge, Cốc Cốc…): hỏi "Sao chép link để mở bằng Chrome" hay "Mở luôn".
   // false: mở luôn bằng trình duyệt đang dùng, không hỏi.
   desktopAskChrome: true,
@@ -26,13 +30,7 @@ window.SHOP = {
   instagramSneaker: "https://www.instagram.com/s.life_sneakers/",
   instagramGarment: "https://www.instagram.com/s.life_garment/", // Instagram shop Garment
   tiktok: "https://www.tiktok.com/@slifesneaker",
-  // Tài khoản ngân hàng: KHÔNG hiện trên website. Shop gửi số tài khoản và tiền cọc qua tin nhắn.
-  bank: {
-    name: "Techcombank",
-    bin: "TCB",
-    number: "19035107259014",
-    holder: "Nguyen Hong Gia Bao",
-  },
+  // Tài khoản ngân hàng: KHÔNG ghi vào website (file này ai cũng đọc được). Shop gửi số tài khoản và tiền cọc qua tin nhắn.
   returnDays: 3,
   openHours: "9:00 – 21:00",
 

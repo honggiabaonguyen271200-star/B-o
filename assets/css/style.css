@@ -1740,3 +1740,25 @@ body.has-aura::after {
 [data-picks] .rail .card { transition: opacity .28s ease, transform .28s ease; }
 [data-picks] .rail .card.is-swap { opacity: 0; transform: translateY(6px); }
 @media (prefers-reduced-motion: reduce) { [data-picks] .rail .card { transition: none; } }
+
+/* ===== Trang mẫu trên điện thoại (17/11, soát theo góc nhìn khách): tên + giá nằm trên ảnh; thanh đáy hiện từ đầu,
+   có nút "Nhắn shop" cạnh "Thêm giỏ" ===== */
+@media (max-width: 959px) {
+  .pd { display: flex; flex-direction: column; gap: 0; }
+  .pd__info { display: contents; }
+  .pd__info > * { order: 3; }
+  .pd__info > .pd__brand, .pd__info > h1, .pd__info > .pd__pills, .pd__info > .pd__price { order: 1; }
+  .pd > .gallery { order: 2; margin-bottom: 20px; }
+  .pd__info > h1 { font-size: clamp(26px, 7.4vw, 34px); margin-bottom: 8px; }
+  .pd__info > .pd__pills { margin-bottom: 8px; }
+  .pd__info > .pd__price { font-size: 24px; margin-bottom: 12px; }
+  .pd-top { padding: 10px 0 8px; }
+  .pd-top .breadcrumb { flex-wrap: nowrap; overflow: hidden; white-space: nowrap; }
+  .pd-top .breadcrumb > :last-child { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+}
+.buybar { gap: 8px; }
+.buybar__info b small { font-size: 12px; font-weight: 500; color: var(--muted); margin-right: 3px; }
+.buybar .btn { padding: 0 14px; font-size: 15px; gap: 6px; white-space: nowrap; flex: none; }
+.buybar .buybar__fb svg { width: 20px; height: 20px; }
+@media (max-width: 380px) { .buybar .buybar__add span { display: none; } .buybar .buybar__add { padding: 0 14px; } }
+.card__price .card__for { margin: 0 0 0 5px; }
